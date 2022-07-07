@@ -8,10 +8,14 @@
     <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
     <link rel="stylesheet" href="https://js.arcgis.com/4.24/esri/themes/light/main.css">
+    <link href="https://www.dafontfree.net/embed/cGF0cmljaWFuLXJlZ3VsYXImZGF0YS8yNi9wLzEzODA1Ny9QYXRyaWNhbi50dGY" rel="stylesheet" type="text/css"/>
     <script src="https://js.arcgis.com/4.24/"></script>
     <style>
-      :root {        
-      }
+     
+
+    /*  :root {
+      --ion-font-family: 'patrician-regular';
+      }*/
 
       #viewDiv {
         text-align: center;
@@ -20,6 +24,10 @@
         position: absolute;
         left: 0;
         right: 0;
+      }
+
+      .ion-color-primary {
+        --ion-color-base:  var(--ion-color-primary, #363636)!important;
       }
     </style>
   </head>
@@ -36,21 +44,13 @@
           <ion-popover trigger="menuBtn" dismiss-on-select="true">
           <ion-content>
             <ion-list>
-              <ion-item button="true" detail="false">Option 1</ion-item>
-              <ion-item button="true" detail="false">Option 2</ion-item>
-              <ion-item button="true" id="nested-trigger">More options...</ion-item>
-
-              <ion-popover trigger="nested-trigger" dismiss-on-select="true" side="end">
-                <ion-content>
-                  <ion-list>
-                    <ion-item button="true" detail="false">Nested option</ion-item>
-                  </ion-list>
-                </ion-content>
-              </ion-popover>
+              <ion-item button="true" detail="false">About the project</ion-item>
+              <ion-item button="true" detail="false">Project news</ion-item>
+              <ion-item button="true" detail="false">Meet the team</ion-item>              
             </ion-list>
           </ion-content>
         </ion-popover>
-          <ion-title>KeTT Mobile</ion-title>
+          <ion-title>KeTT Mobile Beta</ion-title>
         </ion-toolbar>
       </ion-header> 
       <ion-content [fullscreen]="true">
@@ -74,6 +74,8 @@
           zoom: 10, // Zoom level
           container: "viewDiv" // Div element
         });
+
+
 
       });
 </script>
