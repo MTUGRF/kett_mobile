@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toolbar</title>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+    <link rel="stylesheet" href="https://js.arcgis.com/4.24/esri/themes/light/main.css">
+    <script src="https://js.arcgis.com/4.24/"></script>
+    <style>
+      :root {        
+      }
+
+      #viewDiv {
+        text-align: center;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        left: 0;
+        right: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <ion-app>
+      <ion-header>
+        <ion-toolbar color="primary">
+          <ion-buttons slot="start">
+            <ion-img src="assets/kettlogo.png" style="width: 60px; height: 60px;"></ion-img>
+          </ion-buttons>
+          <ion-buttons slot="end">
+            <ion-menu-button auto-hide="false" id="menuBtn"></ion-menu-button>
+          </ion-buttons>
+          <ion-popover trigger="menuBtn" dismiss-on-select="true">
+          <ion-content>
+            <ion-list>
+              <ion-item button="true" detail="false">Option 1</ion-item>
+              <ion-item button="true" detail="false">Option 2</ion-item>
+              <ion-item button="true" id="nested-trigger">More options...</ion-item>
+
+              <ion-popover trigger="nested-trigger" dismiss-on-select="true" side="end">
+                <ion-content>
+                  <ion-list>
+                    <ion-item button="true" detail="false">Nested option</ion-item>
+                  </ion-list>
+                </ion-content>
+              </ion-popover>
+            </ion-list>
+          </ion-content>
+        </ion-popover>
+          <ion-title>KeTT Mobile</ion-title>
+        </ion-toolbar>
+      </ion-header> 
+      <ion-content [fullscreen]="true">
+      <div id="viewDiv"></div>   
+      </ion-content>    
+    </ion-app>
+  </body>
+</html>
+<script>
+  require(["esri/config","esri/Map", "esri/views/MapView"], function (esriConfig,Map, MapView) {
+
+        esriConfig.apiKey = "YOUR_API_KEY";
+
+        const map = new Map({
+          basemap: "satellite" // Basemap layer service
+        });
+
+        const view = new MapView({
+          map: map,
+          center: [-88.5694, 47.1211], // Longitude, latitude
+          zoom: 10, // Zoom level
+          container: "viewDiv" // Div element
+        });
+
+      });
+</script>
+<style>
+  ion-content ion-toolbar {
+    margin: 10px 0;
+  }
+</style>
