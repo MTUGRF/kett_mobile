@@ -37,7 +37,7 @@
       <ion-header>
         <ion-toolbar color="primary">
           <ion-buttons slot="start">
-            <ion-img src="assets/kettlogo.png" style="width: 60px; height: 60px;"></ion-img>
+            <ion-img src="https://kett.geospatialresearch.mtu.edu/static/media/logo_mark_only@2x.a10ff43f.png" style="width: 60px; height: 60px;"></ion-img>
           </ion-buttons>
           <ion-buttons slot="end">
             <ion-menu-button auto-hide="false" id="menuBtn"></ion-menu-button>
@@ -53,10 +53,59 @@
         </ion-popover>
           <ion-title>KeTT Mobile Beta</ion-title>
         </ion-toolbar>
-      </ion-header> 
-      <ion-content [fullscreen]="true">
-      <div id="viewDiv"></div>   
-      </ion-content>    
+      </ion-header>      
+      <ion-tabs>
+        <ion-tab tab="home">
+          <ion-header translucent>
+            <ion-toolbar>
+              <ion-title>Home</ion-title>
+            </ion-toolbar>
+          </ion-header>
+
+     	  <ion-content [fullscreen]="true">
+      		<div id="viewDiv"></div>   
+      	  </ion-content> 
+        </ion-tab>
+
+        <ion-tab tab="maps">
+          <ion-header translucent>
+            <ion-toolbar>
+              <ion-title>Maps</ion-title>
+            </ion-toolbar>
+          </ion-header>
+
+          <ion-content fullscreen class="ion-padding" id="mapcontent">
+          
+          </ion-content>
+        </ion-tab>
+
+        <ion-tab tab="games">
+          <ion-header translucent>
+            <ion-toolbar>
+              <ion-title>Games</ion-title>
+            </ion-toolbar>
+          </ion-header>
+
+          <ion-content fullscreen class="ion-padding">
+            <h1>Games</h1>
+          </ion-content>
+        </ion-tab>
+
+        <ion-tab-bar slot="bottom">
+          <ion-tab-button tab="home">
+            <ion-label>Home</ion-label>
+            <ion-icon name="map-outline"></ion-icon>
+          </ion-tab-button>
+          <ion-tab-button tab="maps">
+            <ion-label>Maps</ion-label>
+            <ion-icon name="videocam"></ion-icon>
+          </ion-tab-button>
+          <ion-tab-button tab="games">
+            <ion-label>Games</ion-label>
+            <ion-icon name="game-controller"></ion-icon>
+          </ion-tab-button>
+        </ion-tab-bar>
+      </ion-tabs>   
     </ion-app>
   </body>
 </html>
@@ -104,7 +153,24 @@
 			      .then(function(results) {
 			        // do something with the resulting graphics
 			        graphics = results.features;
-			        console.log(graphics);
+			       
+
+			        graphics.forEach(function(result, index) {
+                      const attributes = result.attributes;
+                      const title = attributes.title;
+                      console.log(title);
+                      const item = document.createElement("ion-item");
+                      const label = document.createElement("ion-label");
+                      const icon = document.createElement("ion-icon");                      
+                      icon.name = "map-outline";
+                      icon.slot = "end";
+                      label.innerHTML = title;	
+                      item.appendChild(icon);
+                      item.appendChild(label);
+                      document.getElementById("mapcontent").appendChild(item);
+
+                    });  
+
 			      });
 			  }
 		  });	
