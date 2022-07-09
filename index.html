@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
     <link rel="stylesheet" href="https://js.arcgis.com/4.24/esri/themes/light/main.css">
     <link href="https://www.dafontfree.net/embed/cGF0cmljaWFuLXJlZ3VsYXImZGF0YS8yNi9wLzEzODA1Ny9QYXRyaWNhbi50dGY" rel="stylesheet" type="text/css"/>
+     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script src="https://js.arcgis.com/4.24/"></script>
     <style>
      
@@ -60,12 +61,20 @@
   </body>
 </html>
 <script>
-  require(["esri/config","esri/Map", "esri/views/MapView"], function (esriConfig,Map, MapView) {
+  require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer"], function (esriConfig,Map, MapView, FeatureLayer) {
 
         esriConfig.apiKey = "YOUR_API_KEY";
 
+        // Layer for the nautical charts 
+	    const indexLayer = new FeatureLayer({
+	      url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/KeTT_Mobile_Map_Indexes/FeatureServer/0",
+	      outFields: ["*"], // Return all fields so it can be queried client-side
+	    //renderer: renderer
+	    });
+
         const map = new Map({
-          basemap: "satellite" // Basemap layer service
+          basemap: "satellite", // Basemap layer service
+          layers: [indexLayer]
         });
 
         const view = new MapView({
@@ -73,9 +82,33 @@
           center: [-88.5694, 47.1211], // Longitude, latitude
           zoom: 10, // Zoom level
           container: "viewDiv" // Div element
-        });
+        });       
 
+        view.on("drag", function(evt) {
+          const extent = view.extent;
+          //console.log(extent);
+		});
 
+        let graphics; 
+	    view.whenLayerView(indexLayer).then(function(layerView) {
+  		  layerView.watch("updating", function(value) {
+			  if (!value) {
+			    // wait for the layer view to finish updating
+
+			    // get all the features available for drawing.
+			    layerView
+			      .queryFeatures({
+			        geometry: view.extent,
+			        returnGeometry: true
+			      })
+			      .then(function(results) {
+			        // do something with the resulting graphics
+			        graphics = results.features;
+			        console.log(graphics);
+			      });
+			  }
+		  });	
+		});
 
       });
 </script>
