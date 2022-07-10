@@ -75,7 +75,7 @@
           </ion-header>
 
           <ion-content fullscreen class="ion-padding" id="mapcontent">
-          
+          Maps
           </ion-content>
         </ion-tab>
 
@@ -110,7 +110,7 @@
   </body>
 </html>
 <script>
-  require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer"], function (esriConfig,Map, MapView, FeatureLayer) {
+  require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer"], function (esriConfig,Map, MapView, FeatureLayer, TileLayer) {
 
         esriConfig.apiKey = "YOUR_API_KEY";
 
@@ -138,10 +138,13 @@
           //console.log(extent);
 		});
 
+        const listNode = document.getElementById("mapcontent");
+
         let graphics; 
 	    view.whenLayerView(indexLayer).then(function(layerView) {
-  		  layerView.watch("updating", function(value) {
-			  if (!value) {
+  		  layerView.watch("updating", function(value) { 
+  		  	  listNode.innerHTML = "";	  		  	  		  	  	
+			  if (!value) {			  	
 			    // wait for the layer view to finish updating
 
 			    // get all the features available for drawing.
@@ -154,7 +157,7 @@
 			        // do something with the resulting graphics
 			        graphics = results.features;
 			       
-
+			        const fragment = document.createDocumentFragment();
 			        graphics.forEach(function(result, index) {
                       const attributes = result.attributes;
                       const title = attributes.title;
@@ -167,15 +170,38 @@
                       label.innerHTML = title;	
                       item.appendChild(icon);
                       item.appendChild(label);
-                      document.getElementById("mapcontent").appendChild(item);
-
+                      item.addEventListener("click", () => resultClickHandler(result, index));
+                      fragment.appendChild(item);                     
+                 	  listNode.appendChild(fragment);
                     });  
 
+			        function resultClickHandler(result, index) {
+				      const popup = graphics && graphics[parseInt(index, 10)];
+				      console.log(result);
+				      let current_layer;
+				      //if (current_layer.loaded() == "true") {
+				      //	map.removeLayer(current_layer);
+				     // }
+
+				      current_layer = new TileLayer({
+			            url: result.attributes.service_url
+			          });
+
+			          map.add(current_layer);
+				      /*if (popup) {
+				        view.popup.open({
+				          features: [popup],
+				          location: result.geometry.centroid
+				        });       
+				        const extent = result.geometry.extent;
+				        // when clicking on a record zoom to its extent
+				        view.goTo({ center: extent.expand(6) }, { duration: 400 });
+				      }				     */
+				    };
 			      });
 			  }
 		  });	
 		});
-
       });
 </script>
 <style>
