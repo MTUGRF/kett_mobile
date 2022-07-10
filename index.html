@@ -178,16 +178,44 @@
 			        function resultClickHandler(result, index) {
 				      const popup = graphics && graphics[parseInt(index, 10)];
 				      console.log(result);
-				      let current_layer;
+				     map.allLayers.filter(function(layer) {
+				     	if (layer.type === "tile") {
+				     		map.remove(layer);
+				     	}
+ //return layer.title === "US Counties";
+ console.log(layer);
+});
+				    //  console.log(layers);
+
+				      let current_layer = new TileLayer({
+			            //url: result.attributes.service_url
+			          });
+
+			          map.add(current_layer)
+
+			          current_layer.url = result.attributes.service_url;
 				      //if (current_layer.loaded() == "true") {
 				      //	map.removeLayer(current_layer);
 				     // }
 
-				      current_layer = new TileLayer({
+				     // Listen for any layer being added or removed in the Map
+//map.allLayers.on("change", function(event) {
+/*	if (current_layer != undefined) {
+		map.remove(current_layer);
+	} else {
+		current_layer = new TileLayer({
 			            url: result.attributes.service_url
 			          });
 
 			          map.add(current_layer);
+	}*/
+ /*console.log("Layer added: ", event.added);
+ console.log("Layer removed: ", event.removed);
+ console.log("Layer moved: ", event.moved);
+});*/
+				     //map.remove(current_layer);
+
+				      
 				      /*if (popup) {
 				        view.popup.open({
 				          features: [popup],
