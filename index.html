@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://js.arcgis.com/4.24/esri/themes/light/main.css">
     <link href="https://www.dafontfree.net/embed/cGF0cmljaWFuLXJlZ3VsYXImZGF0YS8yNi9wLzEzODA1Ny9QYXRyaWNhbi50dGY" rel="stylesheet" type="text/css"/>
      <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+      <script src="https://unpkg.com/@esri/arcgis-rest-request@4.0.0/dist/bundled/request.umd.js"></script>
+    <script src="https://unpkg.com/@esri/arcgis-rest-feature-service@4.0.0/dist/bundled/feature-service.umd.js"></script>
     <script src="https://js.arcgis.com/4.24/"></script>
     <style>
      
@@ -163,8 +165,35 @@
 
         view.on("drag", function(evt) {
           const extent = view.extent;
-          console.log(extent);
-		    });
+          
+          let xmin = extent.xmin;
+          let xmax = extent.xmax;
+          let ymin = extent.ymin;
+          let ymax = extent.ymax;
+
+          const queryGeometry = {
+            xmin: xmin,
+            ymin: ymin,
+            xmax: xmax,
+            ymax: ymax, 
+            spatialReference: {
+              wkid: 3857
+            }
+          };
+         /* // query the maps extent for any people of places from the feature service. 
+          arcgisRest
+            .queryFeatures({
+              url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_kett_record_locs/FeatureServer/0",
+              geometry: queryGeometry,
+              geometryType: "esriGeometryEnvelope",
+              spatialRel: "esriSpatialRelContains",
+              //authentication
+            })
+            .then((response) => {
+              console.log(response.features);
+              //document.getElementById("result").textContent = JSON.stringify(response.features, null, 2);
+            });
+		    });*/
 
         // new gelocation widget
         let track = new Track({
