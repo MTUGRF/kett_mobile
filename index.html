@@ -30,6 +30,22 @@
       .ion-color-primary {
         --ion-color-base:  var(--ion-color-primary, #363636)!important;
       }
+
+      ion-range {
+        --bar-background: #a2d2ff;
+        --bar-background-active: #bde0fe;
+        --bar-height: 8px;
+        --bar-border-radius: 8px;
+        --knob-background: #ffc8dd;
+        --knob-size: 40px;
+        --pin-background: #ffafcc;
+        --pin-color: #fff;
+        
+        width: 80%;
+        position:  absolute;
+        left:  10px;
+        top:  bottom: 30px;
+      }
     </style>
   </head>
   <body>
@@ -63,7 +79,10 @@
           </ion-header>
 
      	  <ion-content [fullscreen]="true">
-      		<div id="viewDiv"></div>   
+      		<div id="viewDiv"></div>  
+          
+          <ion-range></ion-range>
+  
       	  </ion-content> 
         </ion-tab>
 
@@ -74,7 +93,7 @@
             </ion-toolbar>
           </ion-header>
 
-          <ion-content fullscreen class="ion-padding" id="mapcontent">
+          <ion-content fullscreen class="ion-padding" id="mapcontent">            
           Maps
           </ion-content>
         </ion-tab>
@@ -115,11 +134,11 @@
         esriConfig.apiKey = "YOUR_API_KEY";
 
         // Layer for the nautical charts 
-	    const indexLayer = new FeatureLayer({
-	      url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/KeTT_Mobile_Map_Indexes/FeatureServer/0",
-	      outFields: ["*"], // Return all fields so it can be queried client-side
+	      const indexLayer = new FeatureLayer({
+	        url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/KeTT_Mobile_Map_Indexes/FeatureServer/0",
+	        outFields: ["*"], // Return all fields so it can be queried client-side
 	    //renderer: renderer
-	    });
+	      });
 
         const map = new Map({
           basemap: "satellite", // Basemap layer service
@@ -132,11 +151,13 @@
           zoom: 10, // Zoom level
           container: "viewDiv" // Div element
         });       
+        // Removes the zoom widget from the view
+        view.ui.remove("zoom");
 
         view.on("drag", function(evt) {
           const extent = view.extent;
           //console.log(extent);
-		});
+		    });
 
         const listNode = document.getElementById("mapcontent");
 
@@ -164,58 +185,33 @@
                       console.log(title);
                       const item = document.createElement("ion-item");
                       const label = document.createElement("ion-label");
-                      const icon = document.createElement("ion-icon");                      
-                      icon.name = "map-outline";
+                      const icon = document.createElement("ion-icon"); 
+                      item.href = "#";                     
+                      icon.name = "map-outline";                      
                       icon.slot = "end";
                       label.innerHTML = title;	
                       item.appendChild(icon);
                       item.appendChild(label);
                       item.addEventListener("click", () => resultClickHandler(result, index));
                       fragment.appendChild(item);                     
-                 	  listNode.appendChild(fragment);
+                 	    listNode.appendChild(fragment);
                     });  
 
 			        function resultClickHandler(result, index) {
-				      const popup = graphics && graphics[parseInt(index, 10)];
-				      console.log(result);
-				     map.allLayers.filter(function(layer) {
-				     	if (layer.type === "tile") {
-				     		map.remove(layer);
-				     	}
- //return layer.title === "US Counties";
- console.log(layer);
-});
-				    //  console.log(layers);
+				        const popup = graphics && graphics[parseInt(index, 10)];
+				     
+  				      map.allLayers.filter(function(layer) {
+  				     	  if (layer.type === "tile") {
+  				     		  map.remove(layer);
+  				     	  } 
+                });			    
 
 				      let current_layer = new TileLayer({
-			            //url: result.attributes.service_url
-			          });
-
-			          map.add(current_layer)
-
-			          current_layer.url = result.attributes.service_url;
-				      //if (current_layer.loaded() == "true") {
-				      //	map.removeLayer(current_layer);
-				     // }
-
-				     // Listen for any layer being added or removed in the Map
-//map.allLayers.on("change", function(event) {
-/*	if (current_layer != undefined) {
-		map.remove(current_layer);
-	} else {
-		current_layer = new TileLayer({
 			            url: result.attributes.service_url
-			          });
+			        });
 
-			          map.add(current_layer);
-	}*/
- /*console.log("Layer added: ", event.added);
- console.log("Layer removed: ", event.removed);
- console.log("Layer moved: ", event.moved);
-});*/
-				     //map.remove(current_layer);
+			        map.add(current_layer);			        
 
-				      
 				      /*if (popup) {
 				        view.popup.open({
 				          features: [popup],
@@ -225,7 +221,7 @@
 				        // when clicking on a record zoom to its extent
 				        view.goTo({ center: extent.expand(6) }, { duration: 400 });
 				      }				     */
-				    };
+				      };
 			      });
 			  }
 		  });	
