@@ -39,11 +39,10 @@
         --knob-background: #ffc8dd;
         --knob-size: 40px;
         --pin-background: #ffafcc;
-        --pin-color: #fff;
-        
+        --pin-color: #fff;        
         width: 80%;
         position:  absolute;
-        left:  10px;
+        left:  30px;
         top:  bottom: 30px;
       }
     </style>
@@ -79,10 +78,13 @@
           </ion-header>
 
      	  <ion-content [fullscreen]="true">
-      		<div id="viewDiv"></div>  
-          
-          <ion-range></ion-range>
-  
+      		<div id="viewDiv"></div>           
+          <ion-range value="100"></ion-range> 
+          <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+          <ion-fab-button color="danger">
+            <ion-icon name="locate-sharp"></ion-icon>
+          </ion-fab-button>
+        </ion-fab>
       	  </ion-content> 
         </ion-tab>
 
@@ -210,7 +212,19 @@
 			            url: result.attributes.service_url
 			        });
 
-			        map.add(current_layer);			        
+			        map.add(current_layer);
+              // get the value of the range slider  
+              let rangeVal = $( "ion-range" ).val();
+             
+              current_layer.opacity = rangeVal / 100;  
+
+              const range = document.querySelector('ion-range');
+              // const lastEmittedValue = document.querySelector('#lastValue');
+              // adjust the transparency of the map based on the sliders value  
+              range.addEventListener('ionChange', ({ detail }) => {
+                //lastEmittedValue.innerHTML = detail.value;
+                  current_layer.opacity = detail.value / 100;                  
+              });			        
 
 				      /*if (popup) {
 				        view.popup.open({
