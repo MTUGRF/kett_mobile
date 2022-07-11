@@ -45,6 +45,10 @@
         left:  30px;
         top:  bottom: 30px;
       }
+
+      .esri-view .esri-view-surface--inset-outline:focus::after {
+        outline: none !important;
+      }   ‍‍‍
     </style>
   </head>
   <body>
@@ -81,7 +85,7 @@
       		<div id="viewDiv"></div>           
           <ion-range value="100"></ion-range> 
           <ion-fab horizontal="end" vertical="bottom" slot="fixed">
-          <ion-fab-button color="danger">
+          <ion-fab-button color="danger" id="geolocation">
             <ion-icon name="locate-sharp"></ion-icon>
           </ion-fab-button>
         </ion-fab>
@@ -120,6 +124,7 @@
           <ion-tab-button tab="maps">
             <ion-label>Maps</ion-label>
             <ion-icon name="videocam"></ion-icon>
+            <ion-badge id="mapcount">6</ion-badge>
           </ion-tab-button>
           <ion-tab-button tab="games">
             <ion-label>Games</ion-label>
@@ -131,7 +136,7 @@
   </body>
 </html>
 <script>
-  require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer"], function (esriConfig,Map, MapView, FeatureLayer, TileLayer) {
+  require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track"], function (esriConfig,Map, MapView, FeatureLayer, TileLayer, Track) {
 
         esriConfig.apiKey = "YOUR_API_KEY";
 
@@ -158,88 +163,99 @@
 
         view.on("drag", function(evt) {
           const extent = view.extent;
-          //console.log(extent);
+          console.log(extent);
 		    });
+
+        // new gelocation widget
+        let track = new Track({
+          view: view
+        });
+
+        $( "#geolocation" ).click(function() {
+          track.start();
+        });
 
         const listNode = document.getElementById("mapcontent");
 
         let graphics; 
-	    view.whenLayerView(indexLayer).then(function(layerView) {
-  		  layerView.watch("updating", function(value) { 
-  		  	  listNode.innerHTML = "";	  		  	  		  	  	
-			  if (!value) {			  	
-			    // wait for the layer view to finish updating
+  	    view.whenLayerView(indexLayer).then(function(layerView) {
+    		  layerView.watch("updating", function(value) { 
+    		  	  listNode.innerHTML = "";	  		  	  		  	  	
+  			  if (!value) {			  	
+  			    // wait for the layer view to finish updating
 
-			    // get all the features available for drawing.
-			    layerView
-			      .queryFeatures({
-			        geometry: view.extent,
-			        returnGeometry: true
-			      })
-			      .then(function(results) {
-			        // do something with the resulting graphics
-			        graphics = results.features;
-			       
-			        const fragment = document.createDocumentFragment();
-			        graphics.forEach(function(result, index) {
-                      const attributes = result.attributes;
-                      const title = attributes.title;
-                      console.log(title);
-                      const item = document.createElement("ion-item");
-                      const label = document.createElement("ion-label");
-                      const icon = document.createElement("ion-icon"); 
-                      item.href = "#";                     
-                      icon.name = "map-outline";                      
-                      icon.slot = "end";
-                      label.innerHTML = title;	
-                      item.appendChild(icon);
-                      item.appendChild(label);
-                      item.addEventListener("click", () => resultClickHandler(result, index));
-                      fragment.appendChild(item);                     
-                 	    listNode.appendChild(fragment);
-                    });  
+  			    // get all the features available for drawing.
+  			    layerView
+  			      .queryFeatures({
+  			        geometry: view.extent,
+  			        returnGeometry: true
+  			      })
+  			      .then(function(results) {
+  			        // do something with the resulting graphics
+  			        graphics = results.features;
 
-			        function resultClickHandler(result, index) {
-				        const popup = graphics && graphics[parseInt(index, 10)];
-				     
-  				      map.allLayers.filter(function(layer) {
-  				     	  if (layer.type === "tile") {
-  				     		  map.remove(layer);
-  				     	  } 
-                });			    
+                document.getElementById("mapcount").innerHTML = results.features.length;
+  			       
+  			        const fragment = document.createDocumentFragment();
+  			        graphics.forEach(function(result, index) {
+                        const attributes = result.attributes;
+                        const title = attributes.title;
+                        console.log(title);
+                        const item = document.createElement("ion-item");
+                        const label = document.createElement("ion-label");
+                        const icon = document.createElement("ion-icon"); 
+                        item.href = "#";                     
+                        icon.name = "map-outline";                      
+                        icon.slot = "end";
+                        label.innerHTML = title;	
+                        item.appendChild(icon);
+                        item.appendChild(label);
+                        item.addEventListener("click", () => resultClickHandler(result, index));
+                        fragment.appendChild(item);                     
+                   	    listNode.appendChild(fragment);
+                      });  
 
-				      let current_layer = new TileLayer({
-			            url: result.attributes.service_url
-			        });
+  			        function resultClickHandler(result, index) {
+  				        const popup = graphics && graphics[parseInt(index, 10)];
+  				     
+    				      map.allLayers.filter(function(layer) {
+    				     	  if (layer.type === "tile") {
+    				     		  map.remove(layer);
+    				     	  } 
+                  });			    
 
-			        map.add(current_layer);
-              // get the value of the range slider  
-              let rangeVal = $( "ion-range" ).val();
-             
-              current_layer.opacity = rangeVal / 100;  
+  				      let current_layer = new TileLayer({
+  			            url: result.attributes.service_url
+  			        });
 
-              const range = document.querySelector('ion-range');
-              // const lastEmittedValue = document.querySelector('#lastValue');
-              // adjust the transparency of the map based on the sliders value  
-              range.addEventListener('ionChange', ({ detail }) => {
-                //lastEmittedValue.innerHTML = detail.value;
-                  current_layer.opacity = detail.value / 100;                  
-              });			        
+  			        map.add(current_layer);
+                // get the value of the range slider  
+                let rangeVal = $( "ion-range" ).val();
+               
+                current_layer.opacity = rangeVal / 100;  
 
-				      /*if (popup) {
-				        view.popup.open({
-				          features: [popup],
-				          location: result.geometry.centroid
-				        });       
-				        const extent = result.geometry.extent;
-				        // when clicking on a record zoom to its extent
-				        view.goTo({ center: extent.expand(6) }, { duration: 400 });
-				      }				     */
-				      };
-			      });
-			  }
-		  });	
-		});
+                const range = document.querySelector('ion-range');
+                // const lastEmittedValue = document.querySelector('#lastValue');
+                // adjust the transparency of the map based on the sliders value  
+                range.addEventListener('ionChange', ({ detail }) => {
+                  //lastEmittedValue.innerHTML = detail.value;
+                    current_layer.opacity = detail.value / 100;                  
+                });			        
+
+  				      /*if (popup) {
+  				        view.popup.open({
+  				          features: [popup],
+  				          location: result.geometry.centroid
+  				        });       
+  				        const extent = result.geometry.extent;
+  				        // when clicking on a record zoom to its extent
+  				        view.goTo({ center: extent.expand(6) }, { duration: 400 });
+  				      }				     */
+  				      };
+  			      });
+  			  }
+  		  });	
+  		});
       });
 </script>
 <style>
