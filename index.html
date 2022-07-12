@@ -36,10 +36,10 @@
         right: 0;
       }
 
-      .ion-color-primary {
+     /* .ion-color-primary {
         --ion-color-base:  var(--ion-color-primary, #363636)!important;
       }
-
+*/
       ion-range {
         --bar-background: #a2d2ff;
         --bar-background-active: #bde0fe;
@@ -139,7 +139,7 @@
       		<div id="viewDiv"></div>           
           <ion-range value="100"></ion-range> 
           <ion-fab horizontal="end" vertical="bottom" slot="fixed">
-          <ion-fab-button color="danger" id="geolocation">
+          <ion-fab-button color="light" id="geolocation">
             <ion-icon name="locate-sharp"></ion-icon>
           </ion-fab-button>
         </ion-fab>
@@ -193,11 +193,10 @@
 
         esriConfig.apiKey = "YOUR_API_KEY";
 
-         var modal = document.querySelector('ion-modal');
-         var searchBar = document.querySelector('ion-searchbar');
+        var modal = document.querySelector('ion-modal');
+        var searchBar = document.querySelector('ion-searchbar');
 
-         modal.breakpoints = [0, 0.25, 0.5, 0.75];
-
+        modal.breakpoints = [0, 0.25, 0.5, 0.75];
 
         // styling for the story points layer
         const storiesRenderer = {
@@ -208,7 +207,7 @@
             "width": "18px",
             "height": "18px"
           }
-       }
+        };
 
         // Layer for the map index 
 	      const indexLayer = new FeatureLayer({
@@ -361,18 +360,28 @@
   			  }
   		  });	
   		});
+
         view.on("click", (event) => {
           // only include graphics from the layer in the hitTest
           const opts = {
             include: storyLayer
           }
-          // check for a click on the index layer
+          // check for a click on the story layer
           view.hitTest(event, opts).then((response) => {
             // check if a feature is returned from the index layer
             if (response.results.length) {
               const graphic = response.results[0].graphic; 
               console.log(graphic);
+              const objectId = graphic.attributes.objectid;
+
               modal.isOpen = true;
+              // Query the attachments from the clicked story
+              storyLayer.queryAttachments({
+                attachmentTypes: ["image/jpeg"],
+                objectIds: objectId
+              }).then(function (attachments) {
+                console.log(attachments);
+              });
             }    
           });
         });
