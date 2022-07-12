@@ -41,18 +41,19 @@
       }
 */
       ion-range {
-        --bar-background: #a2d2ff;
-        --bar-background-active: #bde0fe;
+        --know-box-shadoe:  0 3px 1px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.13), 0 0 0 1px rgba(0, 0, 0, 0.02);
+        --bar-background: #3880ff;
+        --bar-background-active: #d7d8da;
         --bar-height: 8px;
         --bar-border-radius: 8px;
-        --knob-background: #ffc8dd;
+        --knob-background: #ffffff;
         --knob-size: 40px;
         --pin-background: #ffafcc;
         --pin-color: #fff;        
         width: 80%;
         position:  absolute;
         left:  30px;
-        top:  bottom: 30px;
+        top:  bottom: 30px;        
       }
 
       .esri-view .esri-view-surface--inset-outline:focus::after {
@@ -82,17 +83,7 @@
           <ion-title>KeTT Mobile Beta</ion-title>
         </ion-toolbar>
       </ion-header>  
-     
-      <ion-tabs>
-        <ion-tab tab="home">
-          <ion-header translucent>
-            <ion-toolbar>
-              <ion-title>Home</ion-title>
-            </ion-toolbar>
-          </ion-header>
-
-     	  <ion-content [fullscreen]="true">
-           <ion-modal trigger="open-modal" initial-breakpoint="0.25">
+      <ion-modal trigger="open-modal" initial-breakpoint="0.25">
       <ion-content>
         <ion-searchbar placeholder="Search"></ion-searchbar>
         <ion-list>
@@ -134,12 +125,22 @@
           </ion-item>
         </ion-list>
       </ion-content>
-    </ion-modal>    
+    </ion-modal>
+      <ion-tabs>
+        <ion-tab tab="home">
+          <ion-header translucent>
+            <ion-toolbar>
+              <ion-title>Home</ion-title>
+            </ion-toolbar>
+          </ion-header>
+
+     	  <ion-content [fullscreen]="true">
+          
           
       		<div id="viewDiv"></div>           
           <ion-range value="100"></ion-range> 
           <ion-fab horizontal="end" vertical="bottom" slot="fixed">
-          <ion-fab-button color="light" id="geolocation">
+          <ion-fab-button color="tertiary" id="geolocation">
             <ion-icon name="locate-sharp"></ion-icon>
           </ion-fab-button>
         </ion-fab>
