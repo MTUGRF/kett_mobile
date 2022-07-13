@@ -89,20 +89,12 @@
             <ion-toolbar>
               <ion-title>Home</ion-title>
             </ion-toolbar>
-          </ion-header>   
-
-    <ion-modal trigger="open-modal" initial-breakpoint="0.25">
-      <ion-content>
-        
-      </ion-content>
-    </ion-modal>
-  
-
+          </ion-header>     
      	  <ion-content [fullscreen]="true">          
       		<div id="viewDiv"></div>           
           <ion-range value="100"></ion-range> 
           <ion-fab horizontal="end" vertical="bottom" slot="fixed">
-          <ion-fab-button color="tertiary" id="geolocation">
+          <ion-fab-button color="light" id="geolocation">
             <ion-icon name="locate-sharp"></ion-icon>
           </ion-fab-button>
         </ion-fab>
@@ -147,7 +139,54 @@
             <ion-icon name="book-outline"></ion-icon>
           </ion-tab-button>
         </ion-tab-bar>
-      </ion-tabs>   
+      </ion-tabs>  
+       <ion-content class="ion-padding">
+    <ion-button id="open-modal" expand="block">Open Sheet Modal</ion-button>
+
+    <ion-modal trigger="open-modal" initial-breakpoint="0.25">
+      <ion-content>
+        <ion-searchbar placeholder="Search"></ion-searchbar>
+        <ion-list>
+          <ion-item>
+            <ion-avatar slot="start">
+              <ion-img src="https://i.pravatar.cc/300?u=b" />
+            </ion-avatar>
+            <ion-label>
+              <h2>Connor Smith</h2>
+              <p>Sales Rep</p>
+            </ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-avatar slot="start">
+              <ion-img src="https://i.pravatar.cc/300?u=a" />
+            </ion-avatar>
+            <ion-label>
+              <h2>Daniel Smith</h2>
+              <p>Product Designer</p>
+            </ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-avatar slot="start">
+              <ion-img src="https://i.pravatar.cc/300?u=d" />
+            </ion-avatar>
+            <ion-label>
+              <h2>Greg Smith</h2>
+              <p>Director of Operations</p>
+            </ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-avatar slot="start">
+              <ion-img src="https://i.pravatar.cc/300?u=e" />
+            </ion-avatar>
+            <ion-label>
+              <h2>Zoey Smith</h2>
+              <p>CEO</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ion-modal>
+  </ion-content> 
     </ion-app>
   </body>
 </html>
@@ -216,8 +255,8 @@
               wkid: 3857
             }
           };
-          // query the maps extent for any people or places from the feature service. 
-          /*arcgisRest
+          /*// query the maps extent for any people or places from the feature service. 
+          arcgisRest
             .queryFeatures({
               url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_kett_record_locs/FeatureServer/0",
               geometry: queryGeometry,
@@ -229,7 +268,7 @@
               console.log(response.features);
               //document.getElementById("result").textContent = JSON.stringify(response.features, null, 2);
             });*/
-		    //});
+		    });
 
         // new gelocation widget
         let track = new Track({
@@ -265,6 +304,7 @@
   			        graphics.forEach(function(result, index) {
                         const attributes = result.attributes;
                         const title = attributes.title;
+                        const year = attributes.year;
                         console.log(title);
                         const item = document.createElement("ion-item");
                         const label = document.createElement("ion-label");
@@ -272,7 +312,7 @@
                         item.href = "#";                     
                         icon.name = "map-outline";                      
                         icon.slot = "end";
-                        label.innerHTML = title;	
+                        label.innerHTML = year + " " + title;	
                         item.appendChild(icon);
                         item.appendChild(label);
                         item.addEventListener("click", () => resultClickHandler(result, index));
