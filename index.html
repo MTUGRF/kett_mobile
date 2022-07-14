@@ -153,8 +153,9 @@
           <ion-card-subtitle id="storyauthor" style="margin-left: 15px;"></ion-card-subtitle>
           <ion-card-content id="storydesc">
             Founded in 1829 on an isthmus between Lake Monona and Lake Mendota, Madison was named the capital of the
-            Wisconsin Territory in 1836.            
+            Wisconsin Territory in 1836.              
           </ion-card-content>
+          <video id="video" width="100%"></video>
         </ion-card>
       </ion-content>
     </ion-modal>  
@@ -235,7 +236,7 @@
               console.log(response.features);
               //document.getElementById("result").textContent = JSON.stringify(response.features, null, 2);
             });*/
-		    });
+		   // });
 
         // new gelocation widget
         let track = new Track({
@@ -385,7 +386,15 @@
                         const vidarray = [];
                         vidarray.push(attachment);
                         const vidUrl = vidarray[0].url;
-                        $("#storyvid").attr("src", vidUrl);
+                        const video = document.getElementById('video');
+						const source = document.createElement('source');
+
+						source.setAttribute('src', vidUrl);
+						source.setAttribute('type', 'video/mp4');
+
+						video.appendChild(source);	
+						video.load();
+
                       }
                     });
                   }); 
