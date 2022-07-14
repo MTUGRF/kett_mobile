@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Toolbar</title>
+    <title>KeTT Mobile App</title>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
@@ -142,9 +142,17 @@
         </ion-tab-bar>
       </ion-tabs>         
   </ion-content> 
-  <ion-modal trigger="open-modal" initial-breakpoint="0.75">
-      <ion-content>
-          <ion-card>
+    <ion-modal>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Story</ion-title>
+          <ion-buttons slot="end">
+            <ion-button id="modalClose">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+       <ion-card>
           <img src="" id="storyimg" />
           <ion-card-header>
             <ion-card-subtitle id="subtitle"></ion-card-subtitle>
@@ -154,11 +162,14 @@
           <ion-card-content id="storydesc">
             Founded in 1829 on an isthmus between Lake Monona and Lake Mendota, Madison was named the capital of the
             Wisconsin Territory in 1836.              
-          </ion-card-content>
-          <video id="video" width="100%"></video>
+          </ion-card-content>          
+          <ion-label>Videos</ion-label>
+          <video controls id="video" width="100%"></video>
+          <ion-label>Audio</ion-label>
+          <audio controls id="audio" width="100%"></video>
         </ion-card>
       </ion-content>
-    </ion-modal>  
+    </ion-modal>
 </ion-app>
   </body>
 </html>
@@ -168,9 +179,9 @@
         esriConfig.apiKey = "YOUR_API_KEY";
 
         var modal = document.querySelector('ion-modal');
-        var searchBar = document.querySelector('ion-searchbar');
+        
 
-        modal.breakpoints = [0, 0.25, 0.5, 0.75];
+       // modal.breakpoints = [0, 0.25, 0.5, 0.75];
   
         // styling for the story points layer
         const storiesRenderer = {
@@ -236,7 +247,7 @@
               console.log(response.features);
               //document.getElementById("result").textContent = JSON.stringify(response.features, null, 2);
             });*/
-		   // });
+		    });
 
         // new gelocation widget
         let track = new Track({
@@ -289,37 +300,37 @@
                       });  
 
   			        function resultClickHandler(result, index) {
-                  const tabs = document.querySelector('ion-tabs');
-                  tabs.select('home');
+                  		const tabs = document.querySelector('ion-tabs');
+                  		tabs.select('home');
   				        const popup = graphics && graphics[parseInt(index, 10)];
   				     
-    				      map.allLayers.filter(function(layer) {
-    				     	  if (layer.type === "tile") {
-    				     		  map.remove(layer);
-    				     	  } 
-                  });			    
+    				    map.allLayers.filter(function(layer) {
+				     	  if (layer.type === "tile") {
+				     		  map.remove(layer);
+				     	  } 
+                  		});			    
 
-  				      let current_layer = new TileLayer({
-  			            url: result.attributes.service_url
-  			        });
+  				        let current_layer = new TileLayer({
+  			              url: result.attributes.service_url
+  			        	});
 
-  			        map.add(current_layer);
+  			        	map.add(current_layer);
 
-                // push the current layer to the back
-                map.reorder(current_layer, 1);
+		                // push the current layer to the back
+		                map.reorder(current_layer, 1);
 
-                // get the value of the range slider  
-                let rangeVal = $( "ion-range" ).val();
-               
-                current_layer.opacity = rangeVal / 100;  
+		                // get the value of the range slider  
+		                let rangeVal = $( "ion-range" ).val();
+		               
+		                current_layer.opacity = rangeVal / 100;  
 
-                const range = document.querySelector('ion-range');
-                // const lastEmittedValue = document.querySelector('#lastValue');
-                // adjust the transparency of the map based on the sliders value  
-                range.addEventListener('ionChange', ({ detail }) => {
-                  //lastEmittedValue.innerHTML = detail.value;
-                    current_layer.opacity = detail.value / 100;                  
-                });			        
+		                const range = document.querySelector('ion-range');
+		                // const lastEmittedValue = document.querySelector('#lastValue');
+		                // adjust the transparency of the map based on the sliders value  
+		                range.addEventListener('ionChange', ({ detail }) => {
+		                  //lastEmittedValue.innerHTML = detail.value;
+		                    current_layer.opacity = detail.value / 100;                  
+		                });			        
 
   				      /*if (popup) {
   				        view.popup.open({
@@ -394,6 +405,18 @@
 
 						video.appendChild(source);	
 						video.load();
+                      } else if (attachment.contentType == "audio/mpeg") {
+                      	const audarray = [];
+                      	audarray.push(attachment);
+                      	const audUrl = audarray[0].url;
+                      	const audio = document.getElementById('audio');
+						const source = document.createElement('source');
+
+						source.setAttribute('src', audUrl);
+						source.setAttribute('type', 'audio/mpeg');
+
+						audio.appendChild(source);	
+						audio.load();
 
                       }
                     });
@@ -405,6 +428,10 @@
          modal.addEventListener('didDismiss', (ev) => {
            modal.isOpen = false;
          });
+         $( "#modalClose" ).click(function() {
+         	modal.isOpen = false;
+         });
+
     });
 </script>
 <style>
