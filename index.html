@@ -145,7 +145,7 @@
     <ion-modal>
       <ion-header>
         <ion-toolbar>
-          <ion-title>Story</ion-title>
+          <ion-title id="storymodaltitle">Story</ion-title>
           <ion-buttons slot="end">
             <ion-button id="modalClose">Close</ion-button>
           </ion-buttons>
@@ -162,7 +162,9 @@
           <ion-card-content id="storydesc">
             Founded in 1829 on an isthmus between Lake Monona and Lake Mendota, Madison was named the capital of the
             Wisconsin Territory in 1836.              
-          </ion-card-content>          
+          </ion-card-content>   
+          <ion-label>Pictures</ion-label> 
+          <div id="pictures"></div>      
           <ion-label>Videos</ion-label>
           <video controls id="video" width="100%"></video>
           <ion-label>Audio</ion-label>
@@ -355,6 +357,10 @@
           // check for a click on the story layer
           view.hitTest(event, opts).then((response) => {
             $("#storyimg").attr("src", ""); 
+            document.getElementById("pictures").innerHTML = "";
+            document.getElementById("video").innerHTML = "";
+            document.getElementById("audio").innerHTML = "";           
+
             // check if a feature is returned from the index layer
             if (response.results.length) {
               const graphic = response.results[0].graphic; 
@@ -367,7 +373,13 @@
               $('#subtitle').html(date); 
               $('#storydesc').html(desc); 
               $('#storytitle').html(title); 
-              $('#storyauthor').html("by " + name);
+              $('#storymodaltitle').html(title);
+              if (name == "" || name == null  ) {
+              	$('#storyauthor').html("by Anonymous");
+              } else {
+              	$('#storyauthor').html("by " + name);
+              }
+              
               modal.isOpen = true;
               // Query the attachments from the clicked story
               storyLayer.queryAttachments({
@@ -392,6 +404,11 @@
                         imgarray.push(attachment);
                         const attachUrl = imgarray[0].url;
                         $("#storyimg").attr("src",attachUrl);
+                        imgarray.forEach(function(image) {
+                       		const elem = document.createElement("img");
+                       		elem.src = image.url;
+                       		document.getElementById("pictures").appendChild(elem);
+                        }); 
                         console.log(attachUrl);
                       } else if (attachment.contentType == "video/mp4") {
                         const vidarray = [];
