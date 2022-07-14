@@ -176,7 +176,7 @@
   </body>
 </html>
 <script>
-  require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track"], function (esriConfig,Map, MapView, FeatureLayer, TileLayer, Track) {
+  require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/support/webMercatorUtils"], function (esriConfig, Map, MapView, FeatureLayer, TileLayer, Track, Graphic, GraphicsLayer, webMercatorUtils) {
 
         esriConfig.apiKey = "YOUR_API_KEY";
 
@@ -206,28 +206,33 @@
         // Layer for the story points
         const storyLayer = new FeatureLayer({
           url: "https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/story_pts_watts2/FeatureServer/0",
-          outFields: ["*"], // Return all fields so it can be queried client-side
+          outFields: ["*"], // Return all fields so it can be queried client-side        
           renderer: storiesRenderer
         });
 
+        const graphicsLayer = new GraphicsLayer();
+	    //map.add(graphicsLayer);
+
+
         const map = new Map({
           basemap: "satellite", // Basemap layer service
-          layers: [indexLayer, storyLayer]
+          layers: [indexLayer, graphicsLayer]
         });
 
         const view = new MapView({
           map: map,
           center: [-88.5694, 47.1211], // Longitude, latitude
           zoom: 10, // Zoom level
-          container: "viewDiv" // Div element
+          container: "viewDiv", // Div element
+          
         });       
         // Removes the zoom widget from the view
         view.ui.remove("zoom");        
 
-        view.on("drag", function(evt) {
+        view.on("hold", function(evt) {
           const extent = view.extent;        
 
-          const queryGeometry = {
+          /*const queryGeometry = {
             xmin: extent.xmin,
             ymin: extent.ymin,
             xmax: extent.xmax,
@@ -235,7 +240,63 @@
             spatialReference: {
               wkid: 3857
             }
+          };*/
+
+          
+
+         
+          const lat = evt.mapPoint.latitude
+          const lon =evt.mapPoint.longitude
+          const queryGeometry = {
+            x: lon,
+            y: lat,
+            spatialReference: {
+              wkid: 4326
+            }
           };
+
+          console.log(lat,lon, queryGeometry);
+
+          arcgisRest
+            .queryFeatures({
+              url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_kett_record_locs/FeatureServer/0",
+              geometry: queryGeometry,
+              geometryType: "esriGeometryPoint",
+              spatialRel: "esriSpatialRelIntersects",
+              distance: 100,
+              units: "esriSRUnit_Foot",
+              //SR: "4326",
+              //authentication
+            })
+            .then((response) => {
+            	const simpleMarkerSymbol = {
+			    type: "simple-marker",
+			    color: [226, 119, 40],  // Orange
+			    outline: {
+			        color: [255, 255, 255], // White
+			        width: 1
+			    }
+			 };
+
+              console.log(response.features);
+              const features = response.features;
+              features.forEach(function(feature) {
+	              const ddCoords = webMercatorUtils.webMercatorToGeographic(feature.geometry);
+				  //console.log(ddCoords);
+	              const point = { //Create a point
+				    type: "point",
+				    longitude: ddCoords.x,
+				    latitude:  ddCoords.y,
+				  };				  
+
+				 const pointGraphic = new Graphic({
+				    geometry: point,
+				    symbol: simpleMarkerSymbol
+				 });
+	 			 graphicsLayer.add(pointGraphic);
+ 			 });
+              //document.getElementById("result").textContent = JSON.stringify(response.features, null, 2);
+            });
           /*// query the maps extent for any people or places from the feature service. 
           arcgisRest
             .queryFeatures({
@@ -448,7 +509,6 @@
          $( "#modalClose" ).click(function() {
          	modal.isOpen = false;
          });
-
     });
 </script>
 <style>
