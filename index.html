@@ -166,9 +166,11 @@
           <ion-label>Pictures</ion-label> 
           <div id="pictures"></div>      
           <ion-label>Videos</ion-label>
-          <video controls id="video" width="100%"></video>
+          <div id="videos"></div>
+          <!-- <video controls id="video" width="100%"></video> -->          
           <ion-label>Audio</ion-label>
-          <audio controls id="audio" width="100%"></video>
+          <!-- <audio controls id="audio" width="100%"></video> -->
+          <div id="sound"></div>  
         </ion-card>
       </ion-content>
     </ion-modal>
@@ -418,8 +420,8 @@
           view.hitTest(event, opts).then((response) => {
             $("#storyimg").attr("src", ""); 
             document.getElementById("pictures").innerHTML = "";
-            document.getElementById("video").innerHTML = "";
-            document.getElementById("audio").innerHTML = "";           
+            document.getElementById("videos").innerHTML = "";
+            document.getElementById("sound").innerHTML = "";           
 
             // check if a feature is returned from the index layer
             if (response.results.length) {
@@ -474,27 +476,32 @@
                         const vidarray = [];
                         vidarray.push(attachment);
                         const vidUrl = vidarray[0].url;
-                        const video = document.getElementById('video');
-						const source = document.createElement('source');
+                        const video = document.createElement('video');
+                       // video.classList.add("controls");
+            						const source = document.createElement('source');
 
-						source.setAttribute('src', vidUrl);
-						source.setAttribute('type', 'video/mp4');
+            						source.setAttribute('src', vidUrl);
+            						source.setAttribute('type', 'video/mp4');
+                        document.getElementById("videos").appendChild(video);
 
-						video.appendChild(source);	
-						video.load();
+            						video.appendChild(source);	
+                        video.controls = "true";  
+                        video.style.width = "100%";
+            						video.load();
                       } else if (attachment.contentType == "audio/mpeg") {
                       	const audarray = [];
                       	audarray.push(attachment);
                       	const audUrl = audarray[0].url;
-                      	const audio = document.getElementById('audio');
-						const source = document.createElement('source');
+                      	const audio = document.createElement('audio');
+            						const source = document.createElement('source');
 
-						source.setAttribute('src', audUrl);
-						source.setAttribute('type', 'audio/mpeg');
-
-						audio.appendChild(source);	
-						audio.load();
-
+            						source.setAttribute('src', audUrl);
+            						source.setAttribute('type', 'audio/mpeg');
+                        document.getElementById("sound").appendChild(audio);
+            						audio.appendChild(source);	
+                        audio.controls = "true";
+                        audio.style.width = "100%";
+            						audio.load();
                       }
                     });
                   }); 
