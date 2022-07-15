@@ -177,7 +177,7 @@
 </html>
 <script>
   require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/support/webMercatorUtils"], function (esriConfig, Map, MapView, FeatureLayer, TileLayer, Track, Graphic, GraphicsLayer, webMercatorUtils) {
-
+dfdsd
         esriConfig.apiKey = "YOUR_API_KEY";
 
         var modal = document.querySelector('ion-modal');
@@ -230,6 +230,8 @@
         view.ui.remove("zoom");        
 
         view.on("hold", function(evt) {
+          // if there are any markers on the map remove them	
+          graphicsLayer.removeAll();	
           const extent = view.extent;        
 
           /*const queryGeometry = {
@@ -241,9 +243,6 @@
               wkid: 3857
             }
           };*/
-
-          
-
          
           const lat = evt.mapPoint.latitude
           const lon =evt.mapPoint.longitude
