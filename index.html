@@ -38,9 +38,9 @@
       }
 
       .ion-color-favorite {
-  --ion-color-base: var(--ion-color-favorite);
-  
-}
+        --ion-color-base: var(--ion-color-favorite);
+      
+      }
 
      /* .ion-color-primary {
         --ion-color-base:  var(--ion-color-primary, #363636)!important;
@@ -292,33 +292,63 @@
               //authentication
             })
             .then((response) => {
-            	const simpleMarkerSymbol = {
+            	/*const placeMarkerSymbol = {
       			    type: "simple-marker",
       			    color: [226, 119, 40],  // Orange
       			    outline: {
       			        color: [255, 255, 255], // White
       			        width: 1
       			    }
-      			 };
+      			  };
+*/
+              const placeMarkerSymbol = {          
+                "type": "picture-marker",
+                "url": "assets/marker_place.png",
+                "width": "18px",
+                "height": "18px"          
+              };
+
+              const personMarkerSymbol = {          
+                "type": "picture-marker",
+                "url": "assets/marker_person.png",
+                "width": "18px",
+                "height": "18px"          
+              };
+
+
+              /*const personMarkerSymbol = {
+                type: "simple-marker",
+                color: [226, 4, 49],  // Orange
+                outline: {
+                    color: [255, 255, 255], // White
+                    width: 1
+                }
+              };*/
 
               console.log(response.features);
               const features = response.features;
               features.forEach(function(feature) {
                 // convert the coordinates into decimal degrees
 	              const ddCoords = webMercatorUtils.webMercatorToGeographic(feature.geometry);
-				  //console.log(ddCoords);
+				  
 	              const point = { //Create a point
       				    type: "point",
       				    longitude: ddCoords.x,
       				    latitude:  ddCoords.y,
       				  };				  
 
-				 const pointGraphic = new Graphic({
-				    geometry: point,
-				    symbol: simpleMarkerSymbol
-				 });
-	 			 graphicsLayer.add(pointGraphic);
- 			 });
+      				 const pointGraphic = new Graphic({
+      				    geometry: point,
+      				   // symbol: simpleMarkerSymbol
+      				 });
+
+               if (feature.attributes.entitytype == "person") {
+                pointGraphic.symbol = personMarkerSymbol;
+               } else if (feature.attributes.entitytype == "building") {
+                pointGraphic.symbol = placeMarkerSymbol;
+               }
+      	 			 graphicsLayer.add(pointGraphic);
+       			 });
               //document.getElementById("result").textContent = JSON.stringify(response.features, null, 2);
             });
           /*// query the maps extent for any people or places from the feature service. 
