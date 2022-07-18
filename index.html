@@ -56,6 +56,12 @@
         top:  bottom: 30px;        
       }
 
+      .media-label {
+        margin-left: 45%; 
+        font-weight: bold; 
+        font-size: 20px;" 
+      }
+
       .esri-view .esri-view-surface--inset-outline:focus::after {
         outline: none !important;
       }   ‍‍‍
@@ -163,13 +169,11 @@
             Founded in 1829 on an isthmus between Lake Monona and Lake Mendota, Madison was named the capital of the
             Wisconsin Territory in 1836.              
           </ion-card-content>   
-          <ion-label>Pictures</ion-label> 
+          <ion-label id="piclabel" class="media-label">Pictures</ion-label> 
           <div id="pictures"></div>      
-          <ion-label>Videos</ion-label>
-          <div id="videos"></div>
-          <!-- <video controls id="video" width="100%"></video> -->          
-          <ion-label>Audio</ion-label>
-          <!-- <audio controls id="audio" width="100%"></video> -->
+          <ion-label id="vidlabel" class="media-label">Videos</ion-label>
+          <div id="videos"></div>                  
+          <ion-label id=audlabel class="media-label">Audio</ion-label>        
           <div id="sound"></div>  
         </ion-card>
       </ion-content>
@@ -179,6 +183,20 @@
 </html>
 <script>
   require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/support/webMercatorUtils"], function (esriConfig, Map, MapView, FeatureLayer, TileLayer, Track, Graphic, GraphicsLayer, webMercatorUtils) {
+
+        // function to hyperlink URLs in stories
+        function replaceURLs(message) {
+          if(!message) return;
+
+          const urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
+          return message.replace(urlRegex, function (url) {
+            let hyperlink = url;
+            if (!hyperlink.match('^https?:\/\/')) {
+              hyperlink = 'http://' + hyperlink;
+            }
+            return '<a href="' + hyperlink + '" target="_blank" rel="noopener noreferrer">' + url + '</a>'
+          });
+        };
 
         esriConfig.apiKey = "YOUR_API_KEY";
 
@@ -271,13 +289,13 @@
             })
             .then((response) => {
             	const simpleMarkerSymbol = {
-			    type: "simple-marker",
-			    color: [226, 119, 40],  // Orange
-			    outline: {
-			        color: [255, 255, 255], // White
-			        width: 1
-			    }
-			 };
+      			    type: "simple-marker",
+      			    color: [226, 119, 40],  // Orange
+      			    outline: {
+      			        color: [255, 255, 255], // White
+      			        width: 1
+      			    }
+      			 };
 
               console.log(response.features);
               const features = response.features;
@@ -285,10 +303,10 @@
 	              const ddCoords = webMercatorUtils.webMercatorToGeographic(feature.geometry);
 				  //console.log(ddCoords);
 	              const point = { //Create a point
-				    type: "point",
-				    longitude: ddCoords.x,
-				    latitude:  ddCoords.y,
-				  };				  
+      				    type: "point",
+      				    longitude: ddCoords.x,
+      				    latitude:  ddCoords.y,
+      				  };				  
 
 				 const pointGraphic = new Graphic({
 				    geometry: point,
@@ -425,6 +443,9 @@
           // check for a click on the story layer
           view.hitTest(event, opts).then((response) => {
             $("#storyimg").attr("src", ""); 
+            $("#piclabel").hide();
+            $("#audlabel").hide();
+            $("#vidlabel").hide();
             document.getElementById("pictures").innerHTML = "";
             document.getElementById("videos").innerHTML = "";
             document.getElementById("sound").innerHTML = "";           
@@ -435,7 +456,7 @@
               console.log(graphic);
               const objectId = graphic.attributes.objectid;
               const title = graphic.attributes.title;
-              const desc = graphic.attributes.description;
+              const desc = replaceURLs(graphic.attributes.description);
               const date = graphic.attributes.userdate;
               const name = graphic.attributes.name;
               $('#subtitle').html(date); 
@@ -460,7 +481,7 @@
                  }
                 if (Object.keys(attachmentsByFeatureId).length === 0){
                   // if there are no attachments, do something here.
-                  $("#storyimg").attr("src", ""); 
+                  $("#storyimg").attr("src", "");                   
                  }
                 // Display the attachments
                 Object.keys(attachmentsByFeatureId)
@@ -468,6 +489,7 @@
                     const attachments = attachmentsByFeatureId[objectId];
                     attachments.forEach(function (attachment) {                   
                       if (attachment.contentType == "image/jpeg" || attachment.contentType == "image/png" || attachment.contentType == "image/gif") {
+                        $("#piclabel").show();
                         const imgarray = [];
                         imgarray.push(attachment);
                         const attachUrl = imgarray[0].url;
@@ -479,6 +501,7 @@
                         }); 
                         console.log(attachUrl);
                       } else if (attachment.contentType == "video/mp4") {
+                        $("#vidlabel").show();
                         const vidarray = [];
                         vidarray.push(attachment);
                         const vidUrl = vidarray[0].url;
@@ -495,6 +518,7 @@
                         video.style.width = "100%";
             						video.load();
                       } else if (attachment.contentType == "audio/mpeg") {
+                        $("#audlabel").show();
                       	const audarray = [];
                       	audarray.push(attachment);
                       	const audUrl = audarray[0].url;
