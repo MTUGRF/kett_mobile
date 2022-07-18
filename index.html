@@ -25,6 +25,7 @@
 
       :root {
         --ion-font-family:  'Lato', sans-serif;
+        --ion-color-favorite: #CC6131;
       }
 
       #viewDiv {
@@ -35,6 +36,11 @@
         left: 0;
         right: 0;
       }
+
+      .ion-color-favorite {
+  --ion-color-base: var(--ion-color-favorite);
+  
+}
 
      /* .ion-color-primary {
         --ion-color-base:  var(--ion-color-primary, #363636)!important;
@@ -60,6 +66,7 @@
         margin-left: 45%; 
         font-weight: bold; 
         font-size: 20px;" 
+        padding: 10px;
       }
 
       .esri-view .esri-view-surface--inset-outline:focus::after {
@@ -150,7 +157,7 @@
   </ion-content> 
     <ion-modal>
       <ion-header>
-        <ion-toolbar>
+        <ion-toolbar color="favorite">
           <ion-title id="storymodaltitle">Story</ion-title>
           <ion-buttons slot="end">
             <ion-button id="modalClose">Close</ion-button>
@@ -196,12 +203,9 @@
             }
             return '<a href="' + hyperlink + '" target="_blank" rel="noopener noreferrer">' + url + '</a>'
           });
-        };
+        };        
 
-        esriConfig.apiKey = "YOUR_API_KEY";
-
-        var modal = document.querySelector('ion-modal');
-        
+        var modal = document.querySelector('ion-modal');        
 
        // modal.breakpoints = [0, 0.25, 0.5, 0.75];
   
@@ -300,6 +304,7 @@
               console.log(response.features);
               const features = response.features;
               features.forEach(function(feature) {
+                // convert the coordinates into decimal degrees
 	              const ddCoords = webMercatorUtils.webMercatorToGeographic(feature.geometry);
 				  //console.log(ddCoords);
 	              const point = { //Create a point
@@ -393,10 +398,10 @@
   				        const popup = graphics && graphics[parseInt(index, 10)];
   				     
     				    map.allLayers.filter(function(layer) {
-				     	  if (layer.type === "tile") {
-				     		  map.remove(layer);
-				     	  } 
-                  		});			    
+  				     	  if (layer.type === "tile") {
+  				     		  map.remove(layer);
+  				     	  } 
+                });			    
 
   				        let current_layer = new TileLayer({
   			              url: result.attributes.service_url
@@ -489,15 +494,18 @@
                     const attachments = attachmentsByFeatureId[objectId];
                     attachments.forEach(function (attachment) {                   
                       if (attachment.contentType == "image/jpeg" || attachment.contentType == "image/png" || attachment.contentType == "image/gif") {
-                        $("#piclabel").show();
+                       
                         const imgarray = [];
                         imgarray.push(attachment);
                         const attachUrl = imgarray[0].url;
                         $("#storyimg").attr("src",attachUrl);
                         imgarray.forEach(function(image) {
-                       		const elem = document.createElement("img");
-                       		elem.src = image.url;
-                       		document.getElementById("pictures").appendChild(elem);
+                          if (image.url != attachUrl) {
+                            $("#piclabel").show();
+                         		const elem = document.createElement("img");
+                         		elem.src = image.url;
+                         		document.getElementById("pictures").appendChild(elem);
+                          }
                         }); 
                         console.log(attachUrl);
                       } else if (attachment.contentType == "video/mp4") {
