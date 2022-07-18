@@ -316,7 +316,13 @@
         // new gelocation widget
         let track = new Track({
           view: view,
-          useHeadingEnabled: false
+          useHeadingEnabled: false,
+          tracking: true,
+          geoLocationOptions: {
+            enableHighAccuracy: true,
+            maximumAge: 0,
+            timeout: 15000
+          },
         });
 
         $( "#geolocation" ).click(function() {
