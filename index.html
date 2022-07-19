@@ -369,12 +369,13 @@
         // new gelocation widget
         let track = new Track({
           view: view,
+          goToLocationEnabled: true,
           useHeadingEnabled: false,          
-          geoLocationOptions: {
-            enableHighAccuracy: true,
-            maximumAge: 0,
-            timeout: 15000
-          },
+          geoLocationOptions: {            
+            maximumage: 0,
+            timeout: 15000,
+            enableHighAccuracy: true         
+          }
         });
 
         $( "#geolocation" ).click(function() {
