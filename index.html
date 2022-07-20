@@ -378,9 +378,17 @@
           }
         });
 
-        $( "#geolocation" ).click(function() {
+        view.ui.add(track, "top-left"); 
+
+        // The sample will start tracking your location
+        // once the view becomes ready
+        view.when(function () {
           track.start();
         });
+/*
+        $( "#geolocation" ).click(function() {
+          track.start();
+        });*/
 
         const listNode = document.getElementById("mapcontent");
 
