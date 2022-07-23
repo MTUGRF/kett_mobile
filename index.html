@@ -369,13 +369,8 @@
         // new gelocation widget
         let track = new Track({
           view: view,
-          goToLocationEnabled: true,
-         // useHeadingEnabled: false,          
-          geoLocationOptions: {            
-            maximumAge: 0,
-            timeout: 15000,
-            enableHighAccuracy: true         
-          }
+          goToLocationEnabled: true, 
+          geolocationOptions: { maximumAge: 0, timeout: 15000, enableHighAccuracy: true }
         });
 
         view.ui.add(track, "top-left"); 
