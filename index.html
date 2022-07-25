@@ -569,15 +569,16 @@
                         imgarray.push(attachment);
                         const attachUrl = imgarray[0].url;
                         $("#storyimg").attr("src",attachUrl);
-                        imgarray.forEach(function(image) {
-                          if (image.url != attachUrl) {
+                       // imgarray.forEach(function(image, index) {
+                          
+                          //if (index ===0) {
                             $("#piclabel").show();
                          		const elem = document.createElement("img");
-                         		elem.src = image.url;
+                         		elem.src = imgarray[0].url;
                          		document.getElementById("pictures").appendChild(elem);
-                          }
-                        }); 
-                        console.log(attachUrl);
+                         // }
+                        //}); 
+                        //console.log(attachUrl);
                       } else if (attachment.contentType == "video/mp4") {
                         $("#vidlabel").show();
                         const vidarray = [];
