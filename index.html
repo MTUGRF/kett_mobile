@@ -190,23 +190,43 @@
           <ion-slide>
             <div class="slide">
               
-              <h2>Share your story</h2>
+              <h2>Share your Story</h2>
               <p>
                 Select where you want to <b>Share a Story.</b> 
               </p>
-               <ion-button expand="block">From my current location<ion-icon slot="start" name="locate-outline"></ion-icon></ion-button>
+               <ion-button expand="block">At my current location<ion-icon slot="start" name="locate-outline"></ion-icon></ion-button>
       <ion-button expand="block">From a location on the map<ion-icon slot="start" name="location-outline"></ion-button>
+        <ion-button fill="clear">Continue <ion-icon slot="end" name="arrow-forward"></ion-icon></ion-button>
 
             </div>
           </ion-slide>
 
           <ion-slide>
-            <img src="./slide-2.png" />
-            <h2>What is Ionic?</h2>
-            <p>
-              <b>Ionic Framework</b> is an open source SDK that enables developers to build high quality mobile apps
-              with web technologies like HTML, CSS, and JavaScript.
-            </p>
+            <div class="slide">
+            
+             <ion-list lines="full" class="ion-no-margin">
+          <ion-list-header lines="full">
+            <ion-label><h1> Story Text</h1> </ion-label>
+          </ion-list-header>
+          
+          <ion-item>
+            <ion-label position="floating">Story Title</ion-label>
+            <ion-input></ion-input>
+          </ion-item>
+           <ion-item>
+            <ion-label position="floating">Story Time Period</ion-label>
+            <ion-input></ion-input>
+          </ion-item>
+        </ion-list>        
+
+          <ion-item>
+            <ion-label position="stacked">Description (optional)</ion-label>
+            <ion-textarea rows="6" cols="20"  placeholder="Type your story here. This is optional. In the next section you will have the option to record your story."></ion-textarea>
+          </ion-item>
+        </ion-list>
+         <ion-button fill="clear">Continue <ion-icon slot="end" name="arrow-forward"></ion-icon></ion-button>
+        
+            </div>
           </ion-slide>
 
           <ion-slide>
@@ -305,7 +325,10 @@
         // See https://swiperjs.com/swiper-api for valid options.
         slides.options = {
           initialSlide: 1,
-          speed: 400
+          speed: 400,
+          allowTouchMove: true,
+          autoHeight: false
+
         }       
 
        // modal.breakpoints = [0, 0.25, 0.5, 0.75];
