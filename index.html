@@ -532,7 +532,7 @@
               latitude: currentCoords.latitude,
               longitude: currentCoords.longitude
             });
-            view.goTo({target: point, scale: 5000});
+            view.goTo({target: point, scale: 5000, speedFactor: 0.1});
             console.log(currentCoords);
           });
          } else {
