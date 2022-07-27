@@ -526,23 +526,25 @@
          if (track.tracking == false) {
          	track.start();
          	document.getElementById("gpsicon").style.color = "#3880ff";
+          track.once("track", ({ position }) => {
+            currentCoords = position.coords;
+           const point = new Point({
+              latitude: currentCoords.latitude,
+              longitude: currentCoords.longitude
+            });
+            view.goTo({target: point, scale: 5000});
+            console.log(currentCoords);
+          });
          } else {
          	track.stop();
          	document.getElementById("gpsicon").style.color = "black";
          }         
-        });
+        
 
-        let currentCoords; 
+      
 
-        track.on("track", ({ position }) => {
-            currentCoords = position.coords;
-            const point = new Point({
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude
-            });
-
-            view.goTo({target: point, scale: 5000});
-            console.log(currentCoords);
+        
+           
         });
 
         $( "#locOpt" ).click(function() {
