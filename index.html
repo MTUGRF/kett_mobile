@@ -297,7 +297,7 @@
   </body>
 </html>
 <script>
-  require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/support/webMercatorUtils"], function (esriConfig, Map, MapView, FeatureLayer, TileLayer, Track, Graphic, GraphicsLayer, webMercatorUtils) {
+  require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/support/webMercatorUtils", "esri/geometry/Point"], function (esriConfig, Map, MapView, FeatureLayer, TileLayer, Track, Graphic, GraphicsLayer, webMercatorUtils, Point) {
 
         // function to hyperlink URLs in stories
         function replaceURLs(message) {
@@ -509,7 +509,7 @@
         let track = new Track({
           view: view,
           useHeadingEnabled: false,
-          goToLocationEnabled: true, 
+          goToLocationEnabled: false, 
           geolocationOptions: { maximumAge: 0, timeout: 15000, enableHighAccuracy: true }
         });
 
@@ -536,6 +536,12 @@
 
         track.on("track", ({ position }) => {
             currentCoords = position.coords;
+            const point = new Point({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude
+            });
+
+            view.goTo({target: point, scale: 5000});
             console.log(currentCoords);
         });
 
