@@ -508,6 +508,7 @@
         // new gelocation widget
         let track = new Track({
           view: view,
+          useHeadingEnabled: false,
           goToLocationEnabled: true, 
           geolocationOptions: { maximumAge: 0, timeout: 15000, enableHighAccuracy: true }
         });
