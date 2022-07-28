@@ -43,8 +43,6 @@
         right: 0;
       }
 
-
-
       .ion-color-favorite {
         --ion-color-base: var(--ion-color-favorite);      
       }
@@ -131,6 +129,7 @@
         left: 0;
         right: 0;
         display: none;
+        margin-top: 56px;
       }
 
       #storyintro {
@@ -655,8 +654,10 @@
           $('#storyintro').hide();
           tabs.select('stories');
           });
-        });         
-             
+        });                 
+            },
+            onFormFailed: (message) => {
+              console.log(message);
             }
           });
     });
