@@ -244,9 +244,9 @@
             <h2>Capture or upload photos, audio and video related to your story.</h2>
             <input type="file" id="picInput" accept="image/png,image/jpeg" capture="filesystem" style="display: none">
             <ion-button color="primary" expand="full" size="large" id="takePic">Take a Picture <ion-icon slot="end" name="camera-outline"></ion-icon></ion-button>
-            <input type="file" id="audInput" accept="audio/*" capture="microphone">
+            <input type="file" id="audInput" accept="audio/*" capture="microphone" style="display: none">
             <ion-button color="primary" expand="full" size="large" id="takeAud">Record Audio <ion-icon slot="end" name="mic-outline"></ion-icon></ion-button>
-             <input type="file" id="vidInput" accept="video/*" capture="camcorder">
+             <input type="file" id="vidInput" accept="video/*" capture="camcorder" style="display: none">
              <ion-button color="primary" expand="full" size="large" id="takeVid">Record a Video <ion-icon slot="end" name="videocam-outline"></ion-icon></ion-button>
              <ion-button fill="clear" id="backBtn2">Previous <ion-icon slot="start" name="arrow-back"></ion-icon></ion-button>
          <ion-button fill="clear" id="nextBtn3">Continue <ion-icon slot="end" name="arrow-forward"></ion-icon></ion-button>
@@ -389,11 +389,13 @@
         });
 
         $( "#takeAud" ).click(function() {
-          presentAlert();
+          const audFile = document.getElementById('audInput');
+          audFile.click();
         });
 
         $( "#takeVid" ).click(function() {
-          presentAlert();
+          const vidFile = document.getElementById('vidInput');
+          vidFile.click();
         });
 
         $( "#takePic" ).click(function() {
