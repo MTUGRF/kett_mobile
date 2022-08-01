@@ -210,21 +210,21 @@
           
           <ion-item>
             <ion-label position="floating">Story title*</ion-label>
-            <ion-input></ion-input>
+            <ion-input id="userTitle"></ion-input>
           </ion-item>
            <ion-item>
             <ion-label position="floating">Story time period*</ion-label>
-            <ion-input placeholder="ie (1925, 1/3/1924, 1920-1930)"></ion-input>
+            <ion-input id="userDate" placeholder="ie (1925, 1/3/1924, 1920-1930)"></ion-input>
           </ion-item>
         </ion-list>        
 
           <ion-item>
             <ion-label position="floating">Description (optional)</ion-label>
-            <ion-textarea rows="6" cols="20" placeholder="Type your story here. This is optional. In the next section you will have the option to record or upload video or audio of your story."></ion-textarea>
+            <ion-textarea rows="6" cols="20" id="userDesc" placeholder="Type your story here. This is optional. In the next section you will have the option to record or upload video or audio of your story."></ion-textarea>
           </ion-item>
            <ion-item>
             <ion-label position="floating">Your name</ion-label>
-            <ion-input></ion-input>
+            <ion-input id="userName" placeholder="Enter your name here."></ion-input>
           </ion-item>
         </ion-list>
         <ion-button fill="clear" id="backBtn1">Previous <ion-icon slot="start" name="arrow-back"></ion-icon></ion-button>
@@ -396,9 +396,43 @@
           console.log('click');
         });
 
+        function addStory(lat, lng) {
+
+        }
+
         $( "#submitBtn" ).click(function() {
+          // get values from the story submission slides
+          const title = $('#userTitle').val();
+          const desc = $('#userDesc').val();
+          const name = $('#userName').val();
+          const date = $('#userDate').val();
+
+          console.log(title, desc, name, date);
+
+
+          // on submit button add features to stories map service
           const featureServiceLayerUrl = 'https://portal1-geo.sabu.mtu.edu:/server/rest/services/KeweenawHSDI/story_pts_watts2/FeatureServer/0';
-        });
+
+          /*const featureToAdd = {
+            attributes: {
+              id: 101,
+              title:,
+              description: ,              
+              name: "editing test",
+              beginDate: ,
+              endDate: ,
+              userdate: ,
+              mapyear: ,              
+            },
+            geometry: {
+              x: -118.807,
+              y: 34.002,
+              spatialReference: {
+                wkid: 4326
+              }
+            }
+          };*/
+      });
         
        async function presentAlert() {
         const alert = document.createElement('ion-alert');
