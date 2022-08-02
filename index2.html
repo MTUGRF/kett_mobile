@@ -236,11 +236,11 @@
           <ion-slide>
             <div class="slide">
             <h2>Capture or upload photos, audio and video related to your story.</h2>
-            <input type="file" id="picInput" accept="image/*" capture="filesystem" style="display: none">
+            <input type="file" id="picInput" accept="image/*" capture="filesystem" style="display: block">
             <ion-button color="primary" expand="full" size="large" id="takePic">Take a Picture <ion-icon slot="end" name="camera-outline"></ion-icon></ion-button>
-            <input type="file" id="audInput" accept="audio/*" capture="microphone" style="display: none">
+            <input type="file" id="audInput" accept="audio/*" capture="microphone" style="display: block">
             <ion-button color="primary" expand="full" size="large" id="takeAud">Record Audio <ion-icon slot="end" name="mic-outline"></ion-icon></ion-button>
-             <input type="file" id="vidInput" accept="video/*" capture="camcorder" style="display: none">
+             <input type="file" id="vidInput" accept="video/*" capture="camcorder" style="display: block">
              <ion-button color="primary" expand="full" size="large" id="takeVid">Record a Video <ion-icon slot="end" name="videocam-outline"></ion-icon></ion-button>
              <ion-button fill="clear" id="backBtn2">Previous <ion-icon slot="start" name="arrow-back"></ion-icon></ion-button>
          <ion-button fill="clear" id="nextBtn3">Continue <ion-icon slot="end" name="arrow-forward"></ion-icon></ion-button>
@@ -255,6 +255,11 @@
               <ion-button fill="clear" id="submitBtn">Submit</ion-button>
               <p>Step 4 of 4</p>
         <ion-progress-bar value="1"></ion-progress-bar>
+          </ion-slide>
+          <ion-slide>   
+            <ion-icon name="checkmark-circle" style="font-size: 64px" color="primary"></ion-icon>         
+            <h2>Story Submitted!</h2>
+            <p><b>Thank you for you submission. Your story will now appear on the Keweenaw Time Traveler.</b></p>          
           </ion-slide>
         </ion-slides>
       </ion-content>
@@ -396,10 +401,35 @@
           console.log('click');
         });
 
+
+        // create an array of empty files  
+        const files = [];
+        // get files from input sources and push into array
+        const picInput = document.getElementById('picInput');
+          picInput.onchange = () => {            
+            files.push(picInput.files[0]);
+            console.log(picInput.files[0]);
+        }
+
+      const vidInput = document.getElementById('vidInput');
+          vidInput.onchange = () => {
+            const selectedFile = vidInput.files[0];
+            files.push(vidInput.files[0]);
+            console.log(vidInput.files[0]);
+          }  
+
+      const audInput = document.getElementById('audInput');
+          audInput.onchange = () => {              
+            files.push(audInput.files[0]);
+            console.log(audInput.files[0]);
+
+      }    
+
+    
         function addStory(lat, lng) {
 
         }
-
+        // when the user clicks the story submit button
         $( "#submitBtn" ).click(function() {
           // get values from the story submission slides
           const title = $('#userTitle').val();
@@ -411,27 +441,70 @@
 
 
           // on submit button add features to stories map service
-          const featureServiceLayerUrl = 'https://portal1-geo.sabu.mtu.edu:/server/rest/services/KeweenawHSDI/story_pts_watts2/FeatureServer/0';
-
-          /*const featureToAdd = {
-            attributes: {
-              id: 101,
-              title:,
-              description: ,              
-              name: "editing test",
-              beginDate: ,
-              endDate: ,
-              userdate: ,
-              mapyear: ,              
+          const featureServiceLayerUrl = 'https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_CCHSDI_Storypts/FeatureServer/0';
+          // create a new feature to add using the REST API
+          const featureToAdd = {
+            attributes: {              
+              title: title,
+              description: desc,              
+              name: name,
+              beginDate: date,
+              endDate: date,
+              userdate: date,
+              mapyear: date,              
             },
             geometry: {
-              x: -118.807,
-              y: 34.002,
+              x: lon,
+              y: lat,
               spatialReference: {
                 wkid: 4326
               }
             }
-          };*/
+          };
+
+      // begin by adding a new feature to the feature service layer,
+      // then update its attributes,
+      // and finally delete it from the layer
+      arcgisRest
+        .addFeatures({
+          url: featureServiceLayerUrl,
+          features: [featureToAdd],
+          //authentication
+        })
+        .then(handleAdded);
+
+      function handleAdded(response) {
+        console.log(response);
+        if (response.addResults[0].success === true) {
+          const storyObjId = response.addResults[0].objectId;
+          console.log(files, files.length);
+          if (files.length > 0) {
+            files.forEach(function(file) {
+            arcgisRest
+              .addAttachment({
+                url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_CCHSDI_Storypts/FeatureServer/0",
+                featureId: storyObjId,
+                attachment: file
+              })
+                .then(attachmentAdded);
+                function attachmentAdded (newresponse) {
+                  console.log(newresponse);
+                   slides.update();
+                   slides.slideNext();
+                }
+            });
+         } else {
+           slides.update();
+           slides.slideNext();
+         }
+         
+        }
+
+        if (!response.addResults[0].success) {
+          // stop early if adding a new feature was not successful
+          return;
+        }
+      }
       });
         
        async function presentAlert() {
@@ -445,12 +518,12 @@
        }
         // Optional parameters to pass to the swiper instance.
         // See https://swiperjs.com/swiper-api for valid options.
-      /*  slides.options = {
+        slides.options = {
           initialSlide: 1,
           speed: 400,
          // allowTouchMove: false,
 
-        }       */
+        }       
        // slides.lockSwipes(true);
         
        // slides.update();
@@ -538,13 +611,19 @@
          }            
         });
 
+        // declare lat and long on global scales
+        let lat;
+        let lon;
+
         $( "#locOpt" ).click(function() {
           if(navigator.geolocation){
               // GET LOCATION FROM BROWSER //
               navigator.geolocation.getCurrentPosition(position => {
                 slides.update();
-                slides.slideNext();
+                slides.slideTo(1);
                 // SET LOCATION //
+                lat = position.coords.latitude;
+                lon = position.coords.longitude;
                 //survey123WebForm.setGeopoint({ x: position.coords.longitude, y: position.coords.latitude });
               }, () => { console.error('Unable to retrieve your location'); });
             } else {console.error('Geolocation is not supported by your browser'); }
@@ -554,12 +633,12 @@
           tabs.select('home');
           presentToast();          
           view.on("hold", function(evt) {                
-            const lat = evt.mapPoint.latitude
-            const lon =evt.mapPoint.longitude
+            lat = evt.mapPoint.latitude
+            lon = evt.mapPoint.longitude
             console.log('map hold' + lon,lat); 
             tabs.select('stories'); 
             slides.update();
-            slides.slideNext();        
+            slides.slideTo(1);        
           });
         });
 
