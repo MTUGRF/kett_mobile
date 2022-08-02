@@ -422,15 +422,14 @@
           audInput.onchange = () => {              
             files.push(audInput.files[0]);
             console.log(audInput.files[0]);
-
       }    
 
-    
         function addStory(lat, lng) {
 
         }
         // when the user clicks the story submit button
         $( "#submitBtn" ).click(function() {
+          submitAlert.present();
           // get values from the story submission slides
           const title = $('#userTitle').val();
           const desc = $('#userDesc').val();
@@ -488,12 +487,14 @@
               })
                 .then(attachmentAdded);
                 function attachmentAdded (newresponse) {
+                  submitAlert.dismiss();
                   console.log(newresponse);
-                   slides.update();
-                   slides.slideNext();
+                  slides.update();
+                  slides.slideNext();
                 }
             });
          } else {
+          submitAlert.dismiss();
            slides.update();
            slides.slideNext();
          }
@@ -516,6 +517,17 @@
         document.body.appendChild(alert);
         await alert.present();
        }
+
+        
+        const submitAlert = document.createElement('ion-alert');
+        submitAlert.header = 'Submitting Story...';
+        //submitAlert.subHeader = 'Speak into the microphone';
+        submitAlert.message = '<ion-spinner color="primary"></ion-spinner>'; 
+        submitAlert.backdropDismiss = false;   
+
+        document.body.appendChild(submitAlert);
+        
+    
         // Optional parameters to pass to the swiper instance.
         // See https://swiperjs.com/swiper-api for valid options.
         slides.options = {
