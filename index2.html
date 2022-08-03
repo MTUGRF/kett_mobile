@@ -31,6 +31,8 @@
         --ion-color-header: #285756;
         --ion-color-white: #FFFFFF;
         --ion-color-locate: #FFFFFF;
+        --ion-color-green:  #69bb7b;
+        --ion-color-red:  #e00000;
       }
 
       #viewDiv {
@@ -56,6 +58,14 @@
 
       .ion-color-locate {
         --ion-color-base: var(--ion-color-locate);
+      }
+
+      .ion-color-green {
+        --ion-color-base: var(--ion-color-green); 
+      }
+
+      .ion-color-red {
+        --ion-color-base: var(--ion-color-red);       
       }
 
      /* .ion-color-primary {
@@ -386,8 +396,9 @@
         });
 
         $( "#takeAud" ).click(function() {
-          const audFile = document.getElementById('audInput');
-          audFile.click();
+         // const audFile = document.getElementById('audInput');
+          //audFile.click();
+          alert.present();
         });
 
         $( "#takeVid" ).click(function() {
@@ -427,6 +438,71 @@
         function addStory(lat, lng) {
 
         }
+
+        // when the user clicks the audio record button
+        $(document).on('click', '#record', function() {
+          // check if the user has a microphone
+          if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            console.log("getUserMedia supported.");
+            navigator.mediaDevices
+              .getUserMedia(
+                // constraints - only audio needed for this app
+                {
+                  audio: true,
+                }
+              )
+
+              // Success callback
+              .then(function (stream) {
+                 const options = {        
+                 // mimeType: 'audio/mpeg'
+                }
+                 const mediaRecorder = new MediaRecorder(stream, options);
+                 mediaRecorder.start();
+               
+                document.getElementById("message").innerHTML = '<center><ion-fab-button color="secondary" id="stop" style="width: 120px; height: 120px;"><ion-icon name="stop-circle-outline" id="stopicon" style="width: 100px; height: 100px"></ion-icon></ion-fab-button></center>';
+
+                let chunks = [];
+
+                mediaRecorder.ondataavailable = function (e) {
+                  chunks.push(e.data);
+                };
+
+                // when the user clicks the audio stop button
+                $(document).on('click', '#stop', function() {
+                  mediaRecorder.stop();
+                  document.getElementById("message").innerHTML = '<center><ion-fab-button color="secondary" id="stop" style="width: 120px; height: 120px;"><ion-icon name="stop-circle-outline" id="stopicon" style="width: 100px; height: 100px"></ion-icon></ion-fab-button></center>';
+                });
+
+                mediaRecorder.onstop = function (e) {
+                  const blob = new Blob(chunks, { type: "audio/mpeg" });
+                  chunks = [];
+                  const audioURL = window.URL.createObjectURL(blob);
+                  const file = new File([blob], 'audiostory.mp3', {
+                    type: blob.type,
+                });
+/*                  var link = document.createElement("a"); // Or maybe get it from the current document
+link.href = audioURL;
+link.download = "aDefaultFileName" + blob.type;
+link.innerHTML = "Click here to download the file";
+link.click();
+document.body.appendChild(link);*/ 
+                  console.log(file);
+                  files.push(file);
+                  //console.log(audioURL);
+                  alert.dismiss();
+                  //audio.src = audioURL;
+                };                   
+              })
+
+              // Error callback
+              .catch(function (err) {
+                console.error(`The following getUserMedia error occurred: ${err}`);
+              });
+          } else {
+            console.log("getUserMedia not supported on your browser!");
+          }
+        });
         // when the user clicks the story submit button
         $( "#submitBtn" ).click(function() {
           submitAlert.present();
@@ -437,7 +513,6 @@
           const date = $('#userDate').val();
 
           console.log(title, desc, name, date);
-
 
           // on submit button add features to stories map service
           const featureServiceLayerUrl = 'https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_CCHSDI_Storypts/FeatureServer/0';
@@ -494,7 +569,7 @@
                 }
             });
          } else {
-          submitAlert.dismiss();
+           submitAlert.dismiss();
            slides.update();
            slides.slideNext();
          }
@@ -506,18 +581,15 @@
           return;
         }
       }
-      });
-        
-       async function presentAlert() {
+      });        
+       
         const alert = document.createElement('ion-alert');
-        alert.header = 'Listening...';
-        alert.subHeader = 'Speak into the microphone';
-        alert.message =   '<ion-fab-button color="primary"><ion-icon name="mic-outline" size="large"></ion-icon></ion-fab-button>';       
+        alert.header = 'Record Story';
+        alert.subHeader = 'Click on the mic icon to begin recording.';
+        alert.message = '<div id="message"><center><ion-fab-button color="green" id="record" style="width: 120px; height: 120px;"><ion-icon name="mic-outline" id="micicon" style="width: 100px; height: 100px"></ion-icon></ion-fab-button></center></div>';   
 
-        document.body.appendChild(alert);
-        await alert.present();
-       }
-
+        document.body.appendChild(alert);       
+       
         
         const submitAlert = document.createElement('ion-alert');
         submitAlert.header = 'Submitting Story...';
@@ -647,10 +719,10 @@
           view.on("hold", function(evt) {                
             lat = evt.mapPoint.latitude
             lon = evt.mapPoint.longitude
-            console.log('map hold' + lon,lat); 
-            tabs.select('stories'); 
             slides.update();
-            slides.slideTo(1);        
+            slides.slideTo(1);  
+            console.log('map hold' + lon,lat); 
+            tabs.select('stories');                   
           });
         });
 
