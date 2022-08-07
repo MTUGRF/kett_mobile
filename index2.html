@@ -120,6 +120,10 @@
         width: 120px;        
       } 
 
+      .item-background-color{
+    --ion-item-background:#015f01d5;
+}
+
       #micicon {
         width: 100px;
         height: 100px;
@@ -189,7 +193,7 @@
           </ion-header>     
      	  <ion-content [fullscreen]="true">          
       		<div id="viewDiv"></div>           
-          <ion-range value="100"></ion-range> 
+          <ion-range value="100" mode="md"></ion-range> 
           <ion-fab horizontal="end" vertical="bottom" slot="fixed">
           <ion-fab-button color="locate" id="geolocation">
             <ion-icon name="locate-sharp" id="gpsicon"></ion-icon>
@@ -851,7 +855,8 @@ document.body.appendChild(link);*/
                     const label = document.createElement("ion-label");
                     const icon = document.createElement("ion-icon"); 
                     item.href = "#";                     
-                    icon.name = "map-outline";                      
+                    icon.name = "map-outline";
+                    item.detail = "false";                                         
                     icon.slot = "end";
                     label.innerHTML = year + " " + title;	
                     item.appendChild(icon);
@@ -862,7 +867,7 @@ document.body.appendChild(link);*/
                   });  
 
   			        function resultClickHandler(result, index) {         				        	
-                  		
+                  label.style.color = blue;	
                   tabs.select('home');
   				        const popup = graphics && graphics[parseInt(index, 10)];
   				     
