@@ -439,6 +439,9 @@
           picInput.onchange = () => {            
             files.push(picInput.files[0]);
             console.log(picInput.files[0]);
+            const picFileVal = $('#picInput').val();
+
+            takePic.textContent = "..." + picFileVal.substring(20);
         }
 
       const vidInput = document.getElementById('vidInput');
@@ -447,7 +450,7 @@
             files.push(vidInput.files[0]);
             console.log(vidInput.files[0]);
             const vidFileVal = $('#vidInput').val();
-            takeVid.innerHTML = vidFileVal.substring(20);
+            takeVid.textContent = "..." + vidFileVal.substring(25);
           }  
 
       const audInput = document.getElementById('audInput');
@@ -545,6 +548,7 @@ document.body.appendChild(link);*/
                   files.push(file);
                   //console.log(audioURL);
                   alert.dismiss();
+                  takeAud.textContent = file.name;
                   //audio.src = audioURL;
                 };                   
               })
@@ -756,7 +760,7 @@ document.body.appendChild(link);*/
           if (track.tracking == false) {
           const options = {
             enableHighAccuracy: true,
-            timeout: 1500000,
+            timeout: 15000,
             maximumAge: 0
           };
 
