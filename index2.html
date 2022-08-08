@@ -251,21 +251,23 @@
           </ion-list-header>
           
           <ion-item>
-            <ion-label position="floating">Story title*</ion-label>
-            <ion-input id="userTitle" required="true"></ion-input>
+            <ion-label position="floating">Story Title<ion-text color="danger">*</ion-text></ion-label>
+            <ion-input id="userTitle" required="true" placeholder="A short title for your story."></ion-input>
+            <ion-text color="danger" style="display: none" id="titleError">Please enter a story title</ion-text>
           </ion-item>
            <ion-item>
-            <ion-label position="floating">Story time period*</ion-label>
-            <ion-input id="userDate" required pattern="\d{4}-\d{2}-\d{2}" placeholder="ie (1925, 1/3/1924, 1920-1930)"></ion-input>   
-          </ion-item>
+            <ion-label position="floating">Story Timeframe<ion-text color="danger">*</ion-text></ion-label>
+            <ion-input id="userDate" class="ion-invalid" required pattern="\d{4}-\d{2}-\d{2}" placeholder="1922 or 1920-1930 or 05-03-1932"></ion-input>
+            <ion-text color="danger" style="display: none" id="dateError">Please enter a date in one of the specified formats.</ion-text>   
+          </ion-item> 
         </ion-list>        
 
           <ion-item>
-            <ion-label position="floating">Description (optional)</ion-label>
+            <ion-label position="floating">Story Text (optional)</ion-label>
             <ion-textarea rows="6" cols="20" id="userDesc" placeholder="Type your story here. This is optional. In the next section you will have the option to record or upload video or audio of your story."></ion-textarea>
           </ion-item>
            <ion-item>
-            <ion-label position="floating">Your name</ion-label>
+            <ion-label position="floating">Your Name (optional)</ion-label>
             <ion-input id="userName" placeholder="Enter your name here."></ion-input>
           </ion-item>
         </ion-list>
@@ -277,7 +279,7 @@
           </ion-slide>
           <ion-slide>
             <div class="slide">
-            <h2>Capture or upload photos, audio and video related to your story.</h2>
+            <h2>Capture photos, audio and video related to your story.</h2>
             <input type="file" id="picInput" accept="image/*" capture="filesystem" style="display: none">
             <ion-button color="primary" expand="full" size="large" id="takePic">Take a Picture <ion-icon slot="end" name="camera-outline"></ion-icon></ion-button>
             <input type="file" id="audInput" accept="audio/*" capture="microphone" style="display: none">
@@ -404,12 +406,32 @@
         });
 
         $( "#nextBtn2" ).click(function() {
+          validate();
           slides.update();
           slides.slideNext();
           console.log('slides');
         });
 
+        function validate() {
+           const userDate = $('#userDate').val();
+           const userTitle = $('#userTitle').val();
+           console.log(userTitle, userDate);
+           const dateRGEX = /^\d{4}$|^\d{4}-\d{4}$|^\d{2}\/\d{2}\/\d{4}$/;
+           const dateResult = dateRGEX.test(userDate);
+           console.log(dateResult);
+          if (userTitle == "" || userTitle == null) {
+            $("#titleError").css("display", "block");
+            $("#userTitle").css("--border-color", "red");
+            console.log("invalid story title!");
+          } 
+          if (dateResult == false) {
+            $("#dateError").css("display", "block");
+          } 
+        }
+
         $( "#backBtn2" ).click(function() {
+          // Validate the form input
+          
           slides.update();
           slides.slidePrev();
           console.log('slides');
@@ -443,6 +465,10 @@
           picFile.click();
           console.log('click');
         });
+
+     
+
+
 
         // create an array of empty files  
         const files = [];
@@ -768,34 +794,35 @@ document.body.appendChild(link);*/
         let lat;
         let lon;
 
+        function setGeolocation() {
+          const geolocation = window.navigator.geolocation.watchPosition( function ( position ) {
+           
+
+                lat = position.coords.latitude;
+                lon = position.coords.longitude;
+        },
+        function () {
+            //error
+            console.log("No GPS Support");
+        },
+        {
+            maximumAge: 0, 
+            enableHighAccuracy: true
+        } 
+      );
+
+      window.setTimeout( function () {
+          window.navigator.geolocation.clearWatch( geolocation ) 
+      }, 5000 );
+        };
+
+
         $( "#locOpt" ).click(function() {
           if (track.tracking == false) {
-          const options = {
-            enableHighAccuracy: true,
-            timeout: 15000,
-            maximumAge: 0
-          };
-
-          function success(pos) {
-            const crd = pos.coords;
-
+             setGeolocation();            
              slides.update();
              slides.slideTo(1);
-                // SET LOCATION //
-                lat = pos.coords.latitude;
-                lon = pos.coords.longitude;
-
-            console.log('Your current position is:');
-            console.log(`Latitude : ${crd.latitude}`);
-            console.log(`Longitude: ${crd.longitude}`);
-            console.log(`More or less ${crd.accuracy} meters.`);
-          }
-
-          function error(err) {
-            console.warn(`ERROR(${err.code}): ${err.message}`);
-          }
-
-          navigator.geolocation.getCurrentPosition(success, error, options);
+               
         } else {
           lat = currentCoords.latitude;
           lon = currentCoords.longitude;
