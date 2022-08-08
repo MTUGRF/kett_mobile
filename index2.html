@@ -365,20 +365,6 @@
 <script>
   require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/support/webMercatorUtils", "esri/geometry/Point"], function (esriConfig, Map, MapView, FeatureLayer, TileLayer, Track, Graphic, GraphicsLayer, webMercatorUtils, Point) {
 
-        // function to hyperlink URLs in stories
-        function replaceURLs(message) {
-          if(!message) return;
-
-          const urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
-          return message.replace(urlRegex, function (url) {
-            let hyperlink = url;
-            if (!hyperlink.match('^https?:\/\/')) {
-              hyperlink = 'http://' + hyperlink;
-            }
-            return '<a href="' + hyperlink + '" target="_blank" rel="noopener noreferrer">' + url + '</a>'
-          });
-        }; 
-
         async function presentToast() {
           const toast = document.createElement('ion-toast');
           toast.message = 'Press and hold on the map where you want to share a story.';
@@ -407,8 +393,8 @@
 
         $( "#nextBtn2" ).click(function() {
           validate();
-          slides.update();
-          slides.slideNext();
+          //slides.update();
+         // slides.slideNext();
           console.log('slides');
         });
 
@@ -427,7 +413,14 @@
           if (dateResult == false) {
             $("#dateError").css("display", "block");
           } 
-        }
+
+          if (dateResult == true && userTitle != "") {
+            $("#titleError").css("display", "none");
+            $("#dateError").css("display", "none");
+            slides.update();
+            slides.slideNext();
+          }
+        }        
 
         $( "#backBtn2" ).click(function() {
           // Validate the form input
@@ -466,10 +459,6 @@
           console.log('click');
         });
 
-     
-
-
-
         // create an array of empty files  
         const files = [];
         // get files from input sources and push into array
@@ -495,11 +484,7 @@
           audInput.onchange = () => {              
             files.push(audInput.files[0]);
             console.log(audInput.files[0]);
-      }    
-
-        function addStory(lat, lng) {
-
-        }
+      }           
 
         // when the user clicks the audio record button
         $(document).on('click', '#record', function() {
@@ -599,6 +584,7 @@ document.body.appendChild(link);*/
             console.log("getUserMedia not supported on your browser!");
           }
         });
+
         // when the user clicks the story submit button
         $( "#submitBtn" ).click(function() {
           submitAlert.present();
@@ -606,7 +592,30 @@ document.body.appendChild(link);*/
           const title = $('#userTitle').val();
           const desc = $('#userDesc').val();
           const name = $('#userName').val();
-          const date = $('#userDate').val();
+          let date = $('#userDate').val();
+
+          const yearRGEX = /^\d{4}$/;
+          const rangeRGEX = /^\d{4}-\d{4}$/;
+          const dateRGEX = /^\d{2}\/\d{2}\/\d{4}$/;
+
+          const dateResult = dateRGEX.test(date);
+          const yearResult = yearRGEX.test(date);
+          const rangeResult = rangeRGEX.test(date);
+
+          if (dateResult == true) {
+            const dateSplit = date.split("/");
+            console.log(date);
+            date = dateSplit[2];
+          }
+
+          if (rangeResult == true) {
+            const dateSplit = date.split("-");
+            date = dateSplit[0];
+          }
+
+          if (yearResult == true) {
+            date = date;
+          }
 
           console.log(title, desc, name, date);
 
@@ -747,8 +756,7 @@ document.body.appendChild(link);*/
           map: map,
           center: [-88.5694, 47.1211], // Longitude, latitude
           zoom: 10, // Zoom level
-          container: "viewDiv", // Div element
-          
+          container: "viewDiv", // Div element          
         });    
 
         // Removes the zoom widget from the view
@@ -817,7 +825,6 @@ document.body.appendChild(link);*/
           window.navigator.geolocation.clearWatch( geolocation ) 
       }, 5000 );
         };
-
 
         $( "#locOpt" ).click(function() {
           if (track.tracking == false) {
