@@ -402,7 +402,7 @@
            const userDate = $('#userDate').val();
            const userTitle = $('#userTitle').val();
            console.log(userTitle, userDate);
-           const dateRGEX = /^\d{4}$|^\d{4}-\d{4}$|^\d{2}\/\d{2}\/\d{4}$/;
+           const dateRGEX = /^\d{4}$|^\d{4}-\d{4}$|^\d{2}-\d{2}-\d{4}$/;
            const dateResult = dateRGEX.test(userDate);
            console.log(dateResult);
           if (userTitle == "" || userTitle == null) {
@@ -596,14 +596,14 @@ document.body.appendChild(link);*/
 
           const yearRGEX = /^\d{4}$/;
           const rangeRGEX = /^\d{4}-\d{4}$/;
-          const dateRGEX = /^\d{2}\/\d{2}\/\d{4}$/;
+          const dateRGEX = /^\d{2}-\d{2}-\d{4}$/;
 
           const dateResult = dateRGEX.test(date);
           const yearResult = yearRGEX.test(date);
           const rangeResult = rangeRGEX.test(date);
 
           if (dateResult == true) {
-            const dateSplit = date.split("/");
+            const dateSplit = date.split("-");
             console.log(date);
             date = dateSplit[2];
           }
