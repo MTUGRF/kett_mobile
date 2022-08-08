@@ -16,6 +16,8 @@
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/@esri/arcgis-rest-request@4.0.0/dist/bundled/request.umd.js"></script>
     <script src="https://unpkg.com/@esri/arcgis-rest-feature-service@4.0.0/dist/bundled/feature-service.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/linkifyjs@3.0.5/dist/linkify.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/linkify-html@3.0.5/dist/linkify-html.min.js"></script>
     <script src="https://js.arcgis.com/4.24/"></script>
     <style>
      
@@ -121,13 +123,20 @@
       } 
 
       .item-background-color{
-    --ion-item-background:#ffffff;
-}
-
+        --ion-item-background:#ffffff;
+      } 
+  
       #micicon {
         width: 100px;
         height: 100px;
-      }     
+      }   
+
+      @supports (-webkit-touch-callout: none) {
+        ion-range {
+          padding-top: 15px;
+        }
+  /* CSS specific to iOS devices */ 
+      }  
 
       b {
         font-weight: 500;
@@ -145,13 +154,13 @@
       }
 
       @-webkit-keyframes pulse { 
-  70% { 
-    box-shadow: 0 0 0 50px rgba(#5a99d4, 0);
-  }
-  100% { 
-    box-shadow: 0 0 0 0 rgba(#5a99d4, 0);
-  }
-}
+        70% { 
+          box-shadow: 0 0 0 50px rgba(#5a99d4, 0);
+        }
+        100% { 
+          box-shadow: 0 0 0 0 rgba(#5a99d4, 0);
+        }
+      }
 
      
     </style>
@@ -934,7 +943,7 @@ document.body.appendChild(link);*/
               console.log(graphic);
               const objectId = graphic.attributes.objectid;
               const title = graphic.attributes.title;
-              const desc = replaceURLs(graphic.attributes.description);
+              const desc = linkifyHtml(graphic.attributes.description);
               const date = graphic.attributes.userdate;
               const name = graphic.attributes.name;
               $('#subtitle').html(date); 
