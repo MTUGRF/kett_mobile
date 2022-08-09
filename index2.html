@@ -352,9 +352,9 @@
           </ion-card-content>   
           <center><ion-label id="piclabel" class="media-label">Pictures</ion-label></center> 
           <div id="pictures"></div>      
-          <ion-label id="vidlabel" class="media-label">Videos</ion-label>
+          <center><ion-label id="vidlabel" class="media-label">Videos</ion-label></center>
           <div id="videos"></div>                  
-          <ion-label id=audlabel class="media-label">Audio</ion-label>        
+          <center><ion-label id=audlabel class="media-label">Audio</ion-label></center>        
           <div id="sound"></div>  
         </ion-card>
       </ion-content>
@@ -730,18 +730,19 @@ document.body.appendChild(link);*/
         };
 
         // Layer for the map index 
-	    const indexLayer = new FeatureLayer({
-	      url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/KeTT_Mobile_Map_Indexes/FeatureServer/0",
-	      outFields: ["*"], // Return all fields so it can be queried client-side
-	      opacity: 0
-	    //renderer: renderer
-	    });
+  	    const indexLayer = new FeatureLayer({
+  	      url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/KeTT_Mobile_Map_Indexes/FeatureServer/0",
+  	      outFields: ["title", "year", "service_url"], // Return all fields so it can be queried client-side
+  	      opacity: 0
+  	    //renderer: renderer
+  	    });
 
         // Layer for the story points
         const storyLayer = new FeatureLayer({
           url: "https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/story_pts_watts2/FeatureServer/0",
-          outFields: ["*"], // Return all fields so it can be queried client-side        
-          renderer: storiesRenderer
+          outFields: ["title", "description", "name", "userdate", "objectid"], // Return all fields so it can be queried client-side        
+          renderer: storiesRenderer,
+          definitionExpression: "flag IS NULL"
         });
 
         const graphicsLayer = new GraphicsLayer();
