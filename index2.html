@@ -498,7 +498,7 @@
 
             takePic.textContent = "..." + picFileVal.substring(20);
         }
-
+        let vidSize; 
       const vidInput = document.getElementById('vidInput');
           vidInput.onchange = () => {
             const selectedFile = vidInput.files[0];
@@ -506,7 +506,7 @@
             console.log(vidInput.files[0]);
             const vidFileVal = $('#vidInput').val();
             takeVid.textContent = "..." + vidFileVal.substring(20);
-            console.log('This file size is: ' + files[0].size / 1024 / 1024 + "MB");
+            vidSize = files[0].size / 1024 / 1024;                      
           }  
 
       const audInput = document.getElementById('audInput');
@@ -670,9 +670,7 @@ document.body.appendChild(link);*/
             }
           };
 
-      // begin by adding a new feature to the feature service layer,
-      // then update its attributes,
-      // and finally delete it from the layer
+      // begin by adding a new feature to the feature service layer      
       arcgisRest
         .addFeatures({
           url: featureServiceLayerUrl,
