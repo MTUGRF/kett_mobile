@@ -35,6 +35,7 @@
         --ion-color-locate: #FFFFFF;
         --ion-color-green:  #69bb7b;
         --ion-color-red:  #e00000;
+        --ion-color-gray: #363636;
       }
 
       #viewDiv {
@@ -68,6 +69,10 @@
 
       .ion-color-red {
         --ion-color-base: var(--ion-color-red);       
+      }
+
+      .ion-color-gray {
+        --ion-color-base: var(--ion-color-gray);
       }
 
      /* .ion-color-primary {
@@ -160,7 +165,6 @@
           box-shadow: 0 0 0 0 rgba(#5a99d4, 0);
         }
       }
-
      
     </style>
   </head>
@@ -199,7 +203,27 @@
               <ion-title>Explore</ion-title>
             </ion-toolbar>
           </ion-header>     
-     	  <ion-content [fullscreen]="true">          
+     	  <ion-content [fullscreen]="true">  
+         <ion-modal id="splashModal">
+      <ion-header>
+        <ion-toolbar color="gray">
+          <ion-text color="white">
+          <ion-title>Welcome to KeTT Mobile</ion-title>
+      </ion-text>
+          <ion-buttons slot="end">
+            <ion-text color="white">
+            <ion-button id="splashModalClose">Close</ion-button>
+        </ion-text>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding" style="--ion-background-color: #285756">
+      
+          <img src="assets/kett_mobile.png"/>
+          <p style="color: white; font-size: 18px;">Welcome to the mobile version of the Keweenaw Time Traveler. Here you will be able to use your mobile device out in the field to explore the historical landscape through historic maps and stories shared by others. You also have the option of sharing your own story right from your device. For the best KeTT experience including historical datasets, please use the application on your desktop computer. </p>
+          
+      </ion-content>
+    </ion-modal>                 
       		<div id="viewDiv"></div>           
           <ion-range value="100" mode="md"></ion-range> 
           <ion-fab horizontal="end" vertical="bottom" slot="fixed">
@@ -325,7 +349,7 @@
         </ion-tab-bar>
       </ion-tabs>         
   </ion-content> 
-    <ion-modal>
+    <ion-modal id="storyModal">
       <ion-header>
         <ion-toolbar color="favorite">
         	<ion-text color="white">
@@ -373,11 +397,15 @@
           return toast.present();
         }       
 
-        const modal = document.querySelector('ion-modal'); 
+        var StoryModal = document.getElementById('storyModal');
+
+        var splashModal = document.getElementById('splashModal');
 
         var slides = document.querySelector('ion-slides');
 
         const tabs = document.querySelector('ion-tabs');
+
+        splashModal.isOpen = true;
 
         $( "#nextBtn1" ).click(function() {
           slides.update();
@@ -996,8 +1024,8 @@ document.body.appendChild(link);*/
               } else {
               	$('#storyauthor').html("by " + name);
               }
-              
-              modal.isOpen = true;
+              // Open the modal popup for storeis
+              storyModal.isOpen = true;
               // Query the attachments from the clicked story
               storyLayer.queryAttachments({
               //  attachmentTypes: ["image/jpeg", "video/mp4", "sound/mp3"],
@@ -1071,11 +1099,19 @@ document.body.appendChild(link);*/
             }    
           });
         });
-         modal.addEventListener('didDismiss', (ev) => {
-           modal.isOpen = false;
+
+         storyModal.addEventListener('didDismiss', (ev) => {
+           storyModal.isOpen = false;
          });
          $( "#modalClose" ).click(function() {
-         	modal.isOpen = false;
+         	storyModal.isOpen = false;
+         });
+
+          splashModal.addEventListener('didDismiss', (ev) => {
+           splashModal.isOpen = false;
+         });
+         $( "#splashModalClose" ).click(function() {
+          splashModal.isOpen = false;
          });
     });
 </script>
