@@ -330,10 +330,53 @@
           "symbol": {
             "type": "picture-marker",
             "url": "assets/marker_story.png",
-            "width": "18px",
-            "height": "18px"
+            "width": "30px",
+            "height": "30px"
           }
         };
+
+        let markerRenderer = {
+  type: "unique-value",  // autocasts as new UniqueValueRenderer()
+  field: "entitytype",
+  defaultSymbol: { type: "simple-fill" },  // autocasts as new SimpleFillSymbol()
+  uniqueValueInfos: [{
+    // All features with value of "North" will be blue
+    value: "person",
+    symbol: {
+      type: "picture-marker",  // autocasts as new SimpleFillSymbol()
+      url: "assets/marker_person.png",
+      width: "30px",
+      height: "30px"  
+    }
+  }, {
+    // All features with value of "East" will be green
+    value: "building",
+    symbol: {
+      type: "picture-marker",  // autocasts as new SimpleFillSymbol()
+      url: "assets/marker_place.png",
+      width: "30px",
+      height: "30px"  
+    }
+  }, {
+    // All features with value of "South" will be red
+    value: "story",
+    symbol: {
+      type: "picture-marker",  // autocasts as new SimpleFillSymbol()
+      url: "assets/marker_story.png",
+      width: "30px",
+      height: "30px"  
+    }
+  }, {
+    // All features with value of "West" will be yellow
+    value: "Settlement",
+    symbol: {
+      type: "picture-marker",  // autocasts as new SimpleFillSymbol()
+      url: "assets/marker_everything.png",
+      width: "30px",
+      height: "30px"  
+    }
+  }],
+};
 
         // Layer for the map index 
       const indexLayer = new FeatureLayer({
@@ -350,12 +393,20 @@
           renderer: storiesRenderer
         });
 
+        // Layer for the story points
+        const dataLayer = new FeatureLayer({
+          url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_kett_record_locs/FeatureServer/0",
+          outFields: ["entitytype"], // Return all fields so it can be queried client-side        
+          renderer: markerRenderer,
+          definitionExpression: 'byear BETWEEN 1895.000000 AND 1904.000000'
+        });
+
         const graphicsLayer = new GraphicsLayer();
       //map.add(graphicsLayer);
 
         const map = new Map({
           basemap: "satellite", // Basemap layer service
-          layers: [indexLayer, storyLayer, graphicsLayer]
+          layers: [indexLayer, dataLayer]
         });
 
         const view = new MapView({
