@@ -268,9 +268,8 @@
 
           <ion-slide>
             <div class="slide">
-            
              <h2>Story Text</h2>
-              <p>
+             <ion-list lines="full" class="ion-no-margin">             
           
           <ion-item>
             <ion-label position="floating">Story Title<ion-text color="danger">*</ion-text></ion-label>
@@ -686,7 +685,7 @@ document.body.appendChild(link);*/
             files.forEach(function(file) {
             arcgisRest
               .addAttachment({
-                url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_CCHSDI_Storypts/FeatureServer/0",
+                url: featureServiceLayerUrl,
                 featureId: storyObjId,
                 attachment: file
               })
