@@ -220,7 +220,10 @@
       <ion-content class="ion-padding" style="--ion-background-color: #285756">
       
           <img src="assets/kett_mobile.png"/>
-          <p style="color: white; font-size: 18px;">Welcome to the mobile version of the Keweenaw Time Traveler. Here you will be able to use your mobile device out in the field to explore the historical landscape through historic maps and stories shared by others. You also have the option of sharing your own story right from your device. For the best KeTT experience including historical datasets, please use the application on your desktop computer. </p>
+          <p style="color: white; font-size: 18px;">Here you can use your mobile device to explore the Keweenaw’s landscape through historic maps and stories shared by others.</p>
+          <p style="color: white; font-size: 18px;">You can also share your own story right from your device.
+Looking for historical data about people and places? Use the Keweenaw Time Traveler on your desktop to connect these maps with millions of other records about the Keweenaw’s past, including census city directories, school records and more. 
+ </p>
           
       </ion-content>
     </ion-modal>                 
@@ -695,6 +698,7 @@ document.body.appendChild(link);*/
                   console.log(newresponse);
                   slides.update();
                   slides.slideNext();
+                  storyLayer.refresh();
                 }
             });
          } else {
