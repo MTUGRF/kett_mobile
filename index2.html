@@ -709,18 +709,16 @@ document.body.appendChild(link);*/
           return;
         }
       }
-      });      
-        async function presentAlert() { 
-       // Setup the alerts
-        const alert = document.createElement('ion-alert');
+      });   
+        // Setup the alerts
+        const alert = document.createElement('ion-alert');   
+        async function presentAlert() {                
         alert.header = 'Record a Story';
         alert.subHeader = 'Tap on the mic icon to begin recording.';
         alert.message = '<div id="message"><center><ion-fab-button class="green" id="record" style="width: 120px; height: 120px; !important"><ion-icon name="mic-outline" id="micicon" style="width: 1,h200px; height: 100px"></ion-icon></ion-fab-button></center></div><br><div id="time"><center><h2>0.00</h2></center></div>'; 
         document.body.appendChild(alert);
         await alert.present();
-        };  
-        
-                
+        };                  
         
         const submitAlert = document.createElement('ion-alert');
         submitAlert.header = 'Submitting Story...';
