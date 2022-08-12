@@ -614,6 +614,109 @@ document.body.appendChild(link);*/
           }
         });
 
+       function parseDateEntry (dateEntry) {
+            const response = {
+                valid: false,
+                invalidReason: null,
+                estimated: true,
+                beginDate: null,
+                endDate: null,
+                accuracyLevel: 0
+            }
+            const rangeSymbol = dateEntry.indexOf("-") !== -1 ? "-" : dateEntry.indexOf("-") !== -1 ? "-" : dateEntry.indexOf("-") !== -1 ? "-" : null;
+            if (rangeSymbol != null) {
+                const rangeParts = dateEntry.split(rangeSymbol);
+                if (rangeParts.length != 2) {
+                    response.invalidReason = "'-' means a date range. Please use the format mm/dd/yyyy for dates."
+                    return response;
+                }
+                let lhs = rangeParts[0].trim();
+                let rhs = rangeParts[1].trim();
+
+                const lhsSlashSplit = lhs.split("/");
+                const rhsSlashSplit = rhs.split("/");
+
+                if (lhsSlashSplit.length == 3 && rhsSlashSplit.length == 3) {
+                    response.estimated = false;
+                    response.accuracyLevel = 3;
+                } else if (lhsSlashSplit.length == 2 && rhsSlashSplit.length == 2) {
+                    response.accuracyLevel = 2;
+                } else {
+                    response.accuracyLevel = 1;
+                }
+
+                if (lhsSlashSplit.length == 2) {
+                    lhs = lhsSlashSplit[0] + "/01/" + lhsSlashSplit[1];
+                }
+                if (rhsSlashSplit.length == 2) {
+                    rhs = rhsSlashSplit[0] + "/01/" + rhsSlashSplit[1];
+                }
+
+                const beginDateNum = Date.parse(lhs);
+                const endDateNum = Date.parse(rhs);
+                if (isNaN(beginDateNum) || isNaN(endDateNum)) {
+                    response.invalidReason = "Please enter the date in one of the three suggested formats.";
+                    return response;
+                } else {
+                    response.beginDate = new Date(beginDateNum);
+                    response.endDate = new Date(endDateNum);
+                }
+                if (beginDateNum > Date.now() || endDateNum > Date.now()) {
+                    response.invalidReason = "Looks like that date is in the future. Please enter a date in the past.";
+                    return response;
+                }
+            } else {
+                const slashSplit = dateEntry.split("/");
+                if (slashSplit.length == 3) {
+                    response.estimated = false;
+                    response.accuracyLevel = 3;
+                } else if (slashSplit.length == 2) {
+                    dateEntry = slashSplit[0] + "/01/" + slashSplit[1];
+                    response.accuracyLevel = 2;
+                } else {
+                    response.accuracyLevel = 1;
+                }
+                const dateNum = Date.parse(dateEntry);
+                if (dateNum > Date.now()) {
+                    response.invalidReason = "Looks like that date is in the future. Please enter a date in the past.";
+                    return response;
+                }
+                if (isNaN(dateNum)) {
+                    response.invalidReason = "Please enter the date in one of the three suggested formats.";
+                    return response;
+                } else {
+                    response.beginDate = response.endDate = new Date(dateNum);
+                }
+            }
+            if (response.beginDate == null || response.endDate == null) {
+                response.invalidReason = "Please enter the date in one of the three suggested formats.";
+                return response;
+            }
+            response.valid = true;
+            return response;
+        }
+
+        let mapyear; 
+        function getMapYear(date) {
+          if (date >= 1850 && date <= 1894 ) {
+            mapyear = 1888;
+          } else if (date >= 1895 && date <= 1904 ) {
+            mapyear = 1900; 
+          } else if (date >= 1905 && date <= 1913 ) {
+            mapyear = 1908;
+          } else if (date >= 1914 && date <= 1924) {
+            mapyear = 1917;
+          } else if (date >= 1925 && date <= 1938) {
+            mapyear = 1928;
+          } else if (date >= 1939 && date <= 1942) {
+            mapyear = 1942;
+          } else if (date >= 1946 && date <= 1955) {
+            mapyear = 1949; 
+          } else if (date > 1955 ) {
+            mapyear = date; 
+          }
+        } 
+
         // when the user clicks the story submit button
         $( "#submitBtn" ).click(function() {
           submitAlert.present();
@@ -632,34 +735,35 @@ document.body.appendChild(link);*/
           const rangeResult = rangeRGEX.test(date);
 
           if (dateResult == true) {
-            const dateSplit = date.split("-");
-            console.log(date);
-            date = dateSplit[2];
+            const dateSplit = date.split("/");
+            getMapYear(dateSplit[0]);            
           }
 
           if (rangeResult == true) {
             const dateSplit = date.split("-");
-            date = dateSplit[0];
+            getMapYear(dateSplit[0]);
           }
 
           if (yearResult == true) {
-            date = date;
+            getMapYear(date);
           }
 
-          console.log(title, desc, name, date);
+          console.log(title, desc, name, date, mapyear);
+
+          const parsedDate = parseDateEntry(date);
 
           // on submit button add features to stories map service
-          const featureServiceLayerUrl = 'https://portal1-geo.sabu.mtu.edu/server/rest/services/KeweenawHSDI/story_pts_watts2/FeatureServer/0';
+          const featureServiceLayerUrl = "https://portal1-geo.sabu.mtu.edu/server/rest/services/KeweenawHSDI/story_pts_watts2/FeatureServer/0";
           // create a new feature to add using the REST API
           const featureToAdd = {
             attributes: {              
               title: title,
               description: desc,              
               name: name,
-              beginDate: date,
-              endDate: date,
+              beginDate: parsedDate.beginDate.getTime(),
+              endDate: parsedDate.endDate.getTime(),
               userdate: date,
-              mapyear: date, 
+              mapyear: mapyear, 
               Tags: "mobile"             
             },
             geometry: {
@@ -715,6 +819,7 @@ document.body.appendChild(link);*/
         }
       }
       });   
+
         // Setup the alerts
         const alert = document.createElement('ion-alert');   
         async function presentAlert() {                
@@ -739,13 +844,7 @@ document.body.appendChild(link);*/
           initialSlide: 1,
           speed: 400,
          // allowTouchMove: false,
-
-        }       
-       // slides.lockSwipes(true);
-        
-       // slides.update();
-
-       // modal.breakpoints = [0, 0.25, 0.5, 0.75];
+        }             
   
         // styling for the story points layer
         const storiesRenderer = {
@@ -835,11 +934,11 @@ document.body.appendChild(link);*/
         function setGeolocation() {
           const geolocation = window.navigator.geolocation.watchPosition( function ( position ) {
            
-                 window.setTimeout( function () {
-                  lat = position.coords.latitude;
-                  lon = position.coords.longitude;          
-                  }, 5000 );
-                
+           window.setTimeout( function () {
+            lat = position.coords.latitude;
+            lon = position.coords.longitude;          
+            }, 5000 );
+          
         },
         function () {
             //error
