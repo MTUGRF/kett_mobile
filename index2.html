@@ -728,7 +728,7 @@ document.body.appendChild(link);*/
 
           const yearRGEX = /^\d{4}$/;
           const rangeRGEX = /^\d{4}-\d{4}$/;
-          const dateRGEX = /^^\d{2}\/\d{2}\/\d{4}$/;
+          const dateRGEX = /^\d{2}\/\d{2}\/\d{4}$/;
 
           const dateResult = dateRGEX.test(date);
           const yearResult = yearRGEX.test(date);
@@ -832,8 +832,8 @@ document.body.appendChild(link);*/
         
         const submitAlert = document.createElement('ion-alert');
         submitAlert.header = 'Submitting Story...';
-        //submitAlert.subHeader = 'Speak into the microphone';
-        submitAlert.message = '<ion-spinner color="primary"></ion-spinner>'; 
+        submitAlert.subHeader = 'This may take a few minutes.';
+        submitAlert.message = '<center><ion-spinner color="primary"></ion-spinner></center>'; 
         submitAlert.backdropDismiss = false;   
 
         document.body.appendChild(submitAlert);        
