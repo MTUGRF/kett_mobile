@@ -208,7 +208,7 @@
       <ion-header>
         <ion-toolbar color="gray">
           <ion-text color="white">
-          <ion-title>Welcome to KeTT Mobile</ion-title>
+          <ion-title>Mobile Storytelling</ion-title>
       </ion-text>
           <ion-buttons slot="end">
             <ion-text color="white">
@@ -220,7 +220,10 @@
       <ion-content class="ion-padding" style="--ion-background-color: #285756">
       
           <img src="assets/kett_mobile.png"/>
-          <p style="color: white; font-size: 18px;">Welcome to the mobile version of the Keweenaw Time Traveler. Here you will be able to use your mobile device out in the field to explore the historical landscape through historic maps and stories shared by others. You also have the option of sharing your own story right from your device. For the best KeTT experience including historical datasets, please use the application on your desktop computer. </p>
+          <p style="color: white; font-size: 18px;">Here you can use your mobile device to explore the Keweenaw’s landscape through historic maps and stories shared by others.</p>
+          <p style="color: white; font-size: 18px;">You can also share your own story right from your device.
+Looking for historical data about people and places? Use the Keweenaw Time Traveler on your desktop to connect these maps with millions of other records about the Keweenaw’s past, including census, city directories, school records and more. 
+ </p>
           
       </ion-content>
     </ion-modal>                 
@@ -656,7 +659,8 @@ document.body.appendChild(link);*/
               beginDate: date,
               endDate: date,
               userdate: date,
-              mapyear: date,              
+              mapyear: date, 
+              Tags: "mobile"             
             },
             geometry: {
               x: lon,
@@ -695,6 +699,7 @@ document.body.appendChild(link);*/
                   console.log(newresponse);
                   slides.update();
                   slides.slideNext();
+                  storyLayer.refresh();
                 }
             });
          } else {
@@ -709,10 +714,10 @@ document.body.appendChild(link);*/
           return;
         }
       }
-      });      
-        async function presentAlert() { 
-       // Setup the alerts
-        const alert = document.createElement('ion-alert');
+      });   
+        // Setup the alerts
+        const alert = document.createElement('ion-alert');   
+        async function presentAlert() {                
         alert.header = 'Record a Story';
         alert.subHeader = 'Tap on the mic icon to begin recording.';
         alert.message = '<div id="message"><center><ion-fab-button class="green" id="record" style="width: 120px; height: 120px; !important"><ion-icon name="mic-outline" id="micicon" style="width: 1,h200px; height: 100px"></ion-icon></ion-fab-button></center></div><br><div id="time"><center><h2>0.00</h2></center></div>'; 
