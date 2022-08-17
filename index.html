@@ -16,8 +16,9 @@
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/@esri/arcgis-rest-request@4.0.0/dist/bundled/request.umd.js"></script>
     <script src="https://unpkg.com/@esri/arcgis-rest-feature-service@4.0.0/dist/bundled/feature-service.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/linkifyjs@3.0.5/dist/linkify.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/linkify-html@3.0.5/dist/linkify-html.min.js"></script>
     <script src="https://js.arcgis.com/4.24/"></script>
-    <script src="https://survey123.arcgis.com/api/jsapi"></script>
     <style>
      
 
@@ -32,6 +33,8 @@
         --ion-color-header: #285756;
         --ion-color-white: #FFFFFF;
         --ion-color-locate: #FFFFFF;
+        --ion-color-green:  #69bb7b;
+        --ion-color-red:  #e00000;
         --ion-color-gray: #363636;
       }
 
@@ -60,6 +63,14 @@
         --ion-color-base: var(--ion-color-locate);
       }
 
+      .ion-color-green {
+        --ion-color-base: var(--ion-color-green); 
+      }
+
+      .ion-color-red {
+        --ion-color-base: var(--ion-color-red);       
+      }
+
       .ion-color-gray {
         --ion-color-base: var(--ion-color-gray);
       }
@@ -83,8 +94,8 @@
         left:  30px;               
       }
 
-      .media-label {    
-        text-align: center;           
+      .media-label {
+        text-align: center;        
         font-size: 20px;
         margin-bottom: 20px;
         letter-spacing: 1px;
@@ -93,10 +104,10 @@
       .esri-view .esri-view-surface--inset-outline:focus::after {
         outline: none !important;
       } 
-
     
       .swiper-slide {
         display: block;
+        margin-top: 56px;
       }
 
       .swiper-slide h2 {
@@ -108,7 +119,28 @@
         max-width: 80%;
         margin: 60px 0 40px;
         pointer-events: none;
-      }
+      }      
+
+      .green {
+        --background: #5ca56c;
+        height: 120px;
+        width: 120px;        
+      } 
+
+      .item-background-color{
+        --ion-item-background:#ffffff;
+      } 
+  
+      #micicon {
+        width: 100px;
+        height: 100px;
+      }   
+      /* CSS specific to iOS devices */ 
+      @supports (-webkit-touch-callout: none) {
+        ion-range {
+          padding-top: 25px;
+        }  
+      }  
 
       b {
         font-weight: 500;
@@ -125,23 +157,15 @@
         color: var(--ion-text-color, #000000);
       }
 
-      #webForm {
-         font-family:  'Lato', sans-serif;    
-        text-align: center;    
-        height:  100%;
-        width:  100%;
-        position: absolute;
-        left: 0;
-        right: 0;
-        display: none;
-        margin-top: 56px;
+      @-webkit-keyframes pulse { 
+        70% { 
+          box-shadow: 0 0 0 50px rgba(#5a99d4, 0);
+        }
+        100% { 
+          box-shadow: 0 0 0 0 rgba(#5a99d4, 0);
+        }
       }
-
-      #storyintro {
-        margin-top: 56px;
-        padding: 20px;
-        text-align: center;
-      }
+     
     </style>
   </head>
   <body>
@@ -159,15 +183,15 @@
           <ion-popover trigger="menuBtn" dismiss-on-select="true">
           <ion-content>
             <ion-list>
-              <ion-item button="true" detail="false">About the project</ion-item>
-              <ion-item button="true" detail="false">Project news</ion-item>
-              <ion-item button="true" detail="false">Meet the team</ion-item>
+              <ion-item button="true" detail="false" href="https://www.keweenawhistory.com/about-the-project.html">About the project</ion-item>
+              <ion-item button="true" detail="false" href="https://www.keweenawhistory.com/project-news">Project news</ion-item>
+              <ion-item button="true" detail="false" href="https://www.keweenawhistory.com/meet-the-team.html">Meet the team</ion-item>
               <ion-item button="true" detail="false">Help</ion-item>              
             </ion-list>
           </ion-content>
         </ion-popover>
         <ion-text color="white">  
-          <ion-title>KeTT Mobile Beta</ion-title>
+          <ion-title>Keweenaw Time Traveler</ion-title>
       </ion-text>
         </ion-toolbar>
       </ion-header> 
@@ -179,12 +203,12 @@
               <ion-title>Explore</ion-title>
             </ion-toolbar>
           </ion-header>     
-        <ion-content [fullscreen]="true"> 
-          <ion-modal id="splashModal">
+        <ion-content [fullscreen]="true">  
+         <ion-modal id="splashModal">
       <ion-header>
         <ion-toolbar color="gray">
           <ion-text color="white">
-          <ion-title>Welcome to KeTT Mobile</ion-title>
+          <ion-title>Mobile Storytelling</ion-title>
       </ion-text>
           <ion-buttons slot="end">
             <ion-text color="white">
@@ -196,12 +220,15 @@
       <ion-content class="ion-padding" style="--ion-background-color: #285756">
       
           <img src="assets/kett_mobile.png"/>
-          <p style="color: white; font-size: 18px;">Welcome to the mobile version of the Keweenaw Time Traveler. Here you will be able to use your mobile device out in the field to explore the historical landscape through historic maps and stories shared by others. You also have the option of sharing your own story right from your device. For the best KeTT experience including historical datasets, please use the application on your desktop computer. </p>
+          <p style="color: white; font-size: 18px;">Here you can use your mobile device to explore the Keweenaw’s landscape through historic maps and stories shared by others.</p>
+          <p style="color: white; font-size: 18px;">You can also share your own story right from your device.
+Looking for historical data about people and places? Use the Keweenaw Time Traveler on your desktop to connect these maps with millions of other records about the Keweenaw’s past, including census, city directories, school records and more. 
+ </p>
           
       </ion-content>
-    </ion-modal>         
+    </ion-modal>                 
           <div id="viewDiv"></div>           
-          <ion-range value="100"></ion-range> 
+          <ion-range value="100" mode="md"></ion-range> 
           <ion-fab horizontal="end" vertical="bottom" slot="fixed">
           <ion-fab-button color="locate" id="geolocation">
             <ion-icon name="locate-sharp" id="gpsicon"></ion-icon>
@@ -222,18 +249,87 @@
           </ion-content>
         </ion-tab>
 
-        <ion-tab tab="stories">
-         <ion-content [fullscreen]="true" id="storycontent">
-          <div id="storyintro">
-             <h2>Share your Story</h2>
+        <ion-tab tab="stories">         
+
+        <ion-content fullscreen class="ion-padding" scroll-y="true">
+        <ion-slides class="swiper-no-swiping">
+          <ion-slide>
+            <div class="slide">              
+              <h2>Share your Story</h2>
               <p>
                 Select where you want to <b>Share a Story.</b> 
               </p>
                <ion-button expand="block" id="locOpt">At my current location<ion-icon slot="start" name="locate-outline"></ion-icon></ion-button>
-      <ion-button expand="block" id="mapOpt">From a location on the map<ion-icon slot="start" name="location-outline"></ion-icon></ion-button>
-        <ion-button fill="clear">Continue <ion-icon slot="end" name="arrow-forward"></ion-icon></ion-button>
+        <ion-button expand="block" id="mapOpt">From a location on the map<ion-icon slot="start" name="location-outline"></ion-icon></ion-button>
+       <!--  <ion-button fill="clear" id="nextBtn1">Continue <ion-icon slot="end" name="arrow-forward"></ion-icon></ion-button> -->
+        <p>Step 1 of 4</p>
+        <ion-progress-bar value="0.25"></ion-progress-bar>
+
+
           </div>
-          <div id="webForm"></div>
+          </ion-slide>
+
+          <ion-slide>
+            <div class="slide">
+             <h2>Story Text</h2>
+             <ion-list lines="full" class="ion-no-margin">             
+          
+          <ion-item>
+            <ion-label position="floating">Story Title<ion-text color="danger">*</ion-text></ion-label>
+            <ion-input id="userTitle" required="true" placeholder="A short title for your story."></ion-input>
+            <ion-text color="danger" style="display: none" id="titleError">Please enter a story title</ion-text>
+          </ion-item>
+           <ion-item>
+            <ion-label position="floating">Story Timeframe<ion-text color="danger">*</ion-text></ion-label>
+            <ion-input id="userDate" class="ion-invalid" required pattern="\d{4}-\d{2}-\d{2}" placeholder="1922 or 1920-1930 or 05-03-1932"></ion-input>
+            <ion-text color="danger" style="display: none" id="dateError">Please enter a date in one of the specified formats.</ion-text>   
+          </ion-item> 
+        </ion-list>        
+
+          <ion-item>
+            <ion-label position="floating">Story Text (optional)</ion-label>
+            <ion-textarea rows="6" cols="20" id="userDesc" placeholder="Type your story here. This is optional. In the next section you will have the option to record or upload video or audio of your story."></ion-textarea>
+          </ion-item>
+           <ion-item>
+            <ion-label position="floating">Your Name (optional)</ion-label>
+            <ion-input id="userName" placeholder="Enter your name here."></ion-input>
+          </ion-item>
+        </ion-list>
+        <ion-button fill="clear" id="backBtn1">Previous <ion-icon slot="start" name="arrow-back"></ion-icon></ion-button>
+         <ion-button fill="clear" id="nextBtn2">Continue <ion-icon slot="end" name="arrow-forward"></ion-icon></ion-button>
+         <p>Step 2 of 4</p>
+        <ion-progress-bar value="0.50"></ion-progress-bar>        
+            </div>
+          </ion-slide>
+          <ion-slide>
+            <div class="slide">
+            <h2>Capture photos, audio and video related to your story.</h2>
+            <input type="file" id="picInput" accept="image/*" capture="filesystem" style="display: none">
+            <ion-button color="primary" expand="full" size="large" id="takePic">Take a Picture <ion-icon slot="end" name="camera-outline"></ion-icon></ion-button>
+            <input type="file" id="audInput" accept="audio/*" capture="microphone" style="display: none">
+            <ion-button color="primary" expand="full" size="large" id="takeAud">Record Audio <ion-icon slot="end" name="mic-outline"></ion-icon></ion-button>
+             <input type="file" id="vidInput" accept="video/*" capture="camcorder" style="display: none">
+             <ion-button color="primary" expand="full" size="large" id="takeVid">Record a Video <ion-icon slot="end" name="videocam-outline"></ion-icon></ion-button>
+             <ion-button fill="clear" id="backBtn2">Previous <ion-icon slot="start" name="arrow-back"></ion-icon></ion-button>
+         <ion-button fill="clear" id="nextBtn3">Continue <ion-icon slot="end" name="arrow-forward"></ion-icon></ion-button>
+         <p>Step 3 of 4</p>
+        <ion-progress-bar value="0.75"></ion-progress-bar>
+       </div>
+          </ion-slide>
+          <ion-slide>            
+            <h2>Submit Story</h2>
+            <p><b>NOTE: This content will be publicly visible on the internet. You won’t be able to update or edit your submission so please double check your entries before submitting.</b></p>             
+              <ion-button fill="clear" id="backBtn3">Previous <ion-icon slot="start" name="arrow-back"></ion-icon></ion-button>
+              <ion-button fill="clear" type="submit" id="submitBtn">Submit</ion-button>
+              <p>Step 4 of 4</p>
+        <ion-progress-bar value="1"></ion-progress-bar>
+          </ion-slide>
+          <ion-slide>   
+            <ion-icon name="checkmark-circle" style="font-size: 84px" color="primary"></ion-icon>         
+            <h2>Story Submitted!</h2>
+            <p><b>Thank you for you submission. Your story will now appear on the Keweenaw Time Traveler.</b></p>          
+          </ion-slide>
+        </ion-slides>
       </ion-content>
         </ion-tab>
         <ion-tab-bar slot="bottom">
@@ -278,11 +374,11 @@
             Founded in 1829 on an isthmus between Lake Monona and Lake Mendota, Madison was named the capital of the
             Wisconsin Territory in 1836.              
           </ion-card-content>   
-          <ion-label id="piclabel" class="media-label">Pictures</ion-label> 
+          <center><ion-label id="piclabel" class="media-label">Pictures</ion-label></center> 
           <div id="pictures"></div>      
-          <ion-label id="vidlabel" class="media-label">Videos</ion-label>
+          <center><ion-label id="vidlabel" class="media-label">Videos</ion-label></center>
           <div id="videos"></div>                  
-          <ion-label id=audlabel class="media-label">Audio</ion-label>        
+          <center><ion-label id=audlabel class="media-label">Audio</ion-label></center>        
           <div id="sound"></div>  
         </ion-card>
       </ion-content>
@@ -293,36 +389,462 @@
 <script>
   require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/support/webMercatorUtils", "esri/geometry/Point"], function (esriConfig, Map, MapView, FeatureLayer, TileLayer, Track, Graphic, GraphicsLayer, webMercatorUtils, Point) {
 
-        // function to hyperlink URLs in stories
-        function replaceURLs(message) {
-          if(!message) return;
-
-          const urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
-          return message.replace(urlRegex, function (url) {
-            let hyperlink = url;
-            if (!hyperlink.match('^https?:\/\/')) {
-              hyperlink = 'http://' + hyperlink;
-            }
-            return '<a href="' + hyperlink + '" target="_blank" rel="noopener noreferrer">' + url + '</a>'
-          });
-        }; 
-
         async function presentToast() {
           const toast = document.createElement('ion-toast');
           toast.message = 'Press and hold on the map where you want to share a story.';
-          toast.duration = 10000;
+          toast.duration = 2000;
           document.body.appendChild(toast);
           return toast.present();
-        }     
+        }       
+
+        var StoryModal = document.getElementById('storyModal');
 
         var splashModal = document.getElementById('splashModal');
-        var storyModal = document.getElementById('storyModal'); 
-        
+
+        var slides = document.querySelector('ion-slides');
+
         const tabs = document.querySelector('ion-tabs');
 
-      
+        splashModal.isOpen = true;
 
-       // modal.breakpoints = [0, 0.25, 0.5, 0.75];
+        $( "#nextBtn1" ).click(function() {
+          slides.update();
+          slides.slideNext();
+          console.log('slides');
+        });
+
+        $( "#backBtn1" ).click(function() {
+          slides.update();
+          slides.slidePrev();
+          console.log('slides');
+        });
+
+        $( "#nextBtn2" ).click(function() {
+          validate();
+          //slides.update();
+         // slides.slideNext();
+          console.log('slides');
+        });
+
+        function validate() {
+           const userDate = $('#userDate').val();
+           const userTitle = $('#userTitle').val();
+           console.log(userTitle, userDate);
+           const dateRGEX = /^\d{4}$|^\d{4}-\d{4}$|^\d{2}\/\d{2}\/\d{4}$/;
+           const dateResult = dateRGEX.test(userDate);
+           console.log(dateResult);
+          if (userTitle == "" || userTitle == null) {
+            $("#titleError").css("display", "block");
+            $("#userTitle").css("--border-color", "red");
+            console.log("invalid story title!");
+          } 
+          if (dateResult == false) {
+            $("#dateError").css("display", "block");
+          } 
+
+          if (dateResult == true && userTitle != "") {
+            $("#titleError").css("display", "none");
+            $("#dateError").css("display", "none");
+            slides.update();
+            slides.slideNext();
+          }
+        }        
+
+        $( "#backBtn2" ).click(function() {
+          // Validate the form input
+          
+          slides.update();
+          slides.slidePrev();
+          console.log('slides');
+        });
+
+        $( "#nextBtn3" ).click(function() {
+          slides.update();
+          slides.slideNext();
+          console.log('slides');
+        });
+
+        $( "#backBtn3" ).click(function() {
+          slides.update();
+          slides.slidePrev();
+          console.log('slides');
+        });
+
+        $( "#takeAud" ).click(function() {
+         // const audFile = document.getElementById('audInput');
+          //audFile.click();
+          presentAlert();
+        });
+
+        $( "#takeVid" ).click(function() {
+          const vidFile = document.getElementById('vidInput');
+          vidFile.click();
+        });
+
+        $( "#takePic" ).click(function() {
+          const picFile = document.getElementById('picInput');
+          picFile.click();
+          console.log('click');
+        });
+
+        // create an array of empty files  
+        const files = [];
+        // get files from input sources and push into array
+        const picInput = document.getElementById('picInput');
+          picInput.onchange = () => {            
+            files.push(picInput.files[0]);
+            console.log(picInput.files[0]);
+            const picFileVal = $('#picInput').val();
+
+            takePic.textContent = "..." + picFileVal.substring(20);
+        }
+        let vidSize; 
+      const vidInput = document.getElementById('vidInput');
+          vidInput.onchange = () => {
+            const selectedFile = vidInput.files[0];
+            files.push(vidInput.files[0]);
+            console.log(vidInput.files[0]);
+            const vidFileVal = $('#vidInput').val();
+            takeVid.textContent = "..." + vidFileVal.substring(20);
+            vidSize = files[0].size / 1024 / 1024;                      
+          }  
+
+      const audInput = document.getElementById('audInput');
+          audInput.onchange = () => {              
+            files.push(audInput.files[0]);
+            console.log(audInput.files[0]);
+      }           
+
+        // when the user clicks the audio record button
+        $(document).on('click', '#record', function() {
+          // check if the user has a microphone
+          if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            console.log("getUserMedia supported.");
+            navigator.mediaDevices
+              .getUserMedia(
+                // constraints - only audio needed for this app
+                {
+                  audio: true,
+                }
+              )
+
+              // Success callback
+              .then(function (stream) {
+                 const options = {        
+                 // mimeType: 'audio/mpeg'
+                }
+                 const mediaRecorder = new MediaRecorder(stream, options);
+                 mediaRecorder.start();
+               
+                document.getElementById("message").innerHTML = '<center><ion-fab-button color="danger" id="stop" style="width: 120px; height: 120px;"><ion-icon name="mic-outline" id="stopicon" style="width: 100px; height: 100px;"></ion-icon></ion-fab-button></center>';
+
+                alert.header = 'Recording...';
+                alert.subHeader = 'Tap on the mic icon to stop recording.';
+
+                function blink(){
+                  $('#stop').delay(500).fadeTo(500,0.5).delay(500).fadeTo(500,1, blink);
+                }
+
+                $(document).ready(function() {
+                    blink();
+                });
+
+                // setup a count timer for the audio recording
+                let time = 0;
+                
+                const timer = setInterval(function(){  
+                  time++;
+                  let minutes = Math.floor(time / 60);
+                  let seconds = time - minutes * 60;
+
+                function str_pad_left(string,pad,length) {
+                  return (new Array(length+1).join(pad)+string).slice(-length);
+                }
+
+                let finalTime = str_pad_left(minutes,'0',2)+':'+str_pad_left(seconds,'0',2);
+                  document.getElementById("time").innerHTML = "<center><h2>" + finalTime + "</h2></center>";
+                }, 1000);
+               
+                let chunks = [];
+
+                mediaRecorder.ondataavailable = function (e) {
+                  chunks.push(e.data);
+                };
+
+                // when the user clicks the audio stop button
+                $(document).on('click', '#stop', function() {
+                  // stop the timer
+                  clearInterval(timer);
+                  // stop the recording
+                  mediaRecorder.stop();
+                  const tracks = stream.getTracks();
+                  tracks.forEach(function(track) {
+                    track.stop();
+                  });                  
+                });
+
+                mediaRecorder.onstop = function (e) {
+                  const blob = new Blob(chunks, { type: "audio/mpeg" });
+                  chunks = [];
+                  const audioURL = window.URL.createObjectURL(blob);
+                  const file = new File([blob], 'audiostory.mp3', {
+                    type: blob.type,
+                });
+/*                  var link = document.createElement("a"); // Or maybe get it from the current document
+link.href = audioURL;
+link.download = "aDefaultFileName" + blob.type;
+link.innerHTML = "Click here to download the file";
+link.click();
+document.body.appendChild(link);*/ 
+                  console.log(file);
+                  files.push(file);
+                  //console.log(audioURL);
+                  alert.dismiss();
+                  takeAud.textContent = file.name;
+                  //audio.src = audioURL;
+                };                   
+              })
+
+              // Error callback
+              .catch(function (err) {
+                console.error(`The following getUserMedia error occurred: ${err}`);
+              });
+          } else {
+            console.log("getUserMedia not supported on your browser!");
+          }
+        });
+
+       function parseDateEntry (dateEntry) {
+            const response = {
+                valid: false,
+                invalidReason: null,
+                estimated: true,
+                beginDate: null,
+                endDate: null,
+                accuracyLevel: 0
+            }
+            const rangeSymbol = dateEntry.indexOf("-") !== -1 ? "-" : dateEntry.indexOf("-") !== -1 ? "-" : dateEntry.indexOf("-") !== -1 ? "-" : null;
+            if (rangeSymbol != null) {
+                const rangeParts = dateEntry.split(rangeSymbol);
+                if (rangeParts.length != 2) {
+                    response.invalidReason = "'-' means a date range. Please use the format mm/dd/yyyy for dates."
+                    return response;
+                }
+                let lhs = rangeParts[0].trim();
+                let rhs = rangeParts[1].trim();
+
+                const lhsSlashSplit = lhs.split("/");
+                const rhsSlashSplit = rhs.split("/");
+
+                if (lhsSlashSplit.length == 3 && rhsSlashSplit.length == 3) {
+                    response.estimated = false;
+                    response.accuracyLevel = 3;
+                } else if (lhsSlashSplit.length == 2 && rhsSlashSplit.length == 2) {
+                    response.accuracyLevel = 2;
+                } else {
+                    response.accuracyLevel = 1;
+                }
+
+                if (lhsSlashSplit.length == 2) {
+                    lhs = lhsSlashSplit[0] + "/01/" + lhsSlashSplit[1];
+                }
+                if (rhsSlashSplit.length == 2) {
+                    rhs = rhsSlashSplit[0] + "/01/" + rhsSlashSplit[1];
+                }
+
+                const beginDateNum = Date.parse(lhs);
+                const endDateNum = Date.parse(rhs);
+                if (isNaN(beginDateNum) || isNaN(endDateNum)) {
+                    response.invalidReason = "Please enter the date in one of the three suggested formats.";
+                    return response;
+                } else {
+                    response.beginDate = new Date(beginDateNum);
+                    response.endDate = new Date(endDateNum);
+                }
+                if (beginDateNum > Date.now() || endDateNum > Date.now()) {
+                    response.invalidReason = "Looks like that date is in the future. Please enter a date in the past.";
+                    return response;
+                }
+            } else {
+                const slashSplit = dateEntry.split("/");
+                if (slashSplit.length == 3) {
+                    response.estimated = false;
+                    response.accuracyLevel = 3;
+                } else if (slashSplit.length == 2) {
+                    dateEntry = slashSplit[0] + "/01/" + slashSplit[1];
+                    response.accuracyLevel = 2;
+                } else {
+                    response.accuracyLevel = 1;
+                }
+                const dateNum = Date.parse(dateEntry);
+                if (dateNum > Date.now()) {
+                    response.invalidReason = "Looks like that date is in the future. Please enter a date in the past.";
+                    return response;
+                }
+                if (isNaN(dateNum)) {
+                    response.invalidReason = "Please enter the date in one of the three suggested formats.";
+                    return response;
+                } else {
+                    response.beginDate = response.endDate = new Date(dateNum);
+                }
+            }
+            if (response.beginDate == null || response.endDate == null) {
+                response.invalidReason = "Please enter the date in one of the three suggested formats.";
+                return response;
+            }
+            response.valid = true;
+            return response;
+        }
+
+        let mapyear; 
+        function getMapYear(date) {
+          if (date >= 1850 && date <= 1894 ) {
+            mapyear = 1888;
+          } else if (date >= 1895 && date <= 1904 ) {
+            mapyear = 1900; 
+          } else if (date >= 1905 && date <= 1913 ) {
+            mapyear = 1908;
+          } else if (date >= 1914 && date <= 1924) {
+            mapyear = 1917;
+          } else if (date >= 1925 && date <= 1938) {
+            mapyear = 1928;
+          } else if (date >= 1939 && date <= 1942) {
+            mapyear = 1942;
+          } else if (date >= 1946 && date <= 1955) {
+            mapyear = 1949; 
+          } else if (date > 1955 ) {
+            mapyear = date; 
+          }
+        } 
+
+        // when the user clicks the story submit button
+        $( "#submitBtn" ).click(function() {
+          submitAlert.present();
+          // get values from the story submission slides
+          const title = $('#userTitle').val();
+          const desc = $('#userDesc').val();
+          const name = $('#userName').val();
+          let date = $('#userDate').val();
+
+          const yearRGEX = /^\d{4}$/;
+          const rangeRGEX = /^\d{4}-\d{4}$/;
+          const dateRGEX = /^\d{2}\/\d{2}\/\d{4}$/;
+
+          const dateResult = dateRGEX.test(date);
+          const yearResult = yearRGEX.test(date);
+          const rangeResult = rangeRGEX.test(date);
+
+          if (dateResult == true) {
+            const dateSplit = date.split("/");
+            getMapYear(dateSplit[0]);            
+          }
+
+          if (rangeResult == true) {
+            const dateSplit = date.split("-");
+            getMapYear(dateSplit[0]);
+          }
+
+          if (yearResult == true) {
+            getMapYear(date);
+          }
+
+          console.log(title, desc, name, date, mapyear);
+
+          const parsedDate = parseDateEntry(date);
+
+          // on submit button add features to stories map service
+          const featureServiceLayerUrl = "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_CCHSDI_Storypts/FeatureServer/0";
+          // create a new feature to add using the REST API
+          const featureToAdd = {
+            attributes: {              
+              title: title,
+              description: desc,              
+              name: name,
+              beginDate: parsedDate.beginDate.getTime(),
+              endDate: parsedDate.endDate.getTime(),
+              userdate: date,
+              mapyear: mapyear, 
+              Tags: "mobile"             
+            },
+            geometry: {
+              x: lon,
+              y: lat,
+              spatialReference: {
+                wkid: 4326
+              }
+            }
+          };
+
+      // begin by adding a new feature to the feature service layer      
+      arcgisRest
+        .addFeatures({
+          url: featureServiceLayerUrl,
+          features: [featureToAdd],
+          //authentication
+        })
+        .then(handleAdded);
+
+      function handleAdded(response) {
+        console.log(response);
+        if (response.addResults[0].success === true) {
+          const storyObjId = response.addResults[0].objectId;
+          console.log(files, files.length);
+          if (files.length > 0) {
+            files.forEach(function(file) {
+            arcgisRest
+              .addAttachment({
+                url: featureServiceLayerUrl,
+                featureId: storyObjId,
+                attachment: file
+              })
+                .then(attachmentAdded);
+                function attachmentAdded (newresponse) {
+                  submitAlert.dismiss();
+                  console.log(newresponse);
+                  slides.update();
+                  slides.slideNext();
+                  storyLayer.refresh();
+                }
+            });
+         } else {
+           submitAlert.dismiss();
+           slides.update();
+           slides.slideNext();
+         }         
+        }
+
+        if (!response.addResults[0].success) {
+          // stop early if adding a new feature was not successful
+          return;
+        }
+      }
+      });   
+
+        // Setup the alerts
+        const alert = document.createElement('ion-alert');   
+        async function presentAlert() {                
+        alert.header = 'Record a Story';
+        alert.subHeader = 'Tap on the mic icon to begin recording.';
+        alert.message = '<div id="message"><center><ion-fab-button class="green" id="record" style="width: 120px; height: 120px; !important"><ion-icon name="mic-outline" id="micicon" style="width: 1,h200px; height: 100px"></ion-icon></ion-fab-button></center></div><br><div id="time"><center><h2>0.00</h2></center></div>'; 
+        document.body.appendChild(alert);
+        await alert.present();
+        };                  
+        
+        const submitAlert = document.createElement('ion-alert');
+        submitAlert.header = 'Submitting Story...';
+        submitAlert.subHeader = 'This may take a few minutes.';
+        submitAlert.message = '<center><ion-spinner color="primary"></ion-spinner></center>'; 
+        submitAlert.backdropDismiss = false;   
+
+        document.body.appendChild(submitAlert);        
+    
+        // Optional parameters to pass to the swiper instance.
+        // See https://swiperjs.com/swiper-api for valid options.
+        slides.options = {
+          initialSlide: 1,
+          speed: 400,
+         // allowTouchMove: false,
+        }             
   
         // styling for the story points layer
         const storiesRenderer = {
@@ -330,75 +852,25 @@
           "symbol": {
             "type": "picture-marker",
             "url": "assets/marker_story.png",
-            "width": "30px",
-            "height": "30px"
+            "width": "18px",
+            "height": "18px"
           }
         };
 
-        let markerRenderer = {
-  type: "unique-value",  // autocasts as new UniqueValueRenderer()
-  field: "entitytype",
-  defaultSymbol: { type: "simple-fill" },  // autocasts as new SimpleFillSymbol()
-  uniqueValueInfos: [{
-    // All features with value of "North" will be blue
-    value: "person",
-    symbol: {
-      type: "picture-marker",  // autocasts as new SimpleFillSymbol()
-      url: "assets/marker_person.png",
-      width: "30px",
-      height: "30px"  
-    }
-  }, {
-    // All features with value of "East" will be green
-    value: "building",
-    symbol: {
-      type: "picture-marker",  // autocasts as new SimpleFillSymbol()
-      url: "assets/marker_place.png",
-      width: "30px",
-      height: "30px"  
-    }
-  }, {
-    // All features with value of "South" will be red
-    value: "story",
-    symbol: {
-      type: "picture-marker",  // autocasts as new SimpleFillSymbol()
-      url: "assets/marker_story.png",
-      width: "30px",
-      height: "30px"  
-    }
-  }, {
-    // All features with value of "West" will be yellow
-    value: "Settlement",
-    symbol: {
-      type: "picture-marker",  // autocasts as new SimpleFillSymbol()
-      url: "assets/marker_everything.png",
-      width: "30px",
-      height: "30px"  
-    }
-  }],
-};
-
         // Layer for the map index 
-      const indexLayer = new FeatureLayer({
-        url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/KeTT_Mobile_Map_Indexes/FeatureServer/0",
-        outFields: ["*"], // Return all fields so it can be queried client-side
-        opacity: 0
-      //renderer: renderer
-      });
-
-        // Layer for the story points
-        const storyLayer = new FeatureLayer({
-          url: "https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/story_pts_watts2/FeatureServer/0",
-          outFields: ["*"], // Return all fields so it can be queried client-side        
-          renderer: storiesRenderer
+        const indexLayer = new FeatureLayer({
+          url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/KeTT_Mobile_Map_Indexes/FeatureServer/0",
+          outFields: ["title", "year", "service_url"], // Return all fields so it can be queried client-side
+          opacity: 0
+        //renderer: renderer
         });
 
         // Layer for the story points
-        const dataLayer = new FeatureLayer({
-          url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_kett_record_locs/FeatureServer/0",
-          outFields: ["entitytype"], // Return all fields so it can be queried client-side        
-          renderer: markerRenderer,
-          definitionExpression: 'byear BETWEEN 1895.000000 AND 1904.000000'
+        const storyLayer = new FeatureLayer({
+          url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_CCHSDI_Storypts/FeatureServer/0",
+          outFields: ["title", "description", "name", "userdate", "objectid"], // Return all fields so it can be queried client-side        
+          renderer: storiesRenderer,
+          definitionExpression: "flag IS NULL"
         });
 
         const graphicsLayer = new GraphicsLayer();
@@ -406,19 +878,18 @@
 
         const map = new Map({
           basemap: "satellite", // Basemap layer service
-          layers: [indexLayer, dataLayer]
+          layers: [indexLayer, storyLayer, graphicsLayer]
         });
 
         const view = new MapView({
           map: map,
           center: [-88.5694, 47.1211], // Longitude, latitude
           zoom: 10, // Zoom level
-          container: "viewDiv", // Div element
-          
-        });       
-        // Removes the zoom widget from the view
-        view.ui.remove("zoom");        
+          container: "viewDiv", // Div element          
+        });    
 
+        // Removes the zoom widget from the view
+        view.ui.remove("zoom");      
 
         // new gelocation widget
         let track = new Track({
@@ -433,10 +904,8 @@
         // The sample will start tracking your location
         // once the view becomes ready
         view.when(function () {
-          splashModal.isOpen = true;
+          
         });
-
-
 
         $( "#geolocation" ).click(function() {
          // track.start();
@@ -444,7 +913,7 @@
           track.start();
           document.getElementById("gpsicon").style.color = "#3880ff";
           track.once("track", ({ position }) => {
-            currentCoords = position.coords;
+           currentCoords = position.coords;
            const point = new Point({
               latitude: currentCoords.latitude,
               longitude: currentCoords.longitude
@@ -456,7 +925,76 @@
           track.stop();
           document.getElementById("gpsicon").style.color = "black";
          }            
-        });        
+        });
+
+        // declare lat and long on global scales
+        let lat;
+        let lon;
+
+        function setGeolocation() {
+          const geolocation = window.navigator.geolocation.watchPosition( function ( position ) {
+           
+           window.setTimeout( function () {
+            lat = position.coords.latitude;
+            lon = position.coords.longitude;          
+            }, 5000 );
+          
+        },
+        function () {
+            //error
+            console.log("No GPS Support");
+        },
+        {
+            maximumAge: 0, 
+            enableHighAccuracy: true
+        } 
+      );
+
+      window.setTimeout( function () {
+          window.navigator.geolocation.clearWatch( geolocation ) 
+      }, 5000 );
+        };
+
+        $( "#locOpt" ).click(function() {
+          if (track.tracking == false) {
+             setGeolocation();            
+             slides.update();
+             slides.slideTo(1);
+               
+        } else {
+          lat = currentCoords.latitude;
+          lon = currentCoords.longitude;
+          slides.update();
+          slides.slideTo(1);
+         /* if(navigator.geolocation){
+              // GET LOCATION FROM BROWSER //
+              navigator.geolocation.getCurrentPosition(position => {
+                slides.update();
+                slides.slideTo(1);
+                // SET LOCATION //
+                lat = position.coords.latitude;
+                lon = position.coords.longitude;
+                //survey123WebForm.setGeopoint({ x: position.coords.longitude, y: position.coords.latitude });
+              }, () => { console.error('Unable to retrieve your location'); });
+            } else {console.error('Geolocation is not supported by your browser'); }*/
+        }
+        });
+
+        $( "#mapOpt" ).click(function() {
+          tabs.select('home');
+          presentToast();          
+          view.on("hold", function(evt) {                
+            lat = evt.mapPoint.latitude
+            lon = evt.mapPoint.longitude
+            tabs.select('stories');
+            return setTimeout(() => {
+                slides.update();
+            slides.slideTo(1); 
+            }, 50);  
+
+            console.log('map hold' + lon,lat);                                
+          });
+        });
 
         const listNode = document.getElementById("mapcontent");
 
@@ -476,41 +1014,48 @@
               .then(function(results) {
                 // do something with the resulting graphics
                 graphics = results.features;
+                
+                // Sort the features first by title, then by year  
+                graphics.sort(function (a, b) {
+                  return a.attributes.title.localeCompare(b.attributes.title) || a.attributes.year - b.attributes.year;
+                });
 
                 document.getElementById("mapcount").innerHTML = results.features.length;
                 let item;
                 const fragment = document.createDocumentFragment();
                 graphics.forEach(function(result, index) {
-                        const attributes = result.attributes;
-                        const title = attributes.title;
-                        const year = attributes.year;
-                        console.log(title);
-                        item = document.createElement("ion-item");
-                        const label = document.createElement("ion-label");
-                        const icon = document.createElement("ion-icon"); 
-                        item.href = "#";                     
-                        icon.name = "map-outline";                      
-                        icon.slot = "end";
-                        label.innerHTML = year + " " + title; 
-                        item.appendChild(icon);
-                        item.appendChild(label);
-                        item.addEventListener("click", () => resultClickHandler(result, index));
-                        fragment.appendChild(item);                     
-                        listNode.appendChild(fragment);
-                      });  
+                    const attributes = result.attributes;
+                    const title = attributes.title;
+                    const year = attributes.year;
+                    console.log(title);
+                    item = document.createElement("ion-item");
+                    const label = document.createElement("ion-label");
+                    const icon = document.createElement("ion-icon"); 
+                    item.href = "#";                     
+                    icon.name = "map-outline";
+                    item.detail = "false";                                         
+                    icon.slot = "end";
+                    label.innerHTML = year + " " + title; 
+                    item.appendChild(icon);
+                    item.appendChild(label);
+                    item.addEventListener("click", () => resultClickHandler(result, index));
+                    fragment.appendChild(item);                     
+                    listNode.appendChild(fragment);
+                  });  
 
-                function resultClickHandler(result, index) {                  
+                function resultClickHandler(result, index) {                          
+                 // item.classList.add("invalid");
                   tabs.select('home');
                   const popup = graphics && graphics[parseInt(index, 10)];
                
-                map.allLayers.filter(function(layer) {
-                  if (layer.type === "tile") {
-                    map.remove(layer);
-                  } 
-                    });         
+                  map.allLayers.filter(function(layer) {
+                    if (layer.type === "tile") {
+                      map.remove(layer);
+                    } 
+                  });         
 
                   let current_layer = new TileLayer({
-                      url: result.attributes.service_url
+                     url: result.attributes.service_url
                   });
 
                   map.add(current_layer);
@@ -526,8 +1071,7 @@
                     const range = document.querySelector('ion-range');
                     // const lastEmittedValue = document.querySelector('#lastValue');
                     // adjust the transparency of the map based on the sliders value  
-                    range.addEventListener('ionChange', ({ detail }) => {
-                      //lastEmittedValue.innerHTML = detail.value;
+                    range.addEventListener('ionChange', ({ detail }) => {                     
                         current_layer.opacity = detail.value / 100;                  
                     });             
 
@@ -567,7 +1111,7 @@
               console.log(graphic);
               const objectId = graphic.attributes.objectid;
               const title = graphic.attributes.title;
-              const desc = replaceURLs(graphic.attributes.description);
+              const desc = linkifyHtml(graphic.attributes.description);
               const date = graphic.attributes.userdate;
               const name = graphic.attributes.name;
               $('#subtitle').html(date); 
@@ -579,7 +1123,7 @@
               } else {
                 $('#storyauthor').html("by " + name);
               }
-              
+              // Open the modal popup for storeis
               storyModal.isOpen = true;
               // Query the attachments from the clicked story
               storyLayer.queryAttachments({
@@ -658,98 +1202,18 @@
          storyModal.addEventListener('didDismiss', (ev) => {
            storyModal.isOpen = false;
          });
-
-         splashModal.addEventListener('didDismiss', (ev) => {
-           splashModal.isOpen = false;
-         });
-
          $( "#modalClose" ).click(function() {
           storyModal.isOpen = false;
          });
 
-          $( "#splashModalClose" ).click(function() {
+          splashModal.addEventListener('didDismiss', (ev) => {
+           splashModal.isOpen = false;
+         });
+         $( "#splashModalClose" ).click(function() {
           splashModal.isOpen = false;
          });
 
-        const survey123WebForm = new Survey123WebForm({
-          container: "webForm",
-          clientId: "VMF9cO89wQQZ9xHz",
-          portalUrl: "https://portal1-geo.sabu.mtu.edu/mtuarcgis/",
-          itemId: "ac48e5d9b91647fbb5a5c7dfeeea8900",
-          hideElements: ['footer', 'header', 'field: details/giscore.grf.CCHSDI_Storypts_point'],
-          onFormLoaded: (data) => {
-          function micClick () {
-            console.log('click');
-          }
-            survey123WebForm.setTheme({
-              header: {
-                backgroundColor: "#25838f",
-                textColor: "#000000"
-              },
-              form: {
-                backgroundColor: "#143438",
-                backgroundOpacity: 1,
-                backgroundImage: "image url",
-                backgroundImageFit: "repeat | repeatY | fit | center",
-                textColor: "#000000",
-                primaryColor: "#3880ff",
-                primaryTextColor: "#ffffff",
-                inputTextColor: "#505050",
-                inputBackgroundColor: "#ffffff"
-              },
-              webpage: {
-                backgroundColor: "#285756",
-                backgroundImageFit: "fill | fit | repeat | center",
-                backgroundImage: "image url"
-              }
-            });
-            console.log('form has loaded!');
-            $( "#locOpt" ).click(function() {
-               if(navigator.geolocation){
-              // GET LOCATION FROM BROWSER //
-              navigator.geolocation.getCurrentPosition(position => {
-
-                // SET LOCATION //
-                survey123WebForm.setGeopoint({ x: position.coords.longitude, y: position.coords.latitude });
-
-                 $('#webForm').show();
-                 $('#storyintro').hide();
-
-              }, () => { console.error('Unable to retrieve your location'); });
-            } else {console.error('Geolocation is not supported by your browser'); }
-        });            
-
-        $( "#mapOpt" ).click(function() {
-          tabs.select('home');
-          //presentToast();
-          view.on("hold", function(evt) {
-          // if there are any markers on the map remove them  
-          //graphicsLayer.removeAll();  
-                
-          const lat = evt.mapPoint.latitude
-          const lon =evt.mapPoint.longitude
-          const queryGeometry = {
-            x: lon,
-            y: lat,
-            spatialReference: {
-              wkid: 4326
-            }
-          };
-
-          // Set the select location on the survey form
-          survey123WebForm.setGeopoint({ x: lon, y: lat });
-           console.log(lat,lon);
-
-          $('#webForm').show();
-          $('#storyintro').hide();
-          tabs.select('stories');
-          });
-        });                 
-            },
-            onFormFailed: (message) => {
-              console.log(message);
-            }
-          });
+         
     });
 </script>
 <style>
