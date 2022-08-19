@@ -268,6 +268,21 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
 
           </div>
           </ion-slide>
+          <ion-slide>
+            <div class="slide">
+            <h2>Capture photos, audio and video related to your story.</h2>
+            <input type="file" id="picInput" accept="image/*" capture="filesystem" style="display: none">
+            <ion-button color="primary" expand="full" size="large" id="takePic">Take a Picture <ion-icon slot="end" name="camera-outline"></ion-icon></ion-button>
+            <input type="file" id="audInput" accept="audio/*" capture="microphone" style="display: none">
+            <ion-button color="primary" expand="full" size="large" id="takeAud">Record Audio <ion-icon slot="end" name="mic-outline"></ion-icon></ion-button>
+             <input type="file" id="vidInput" accept="video/*" capture="camcorder" style="display: none">
+             <ion-button color="primary" expand="full" size="large" id="takeVid">Record a Video <ion-icon slot="end" name="videocam-outline"></ion-icon></ion-button>
+             <ion-button fill="clear" id="backBtn1">Previous <ion-icon slot="start" name="arrow-back"></ion-icon></ion-button>
+         <ion-button fill="clear" id="nextBtn2">Continue <ion-icon slot="end" name="arrow-forward"></ion-icon></ion-button>
+         <p>Step 2 of 4</p>
+        <ion-progress-bar value="0.50"></ion-progress-bar>
+       </div>
+          </ion-slide>
 
           <ion-slide>
             <div class="slide">
@@ -288,34 +303,20 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
 
           <ion-item>
             <ion-label position="floating">Story Text (optional)</ion-label>
-            <ion-textarea rows="6" cols="20" id="userDesc" placeholder="Type your story here. This is optional. In the next section you will have the option to record or upload video or audio of your story."></ion-textarea>
+            <ion-textarea rows="6" cols="20" id="userDesc" placeholder="Type your story here. This is optional. In the previous section you had the option to record or upload video or audio of your story."></ion-textarea>
           </ion-item>
            <ion-item>
             <ion-label position="floating">Your Name (optional)</ion-label>
             <ion-input id="userName" placeholder="Enter your name here."></ion-input>
           </ion-item>
         </ion-list>
-        <ion-button fill="clear" id="backBtn1">Previous <ion-icon slot="start" name="arrow-back"></ion-icon></ion-button>
-         <ion-button fill="clear" id="nextBtn2">Continue <ion-icon slot="end" name="arrow-forward"></ion-icon></ion-button>
-         <p>Step 2 of 4</p>
-        <ion-progress-bar value="0.50"></ion-progress-bar>        
-            </div>
-          </ion-slide>
-          <ion-slide>
-            <div class="slide">
-            <h2>Capture photos, audio and video related to your story.</h2>
-            <input type="file" id="picInput" accept="image/*" capture="filesystem" style="display: none">
-            <ion-button color="primary" expand="full" size="large" id="takePic">Take a Picture <ion-icon slot="end" name="camera-outline"></ion-icon></ion-button>
-            <input type="file" id="audInput" accept="audio/*" capture="microphone" style="display: none">
-            <ion-button color="primary" expand="full" size="large" id="takeAud">Record Audio <ion-icon slot="end" name="mic-outline"></ion-icon></ion-button>
-             <input type="file" id="vidInput" accept="video/*" capture="camcorder" style="display: none">
-             <ion-button color="primary" expand="full" size="large" id="takeVid">Record a Video <ion-icon slot="end" name="videocam-outline"></ion-icon></ion-button>
-             <ion-button fill="clear" id="backBtn2">Previous <ion-icon slot="start" name="arrow-back"></ion-icon></ion-button>
+        <ion-button fill="clear" id="backBtn2">Previous <ion-icon slot="start" name="arrow-back"></ion-icon></ion-button>
          <ion-button fill="clear" id="nextBtn3">Continue <ion-icon slot="end" name="arrow-forward"></ion-icon></ion-button>
          <p>Step 3 of 4</p>
-        <ion-progress-bar value="0.75"></ion-progress-bar>
-       </div>
-          </ion-slide>
+        <ion-progress-bar value="0.75"></ion-progress-bar>        
+            </div>
+        </ion-slide>
+          
           <ion-slide>            
             <h2>Submit Story</h2>
             <p><b>NOTE: This content will be publicly visible on the internet. You won’t be able to update or edit your submission so please double check your entries before submitting.</b></p>             
@@ -420,9 +421,9 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
         });
 
         $( "#nextBtn2" ).click(function() {
-          validate();
-          //slides.update();
-         // slides.slideNext();
+          
+          slides.update();
+          slides.slideNext();
           console.log('slides');
         });
 
@@ -459,9 +460,10 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
         });
 
         $( "#nextBtn3" ).click(function() {
-          slides.update();
-          slides.slideNext();
-          console.log('slides');
+          validate();
+         // slides.update();
+          //slides.slideNext();
+          //console.log('slides');
         });
 
         $( "#backBtn3" ).click(function() {
