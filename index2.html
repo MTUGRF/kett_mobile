@@ -125,6 +125,12 @@
         --background: #5ca56c;
         height: 120px;
         width: 120px;        
+      }
+
+       .blue {
+        --background: #5ca56c;
+        --color: #3880ff;
+              
       } 
 
       .item-background-color{
@@ -878,7 +884,7 @@ document.body.appendChild(link);*/
         const submitAlert = document.createElement('ion-alert');
         submitAlert.header = 'Submitting Story...';
         submitAlert.subHeader = 'This may take a few minutes.';
-        submitAlert.message = '<center><ion-spinner style="color: #69bb7b"></ion-spinner></center>'; 
+        submitAlert.message = '<center><ion-spinner class="blue"></ion-spinner></center>'; 
         submitAlert.backdropDismiss = false;   
 
         document.body.appendChild(submitAlert);        
