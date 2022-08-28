@@ -843,13 +843,14 @@ document.body.appendChild(link);*/
               })
                 .then(attachmentAdded);
                 function attachmentAdded (newresponse) {
-                  submitAlert.dismiss();
-                  console.log(newresponse);
-                  slides.update();
-                  slides.slideNext();
-                  storyLayer.refresh();
+                 console.log("attachment added!");
                 }
-            });
+                submitAlert.dismiss();
+                console.log(newresponse);
+                slides.update();
+                slides.slideNext();
+                storyLayer.refresh();
+          });
          } else {
            submitAlert.dismiss();
            slides.update();
