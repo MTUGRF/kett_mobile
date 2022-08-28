@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#285756" >
-    <title>KeTT Mobile App</title>
+    <title>KeTT Mobile Story Telling</title>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
@@ -17,7 +17,7 @@
     <script src="https://unpkg.com/@esri/arcgis-rest-request@4.0.0/dist/bundled/request.umd.js"></script>
     <script src="https://unpkg.com/@esri/arcgis-rest-feature-service@4.0.0/dist/bundled/feature-service.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/linkifyjs@3.0.5/dist/linkify.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/linkify-html@3.0.5/dist/linkify-html.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/linkify-html@3.0.5/dist/linkify-html.min.js"></script>
     <script src="https://js.arcgis.com/4.24/"></script>
     <style>
      
@@ -526,7 +526,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
             console.log(picInput.files[0]);
             const picFileVal = $('#picInput').val();
 
-            takePic.textContent = "..." + picFileVal.substring(15);
+            takePic.textContent = "..." + picFileVal.substring(30);
         }
         let vidSize; 
        const vidInput = document.getElementById('vidInput');
@@ -559,6 +559,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
 
         // when the user clicks the audio record button
         $(document).on('click', '#record', function() {
+          alert.backdropDismiss = false; 
           // check if the user has a microphone
           if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             console.log("getUserMedia supported.");
@@ -615,6 +616,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
 
                 // when the user clicks the audio stop button
                 $(document).on('click', '#stop', function() {
+                  alert.backdropDismiss = true; 
                   // stop the timer
                   clearInterval(timer);
                   // stop the recording
