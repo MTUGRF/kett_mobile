@@ -1201,7 +1201,7 @@ document.body.appendChild(link);*/
                          // }
                         //}); 
                         //console.log(attachUrl);
-                      } else if (attachment.contentType == "video/mp4") {
+                      } else if (attachment.contentType == "video/mp4" || attachment.contentType == "video/quicktime") {
                         $("#vidlabel").show();
                         const vidarray = [];
                         vidarray.push(attachment);
