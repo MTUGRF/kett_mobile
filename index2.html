@@ -191,8 +191,7 @@
             <ion-list>
               <ion-item button="true" detail="false" href="https://www.keweenawhistory.com/about-the-project.html">About the project</ion-item>
               <ion-item button="true" detail="false" href="https://www.keweenawhistory.com/project-news">Project news</ion-item>
-              <ion-item button="true" detail="false" href="https://www.keweenawhistory.com/meet-the-team.html">Meet the team</ion-item>
-              <ion-item button="true" detail="false">Help</ion-item>              
+              <ion-item button="true" detail="false" href="https://www.keweenawhistory.com/meet-the-team.html">Meet the team</ion-item>                           
             </ion-list>
           </ion-content>
         </ion-popover>
@@ -920,7 +919,7 @@ document.body.appendChild(link);*/
 
         // Layer for the story points
         const storyLayer = new FeatureLayer({
-          url: "https://portal1-geo.sabu.mtu.edu:6443/arcgis/rest/services/KeweenawHSDI/story_pts_watts2/FeatureServer/0",
+          url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/KeweenawHSDI/story_pts_watts2/FeatureServer/0",
           outFields: ["title", "description", "name", "userdate", "objectid"], // Return all fields so it can be queried client-side        
           renderer: storiesRenderer,
           definitionExpression: "flag IS NULL"

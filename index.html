@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-31KCF205SW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-31KCF205SW');
+</script>  
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#285756" >
-    <title>KeTT Mobile App</title>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
-    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+    <title>KeTT Mobile Story Telling</title>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core@6.2.5/dist/ionic/ionic.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core@6.2.5/dist/ionic/ionic.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core@6.2.5/css/ionic.bundle.css" />
     <link rel="stylesheet" href="https://js.arcgis.com/4.24/esri/themes/light/main.css">
     <link href="https://www.dafontfree.net/embed/cGF0cmljaWFuLXJlZ3VsYXImZGF0YS8yNi9wLzEzODA1Ny9QYXRyaWNhbi50dGY" rel="stylesheet" type="text/css"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,7 +26,7 @@
     <script src="https://unpkg.com/@esri/arcgis-rest-request@4.0.0/dist/bundled/request.umd.js"></script>
     <script src="https://unpkg.com/@esri/arcgis-rest-feature-service@4.0.0/dist/bundled/feature-service.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/linkifyjs@3.0.5/dist/linkify.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/linkify-html@3.0.5/dist/linkify-html.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/linkify-html@3.0.5/dist/linkify-html.min.js"></script>
     <script src="https://js.arcgis.com/4.24/"></script>
     <style>
      
@@ -125,6 +134,12 @@
         --background: #5ca56c;
         height: 120px;
         width: 120px;        
+      }
+
+       .blue {
+        --background: #5ca56c;
+        --color: #3880ff;
+              
       } 
 
       .item-background-color{
@@ -173,7 +188,7 @@
       <ion-header>
         <ion-toolbar color="header">
           <ion-buttons slot="start">
-            <ion-img src="https://kett.geospatialresearch.mtu.edu/static/media/logo_mark_only@2x.a10ff43f.png" style="width: 60px; height: 60px;"></ion-img>
+            <ion-img src="assets/kettlogo.png" style="width: 60px; height: 60px;"></ion-img>
           </ion-buttons>
           <ion-buttons slot="end">
             <ion-text color="white">
@@ -186,7 +201,6 @@
               <ion-item button="true" detail="false" href="https://www.keweenawhistory.com/about-the-project.html">About the project</ion-item>
               <ion-item button="true" detail="false" href="https://www.keweenawhistory.com/project-news">Project news</ion-item>
               <ion-item button="true" detail="false" href="https://www.keweenawhistory.com/meet-the-team.html">Meet the team</ion-item>
-              <ion-item button="true" detail="false">Help</ion-item>              
             </ion-list>
           </ion-content>
         </ion-popover>
@@ -268,6 +282,22 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
 
           </div>
           </ion-slide>
+          <ion-slide>
+            <div class="slide">
+            <h2>Capture photos, audio and video related to your story.</h2>
+            <input type="file" id="picInput" accept="image/*" capture="filesystem" style="display: none">
+            <ion-button color="primary" expand="full" size="large" id="takePic">Take a Picture <ion-icon slot="end" name="camera-outline"></ion-icon></ion-button>
+            <input type="file" id="audInput" accept="audio/*" capture="microphone" style="display: none">
+            <ion-button color="primary" expand="full" size="large" id="takeAud">Record Audio <ion-icon slot="end" name="mic-outline"></ion-icon></ion-button>
+             <input type="file" id="vidInput" accept="video/*" capture="camcorder" style="display: none">
+             <ion-button color="primary" expand="full" size="large" id="takeVid">Record a Video <ion-icon slot="end" name="videocam-outline"></ion-icon></ion-button>
+             <p style="color: black">*Max video length is 15 seconds.</p>
+             <ion-button fill="clear" id="backBtn1">Previous <ion-icon slot="start" name="arrow-back"></ion-icon></ion-button>
+         <ion-button fill="clear" id="nextBtn2">Continue <ion-icon slot="end" name="arrow-forward"></ion-icon></ion-button>
+         <p>Step 2 of 4</p>
+        <ion-progress-bar value="0.50"></ion-progress-bar>
+       </div>
+          </ion-slide>
 
           <ion-slide>
             <div class="slide">
@@ -281,41 +311,27 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
           </ion-item>
            <ion-item>
             <ion-label position="floating">Story Timeframe<ion-text color="danger">*</ion-text></ion-label>
-            <ion-input id="userDate" class="ion-invalid" required pattern="\d{4}-\d{2}-\d{2}" placeholder="1922 or 1920-1930 or 05-03-1932"></ion-input>
+            <ion-input id="userDate" class="ion-invalid" required pattern="\d{4}-\d{2}-\d{2}" placeholder="1922 or 1920-1930 or 05/03/1932"></ion-input>
             <ion-text color="danger" style="display: none" id="dateError">Please enter a date in one of the specified formats.</ion-text>   
           </ion-item> 
         </ion-list>        
 
           <ion-item>
             <ion-label position="floating">Story Text (optional)</ion-label>
-            <ion-textarea rows="6" cols="20" id="userDesc" placeholder="Type your story here. This is optional. In the next section you will have the option to record or upload video or audio of your story."></ion-textarea>
+            <ion-textarea rows="6" cols="20" id="userDesc" placeholder="Type your story here. This is optional. In the previous section you had the option to record or upload video or audio of your story."></ion-textarea>
           </ion-item>
            <ion-item>
             <ion-label position="floating">Your Name (optional)</ion-label>
             <ion-input id="userName" placeholder="Enter your name here."></ion-input>
           </ion-item>
         </ion-list>
-        <ion-button fill="clear" id="backBtn1">Previous <ion-icon slot="start" name="arrow-back"></ion-icon></ion-button>
-         <ion-button fill="clear" id="nextBtn2">Continue <ion-icon slot="end" name="arrow-forward"></ion-icon></ion-button>
-         <p>Step 2 of 4</p>
-        <ion-progress-bar value="0.50"></ion-progress-bar>        
-            </div>
-          </ion-slide>
-          <ion-slide>
-            <div class="slide">
-            <h2>Capture photos, audio and video related to your story.</h2>
-            <input type="file" id="picInput" accept="image/*" capture="filesystem" style="display: none">
-            <ion-button color="primary" expand="full" size="large" id="takePic">Take a Picture <ion-icon slot="end" name="camera-outline"></ion-icon></ion-button>
-            <input type="file" id="audInput" accept="audio/*" capture="microphone" style="display: none">
-            <ion-button color="primary" expand="full" size="large" id="takeAud">Record Audio <ion-icon slot="end" name="mic-outline"></ion-icon></ion-button>
-             <input type="file" id="vidInput" accept="video/*" capture="camcorder" style="display: none">
-             <ion-button color="primary" expand="full" size="large" id="takeVid">Record a Video <ion-icon slot="end" name="videocam-outline"></ion-icon></ion-button>
-             <ion-button fill="clear" id="backBtn2">Previous <ion-icon slot="start" name="arrow-back"></ion-icon></ion-button>
+        <ion-button fill="clear" id="backBtn2">Previous <ion-icon slot="start" name="arrow-back"></ion-icon></ion-button>
          <ion-button fill="clear" id="nextBtn3">Continue <ion-icon slot="end" name="arrow-forward"></ion-icon></ion-button>
          <p>Step 3 of 4</p>
-        <ion-progress-bar value="0.75"></ion-progress-bar>
-       </div>
-          </ion-slide>
+        <ion-progress-bar value="0.75"></ion-progress-bar>        
+            </div>
+        </ion-slide>
+          
           <ion-slide>            
             <h2>Submit Story</h2>
             <p><b>NOTE: This content will be publicly visible on the internet. You won’t be able to update or edit your submission so please double check your entries before submitting.</b></p>             
@@ -389,6 +405,27 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
 <script>
   require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/support/webMercatorUtils", "esri/geometry/Point"], function (esriConfig, Map, MapView, FeatureLayer, TileLayer, Track, Graphic, GraphicsLayer, webMercatorUtils, Point) {
 
+        function validateFile(file) {
+
+          const video = document.createElement('video');
+          video.preload = 'metadata';
+
+          video.onloadedmetadata = function() {
+
+              window.URL.revokeObjectURL(video.src);
+
+              if (video.duration > 15) {
+
+                  console.log("this video is longer than 15 seconds!");
+                  return;
+              }
+
+              methodToCallIfValid();
+          }
+
+          video.src = URL.createObjectURL(file);
+      }
+
         async function presentToast() {
           const toast = document.createElement('ion-toast');
           toast.message = 'Press and hold on the map where you want to share a story.';
@@ -420,9 +457,9 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
         });
 
         $( "#nextBtn2" ).click(function() {
-          validate();
-          //slides.update();
-         // slides.slideNext();
+          
+          slides.update();
+          slides.slideNext();
           console.log('slides');
         });
 
@@ -459,9 +496,10 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
         });
 
         $( "#nextBtn3" ).click(function() {
-          slides.update();
-          slides.slideNext();
-          console.log('slides');
+          validate();
+         // slides.update();
+          //slides.slideNext();
+          //console.log('slides');
         });
 
         $( "#backBtn3" ).click(function() {
@@ -496,27 +534,40 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
             console.log(picInput.files[0]);
             const picFileVal = $('#picInput').val();
 
-            takePic.textContent = "..." + picFileVal.substring(20);
+            takePic.textContent = "..." + picFileVal.substring(30);
         }
         let vidSize; 
-      const vidInput = document.getElementById('vidInput');
+       const vidInput = document.getElementById('vidInput');
           vidInput.onchange = () => {
             const selectedFile = vidInput.files[0];
-            files.push(vidInput.files[0]);
-            console.log(vidInput.files[0]);
-            const vidFileVal = $('#vidInput').val();
-            takeVid.textContent = "..." + vidFileVal.substring(20);
-            vidSize = files[0].size / 1024 / 1024;                      
+            const video = document.createElement('video');
+            video.preload = 'metadata';
+            video.onloadedmetadata = function () {
+              window.URL.revokeObjectURL(video.src);
+              if (video.duration > 15.999999) {
+                vidAlert();
+                console.log(video.duration + "Video is longer than 15 seconds!");
+              } else {
+                files.push(vidInput.files[0]);
+                console.log(vidInput.files[0]);
+                const vidFileVal = $('#vidInput').val();
+                takeVid.textContent = "..." + vidFileVal.substring(20);
+              }
+            }
+
+             video.src = URL.createObjectURL(selectedFile);      
+                               
           }  
 
-      const audInput = document.getElementById('audInput');
+       const audInput = document.getElementById('audInput');
           audInput.onchange = () => {              
             files.push(audInput.files[0]);
             console.log(audInput.files[0]);
-      }           
+       }           
 
         // when the user clicks the audio record button
         $(document).on('click', '#record', function() {
+          alert.backdropDismiss = false; 
           // check if the user has a microphone
           if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             console.log("getUserMedia supported.");
@@ -573,6 +624,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
 
                 // when the user clicks the audio stop button
                 $(document).on('click', '#stop', function() {
+                  alert.backdropDismiss = true; 
                   // stop the timer
                   clearInterval(timer);
                   // stop the recording
@@ -753,7 +805,7 @@ document.body.appendChild(link);*/
           const parsedDate = parseDateEntry(date);
 
           // on submit button add features to stories map service
-          const featureServiceLayerUrl = "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_CCHSDI_Storypts/FeatureServer/0";
+          const featureServiceLayerUrl = "https://portal1-geo.sabu.mtu.edu/server/rest/services/KeweenawHSDI/story_pts_watts2/FeatureServer/0";
           // create a new feature to add using the REST API
           const featureToAdd = {
             attributes: {              
@@ -800,7 +852,7 @@ document.body.appendChild(link);*/
                 .then(attachmentAdded);
                 function attachmentAdded (newresponse) {
                   submitAlert.dismiss();
-                  console.log(newresponse);
+                  //console.log(newresponse);
                   slides.update();
                   slides.slideNext();
                   storyLayer.refresh();
@@ -819,7 +871,16 @@ document.body.appendChild(link);*/
         }
       }
       });   
+         async function vidAlert() {
+          const vidAlert = document.createElement('ion-alert');
+          vidAlert.header = 'Video Length Exceeded';
+          //vidAlert.subHeader = 'Video limit exceeded';
+          vidAlert.message = 'Video recordings must be 15 seconds or less. Please try recording a shorter video.';
+          vidAlert.buttons = ['OK'];
 
+          document.body.appendChild(vidAlert);
+          await vidAlert.present();
+        }
         // Setup the alerts
         const alert = document.createElement('ion-alert');   
         async function presentAlert() {                
@@ -833,7 +894,7 @@ document.body.appendChild(link);*/
         const submitAlert = document.createElement('ion-alert');
         submitAlert.header = 'Submitting Story...';
         submitAlert.subHeader = 'This may take a few minutes.';
-        submitAlert.message = '<center><ion-spinner color="primary"></ion-spinner></center>'; 
+        submitAlert.message = '<center><ion-spinner class="blue"></ion-spinner></center>'; 
         submitAlert.backdropDismiss = false;   
 
         document.body.appendChild(submitAlert);        
@@ -867,7 +928,7 @@ document.body.appendChild(link);*/
 
         // Layer for the story points
         const storyLayer = new FeatureLayer({
-          url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_CCHSDI_Storypts/FeatureServer/0",
+          url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/KeweenawHSDI/story_pts_watts2/FeatureServer/0",
           outFields: ["title", "description", "name", "userdate", "objectid"], // Return all fields so it can be queried client-side        
           renderer: storiesRenderer,
           definitionExpression: "flag IS NULL"
@@ -965,20 +1026,9 @@ document.body.appendChild(link);*/
           lat = currentCoords.latitude;
           lon = currentCoords.longitude;
           slides.update();
-          slides.slideTo(1);
-         /* if(navigator.geolocation){
-              // GET LOCATION FROM BROWSER //
-              navigator.geolocation.getCurrentPosition(position => {
-                slides.update();
-                slides.slideTo(1);
-                // SET LOCATION //
-                lat = position.coords.latitude;
-                lon = position.coords.longitude;
-                //survey123WebForm.setGeopoint({ x: position.coords.longitude, y: position.coords.latitude });
-              }, () => { console.error('Unable to retrieve your location'); });
-            } else {console.error('Geolocation is not supported by your browser'); }*/
+          slides.slideTo(1);        
         }
-        });
+      });
 
         $( "#mapOpt" ).click(function() {
           tabs.select('home');
@@ -1159,7 +1209,7 @@ document.body.appendChild(link);*/
                          // }
                         //}); 
                         //console.log(attachUrl);
-                      } else if (attachment.contentType == "video/mp4") {
+                      } else if (attachment.contentType == "video/mp4" || attachment.contentType == "video/quicktime") {
                         $("#vidlabel").show();
                         const vidarray = [];
                         vidarray.push(attachment);
@@ -1175,7 +1225,8 @@ document.body.appendChild(link);*/
                         video.appendChild(source);  
                         video.controls = "true";  
                         video.style.width = "100%";
-                        video.load();
+                        video.preload = "none";
+                        //video.load();
                       } else if (attachment.contentType == "audio/mpeg") {
                         $("#audlabel").show();
                         const audarray = [];
@@ -1211,9 +1262,7 @@ document.body.appendChild(link);*/
          });
          $( "#splashModalClose" ).click(function() {
           splashModal.isOpen = false;
-         });
-
-         
+         });         
     });
 </script>
 <style>
