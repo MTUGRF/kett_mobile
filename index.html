@@ -1036,7 +1036,10 @@ document.body.appendChild(link);*/
           map: map,
           center: [-88.5694, 47.1211], // Longitude, latitude
           zoom: 10, // Zoom level
-          container: "viewDiv", // Div element          
+          container: "viewDiv", // Div element
+          highlightOptions: {            
+            fillOpacity: 0
+          },          
         });    
 
         // Removes the zoom widget from the view
@@ -1049,7 +1052,7 @@ document.body.appendChild(link);*/
           goToLocationEnabled: false, 
           geolocationOptions: { maximumAge: 0, timeout: 15000, enableHighAccuracy: true }
         });
-        
+        let highlightSelect;
         // once the view becomes ready
         view.when(function () {
           const queryString = window.location.search;        
@@ -1075,6 +1078,15 @@ document.body.appendChild(link);*/
                 zoom: 21
               });
               buildStory(results.features[0]);
+              view.whenLayerView(storyLayer).then((layerView) => {
+                // if a feature is already highlighted, then remove the highlight
+                if (highlightSelect) {
+                  highlightSelect.remove();
+                }
+                const feature = results.features[0];
+                // set the highlight on the first feature returned by the query
+                highlightSelect = layerView.highlight(feature.attributes.objectid);
+              });
             }).catch((error) => {
               console.log(error.error);
           });
@@ -1266,7 +1278,10 @@ document.body.appendChild(link);*/
             $("#vidlabel").hide();
             document.getElementById("pictures").innerHTML = "";
             document.getElementById("videos").innerHTML = "";
-            document.getElementById("sound").innerHTML = "";           
+            document.getElementById("sound").innerHTML = "";   
+            if (highlightSelect) {
+              highlightSelect.remove();
+            }        
 
             // check if a feature is returned from the index layer
             if (response.results.length) {
