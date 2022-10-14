@@ -405,8 +405,11 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
 <script>
   require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/support/webMercatorUtils", "esri/geometry/Point"], function (esriConfig, Map, MapView, FeatureLayer, TileLayer, Track, Graphic, GraphicsLayer, webMercatorUtils, Point) {
 
-        const queryString = window.location.search;
+        const queryString = window.location.search;        
         console.log(queryString);
+        const urlParams = new URLSearchParams(queryString);
+        const storyId = urlParams.get('id');
+        console.log(storyId);
 
         function validateFile(file) {
 
@@ -539,7 +542,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
 
             takePic.textContent = "..." + picFileVal.substring(30);
         }
-        let vidSize; 
+       let vidSize; 
        const vidInput = document.getElementById('vidInput');
           vidInput.onchange = () => {
             const selectedFile = vidInput.files[0];
