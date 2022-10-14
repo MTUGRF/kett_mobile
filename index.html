@@ -23,6 +23,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Gentium+Book+Plus&family=Lato:wght@300;400&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" integrity="sha512-3j3VU6WC5rPQB4Ld1jnLV7Kd5xr+cq9avvhwqzbH/taCRNURoeEpoPBK9pDyeukwSxwRPJ8fDgvYXd6SkaZ2TA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://unpkg.com/@esri/arcgis-rest-request@4.0.0/dist/bundled/request.umd.js"></script>
     <script src="https://unpkg.com/@esri/arcgis-rest-feature-service@4.0.0/dist/bundled/feature-service.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/linkifyjs@3.0.5/dist/linkify.min.js"></script>
@@ -403,32 +404,19 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
   </body>
 </html>
 <script>
-  require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/support/webMercatorUtils", "esri/geometry/Point"], function (esriConfig, Map, MapView, FeatureLayer, TileLayer, Track, Graphic, GraphicsLayer, webMercatorUtils, Point) {
-
-        const queryString = window.location.search;        
-        console.log(queryString);
-        const urlParams = new URLSearchParams(queryString);
-        const storyId = urlParams.get('id');
-        console.log(storyId);
+  require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/support/webMercatorUtils", "esri/geometry/Point"], function (esriConfig, Map, MapView, FeatureLayer, TileLayer, Track, Graphic, GraphicsLayer, webMercatorUtils, Point) {        
 
         function validateFile(file) {
-
           const video = document.createElement('video');
           video.preload = 'metadata';
-
           video.onloadedmetadata = function() {
-
               window.URL.revokeObjectURL(video.src);
-
               if (video.duration > 15) {
-
                   console.log("this video is longer than 15 seconds!");
                   return;
               }
-
               methodToCallIfValid();
           }
-
           video.src = URL.createObjectURL(file);
       }
 
@@ -448,7 +436,12 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
 
         const tabs = document.querySelector('ion-tabs');
 
-        splashModal.isOpen = true;
+        $(document).ready(function() {
+          if ($.cookie('pop') == null) {
+            splashModal.isOpen = true;
+            $.cookie('pop', '14');
+          }
+         });         
 
         $( "#nextBtn1" ).click(function() {
           slides.update();
@@ -672,6 +665,97 @@ document.body.appendChild(link);*/
           }
         });
 
+       function buildStory (graphic) {
+          //const graphic = response.results[0].graphic; 
+          console.log(graphic);
+          const objectId = graphic.attributes.objectid;
+          const title = graphic.attributes.title;
+          const desc = linkifyHtml(graphic.attributes.description);
+          const date = graphic.attributes.userdate;
+          const name = graphic.attributes.name;
+          $('#subtitle').html(date); 
+          $('#storydesc').html(desc); 
+          $('#storytitle').html(title); 
+          $('#storymodaltitle').html(title);
+          if (name == "" || name == null  ) {
+            $('#storyauthor').html("by Anonymous");
+          } else {
+            $('#storyauthor').html("by " + name);
+          }
+          // Open the modal popup for storeis
+          storyModal.isOpen = true;
+          // Query the attachments from the clicked story
+          storyLayer.queryAttachments({
+          //  attachmentTypes: ["image/jpeg", "video/mp4", "sound/mp3"],
+            objectIds: objectId
+          }).then(function (attachmentsByFeatureId) {
+            console.log(attachmentsByFeatureId);
+            if (!attachmentsByFeatureId) {
+                return;
+             }
+            if (Object.keys(attachmentsByFeatureId).length === 0){
+              // if there are no attachments, do something here.
+              $("#storyimg").attr("src", "");                   
+             }
+            // Display the attachments
+            Object.keys(attachmentsByFeatureId)
+              .forEach(function(objectId) {
+                const attachments = attachmentsByFeatureId[objectId];
+                attachments.forEach(function (attachment) {                   
+                  if (attachment.contentType == "image/jpeg" || attachment.contentType == "image/png" || attachment.contentType == "image/gif") {
+                   
+                    const imgarray = [];
+                    imgarray.push(attachment);
+                    const attachUrl = imgarray[0].url;
+                    $("#storyimg").attr("src",attachUrl);
+                   // imgarray.forEach(function(image, index) {
+                      
+                      //if (index ===0) {
+                        $("#piclabel").show();
+                        const elem = document.createElement("img");
+                        elem.src = imgarray[0].url;
+                        document.getElementById("pictures").appendChild(elem);
+                     // }
+                    //}); 
+                    //console.log(attachUrl);
+                  } else if (attachment.contentType == "video/mp4" || attachment.contentType == "video/quicktime") {
+                    $("#vidlabel").show();
+                    const vidarray = [];
+                    vidarray.push(attachment);
+                    const vidUrl = vidarray[0].url;
+                    const video = document.createElement('video');
+                   // video.classList.add("controls");
+                    const source = document.createElement('source');
+
+                    source.setAttribute('src', vidUrl);
+                    source.setAttribute('type', 'video/mp4');
+                    document.getElementById("videos").appendChild(video);
+
+                    video.appendChild(source);  
+                    video.controls = "true";  
+                    video.style.width = "100%";
+                    video.preload = "none";
+                    //video.load();
+                  } else if (attachment.contentType == "audio/mpeg") {
+                    $("#audlabel").show();
+                    const audarray = [];
+                    audarray.push(attachment);
+                    const audUrl = audarray[0].url;
+                    const audio = document.createElement('audio');
+                    const source = document.createElement('source');
+
+                    source.setAttribute('src', audUrl);
+                    source.setAttribute('type', 'audio/mpeg');
+                    document.getElementById("sound").appendChild(audio);
+                    audio.appendChild(source);  
+                    audio.controls = "true";
+                    audio.style.width = "100%";
+                    audio.load();
+                  }
+                });
+              }); 
+          });
+       }
        function parseDateEntry (dateEntry) {
             const response = {
                 valid: false,
@@ -965,14 +1049,37 @@ document.body.appendChild(link);*/
           goToLocationEnabled: false, 
           geolocationOptions: { maximumAge: 0, timeout: 15000, enableHighAccuracy: true }
         });
-
-        //view.ui.add(track, "top-left"); 
-
-        // The sample will start tracking your location
+        
         // once the view becomes ready
         view.when(function () {
-          
-        });
+          const queryString = window.location.search;        
+          console.log(queryString);
+          if (queryString != "") {
+            splashModal.isOpen = false;
+            const urlParams = new URLSearchParams(queryString);
+            const storyId = urlParams.get('id');
+            console.log(storyId);
+
+            const storyQuery = {
+             where: "globalid =" + "'" + storyId + "'",  // Set by select element             
+             outFields: ["*"], // Attributes to return
+             returnGeometry: true,
+             outSpatialReference: 4326
+            };
+
+            storyLayer.queryFeatures(storyQuery)
+            .then((results) => {
+              console.log(results);
+              view.goTo({
+                center: [results.features[0].geometry.x, results.features[0].geometry.y],
+                zoom: 21
+              });
+              buildStory(results.features[0]);
+            }).catch((error) => {
+              console.log(error.error);
+          });
+         }           
+      });
 
         $( "#geolocation" ).click(function() {
          // track.start();
@@ -1163,95 +1270,7 @@ document.body.appendChild(link);*/
 
             // check if a feature is returned from the index layer
             if (response.results.length) {
-              const graphic = response.results[0].graphic; 
-              console.log(graphic);
-              const objectId = graphic.attributes.objectid;
-              const title = graphic.attributes.title;
-              const desc = linkifyHtml(graphic.attributes.description);
-              const date = graphic.attributes.userdate;
-              const name = graphic.attributes.name;
-              $('#subtitle').html(date); 
-              $('#storydesc').html(desc); 
-              $('#storytitle').html(title); 
-              $('#storymodaltitle').html(title);
-              if (name == "" || name == null  ) {
-                $('#storyauthor').html("by Anonymous");
-              } else {
-                $('#storyauthor').html("by " + name);
-              }
-              // Open the modal popup for storeis
-              storyModal.isOpen = true;
-              // Query the attachments from the clicked story
-              storyLayer.queryAttachments({
-              //  attachmentTypes: ["image/jpeg", "video/mp4", "sound/mp3"],
-                objectIds: objectId
-              }).then(function (attachmentsByFeatureId) {
-                console.log(attachmentsByFeatureId);
-                if (!attachmentsByFeatureId) {
-                    return;
-                 }
-                if (Object.keys(attachmentsByFeatureId).length === 0){
-                  // if there are no attachments, do something here.
-                  $("#storyimg").attr("src", "");                   
-                 }
-                // Display the attachments
-                Object.keys(attachmentsByFeatureId)
-                  .forEach(function(objectId) {
-                    const attachments = attachmentsByFeatureId[objectId];
-                    attachments.forEach(function (attachment) {                   
-                      if (attachment.contentType == "image/jpeg" || attachment.contentType == "image/png" || attachment.contentType == "image/gif") {
-                       
-                        const imgarray = [];
-                        imgarray.push(attachment);
-                        const attachUrl = imgarray[0].url;
-                        $("#storyimg").attr("src",attachUrl);
-                       // imgarray.forEach(function(image, index) {
-                          
-                          //if (index ===0) {
-                            $("#piclabel").show();
-                            const elem = document.createElement("img");
-                            elem.src = imgarray[0].url;
-                            document.getElementById("pictures").appendChild(elem);
-                         // }
-                        //}); 
-                        //console.log(attachUrl);
-                      } else if (attachment.contentType == "video/mp4" || attachment.contentType == "video/quicktime") {
-                        $("#vidlabel").show();
-                        const vidarray = [];
-                        vidarray.push(attachment);
-                        const vidUrl = vidarray[0].url;
-                        const video = document.createElement('video');
-                       // video.classList.add("controls");
-                        const source = document.createElement('source');
-
-                        source.setAttribute('src', vidUrl);
-                        source.setAttribute('type', 'video/mp4');
-                        document.getElementById("videos").appendChild(video);
-
-                        video.appendChild(source);  
-                        video.controls = "true";  
-                        video.style.width = "100%";
-                        video.preload = "none";
-                        //video.load();
-                      } else if (attachment.contentType == "audio/mpeg") {
-                        $("#audlabel").show();
-                        const audarray = [];
-                        audarray.push(attachment);
-                        const audUrl = audarray[0].url;
-                        const audio = document.createElement('audio');
-                        const source = document.createElement('source');
-
-                        source.setAttribute('src', audUrl);
-                        source.setAttribute('type', 'audio/mpeg');
-                        document.getElementById("sound").appendChild(audio);
-                        audio.appendChild(source);  
-                        audio.controls = "true";
-                        audio.style.width = "100%";
-                        audio.load();
-                      }
-                    });
-                  }); 
-              });
+              buildStory(response.results[0].graphic);
             }    
           });
         });
