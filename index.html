@@ -405,6 +405,9 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
 <script>
   require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/support/webMercatorUtils", "esri/geometry/Point"], function (esriConfig, Map, MapView, FeatureLayer, TileLayer, Track, Graphic, GraphicsLayer, webMercatorUtils, Point) {
 
+        const queryString = window.location.search;
+        console.log(queryString);
+
         function validateFile(file) {
 
           const video = document.createElement('video');
