@@ -439,7 +439,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
         $(document).ready(function() {
           if ($.cookie('pop') == null) {
             splashModal.isOpen = true;
-            $.cookie('pop', '14');
+            $.cookie('pop', '7');
           }
          });         
 
@@ -1075,7 +1075,7 @@ document.body.appendChild(link);*/
               console.log(results);
               view.goTo({
                 center: [results.features[0].geometry.x, results.features[0].geometry.y],
-                zoom: 21
+                zoom: 18
               });
               buildStory(results.features[0]);
               view.whenLayerView(storyLayer).then((layerView) => {
