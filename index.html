@@ -200,7 +200,7 @@
           <ion-content>
             <ion-list>
               <ion-item button="true" detail="false" href="https://www.keweenawhistory.com/about-the-project.html">About the project</ion-item>
-              <ion-item button="true" detail="false" href="https://www.keweenawhistory.com/project-news">Project news</ion-item>
+              <ion-item button="true" detail="false" href="https://www.keweenawhistory.com/about-the-maps.html">About the maps</ion-item>
               <ion-item button="true" detail="false" href="https://www.keweenawhistory.com/meet-the-team.html">Meet the team</ion-item>
             </ion-list>
           </ion-content>
@@ -232,14 +232,12 @@
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
-      <ion-content class="ion-padding" style="--ion-background-color: #285756">
-      
+      <ion-content class="ion-padding" style="--ion-background-color: #285756">      
           <img src="assets/kett_mobile.png"/>
           <p style="color: white; font-size: 18px;">Here you can use your mobile device to explore the Keweenaw’s landscape through historic maps and stories shared by others.</p>
           <p style="color: white; font-size: 18px;">You can also share your own story right from your device.
 Looking for historical data about people and places? Use the Keweenaw Time Traveler on your desktop to connect these maps with millions of other records about the Keweenaw’s past, including census, city directories, school records and more. 
- </p>
-          
+ </p>          
       </ion-content>
     </ion-modal>                 
           <div id="viewDiv"></div>           
@@ -286,6 +284,8 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
           <ion-slide>
             <div class="slide">
             <h2>Capture photos, audio and video related to your story.</h2>
+            <input type="file" id="medInput" accept="image/*, video/*, audio/*" capture="filesystem" style="display: none">
+            <ion-button color="primary" expand="full" size="large" id="takeMed">Upload Media<ion-icon slot="end" name="folder-outline"></ion-icon></ion-button>
             <input type="file" id="picInput" accept="image/*" capture="filesystem" style="display: none">
             <ion-button color="primary" expand="full" size="large" id="takePic">Take a Picture <ion-icon slot="end" name="camera-outline"></ion-icon></ion-button>
             <input type="file" id="audInput" accept="audio/*" capture="microphone" style="display: none">
@@ -518,6 +518,11 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
           vidFile.click();
         });
 
+        $( "#takeMed" ).click(function() {
+          const medFile = document.getElementById('medInput');
+          medFile.click();
+        });
+
         $( "#takePic" ).click(function() {
           const picFile = document.getElementById('picInput');
           picFile.click();
@@ -535,6 +540,16 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
 
             takePic.textContent = "..." + picFileVal.substring(30);
         }
+
+       // get files from input sources and push into array
+        const medInput = document.getElementById('medInput');
+          medInput.onchange = () => {            
+            files.push(medInput.files[0]);
+            console.log(medInput.files[0]);
+            const medFileVal = $('#medInput').val();
+
+            takeMed.textContent = "..." + medFileVal.substring(35);
+        } 
        let vidSize; 
        const vidInput = document.getElementById('vidInput');
           vidInput.onchange = () => {
@@ -554,7 +569,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
               }
             }
 
-             video.src = URL.createObjectURL(selectedFile);      
+          video.src = URL.createObjectURL(selectedFile);      
                                
           }  
 
@@ -674,10 +689,7 @@ document.body.appendChild(link);*/
           $("#vidlabel").hide();
           document.getElementById("pictures").innerHTML = "";
           document.getElementById("videos").innerHTML = "";
-          document.getElementById("sound").innerHTML = "";   
-          if (highlightSelect) {
-            highlightSelect.remove();
-          }    
+          document.getElementById("sound").innerHTML = "";            
           const objectId = graphic.attributes.objectid;
           const title = graphic.attributes.title;
           const desc = linkifyHtml(graphic.attributes.description);
@@ -1085,21 +1097,17 @@ document.body.appendChild(link);*/
               console.log(results);
               view.goTo({
                 center: [results.features[0].geometry.x, results.features[0].geometry.y],
-                zoom: 18,
+                zoom: 19,
                  speedFactor: 0.00000000001, // animation is 10 times slower than default
                   easing: "out-quint"
               });
               // Set a small delay until the story shows up
               setTimeout(() => {
-                console.log("Delayed for 1 second.");
+                console.log("Delayed for 2 seconds.");
                 buildStory(results.features[0]);
               }, "2000")
               
-              view.whenLayerView(storyLayer).then((layerView) => {
-                // if a feature is already highlighted, then remove the highlight
-                if (highlightSelect) {
-                  highlightSelect.remove();
-                }
+              view.whenLayerView(storyLayer).then((layerView) => {                
                 const feature = results.features[0];
                 // set the highlight on the first feature returned by the query
                 highlightSelect = layerView.highlight(feature.attributes.objectid);
@@ -1291,6 +1299,10 @@ document.body.appendChild(link);*/
           view.hitTest(event, opts).then((response) => {
             // check if a feature is returned from the index layer
             if (response.results.length) {
+              // if a feature is already highlighted, then remove the highlight
+                if (highlightSelect) {
+                  highlightSelect.remove();
+                }
               buildStory(response.results[0].graphic);
             }    
           });
@@ -1299,6 +1311,7 @@ document.body.appendChild(link);*/
          storyModal.addEventListener('didDismiss', (ev) => {
            storyModal.isOpen = false;
          });
+
          $( "#modalClose" ).click(function() {
           storyModal.isOpen = false;
          });
@@ -1306,6 +1319,7 @@ document.body.appendChild(link);*/
           splashModal.addEventListener('didDismiss', (ev) => {
            splashModal.isOpen = false;
          });
+
          $( "#splashModalClose" ).click(function() {
           splashModal.isOpen = false;
          });         
