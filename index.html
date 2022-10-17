@@ -666,8 +666,18 @@ document.body.appendChild(link);*/
         });
 
        function buildStory (graphic) {
-          //const graphic = response.results[0].graphic; 
-          console.log(graphic);
+        //const graphic = response.results[0].graphic; 
+        console.log(graphic);
+        $("#storyimg").attr("src", ""); 
+          $("#piclabel").hide();
+          $("#audlabel").hide();
+          $("#vidlabel").hide();
+          document.getElementById("pictures").innerHTML = "";
+          document.getElementById("videos").innerHTML = "";
+          document.getElementById("sound").innerHTML = "";   
+          if (highlightSelect) {
+            highlightSelect.remove();
+          }    
           const objectId = graphic.attributes.objectid;
           const title = graphic.attributes.title;
           const desc = linkifyHtml(graphic.attributes.description);
@@ -1075,9 +1085,16 @@ document.body.appendChild(link);*/
               console.log(results);
               view.goTo({
                 center: [results.features[0].geometry.x, results.features[0].geometry.y],
-                zoom: 18
+                zoom: 18,
+                 speedFactor: 0.00000000001, // animation is 10 times slower than default
+                  easing: "out-quint"
               });
-              buildStory(results.features[0]);
+              // Set a small delay until the story shows up
+              setTimeout(() => {
+                console.log("Delayed for 1 second.");
+                buildStory(results.features[0]);
+              }, "2000")
+              
               view.whenLayerView(storyLayer).then((layerView) => {
                 // if a feature is already highlighted, then remove the highlight
                 if (highlightSelect) {
@@ -1272,17 +1289,6 @@ document.body.appendChild(link);*/
           }
           // check for a click on the story layer
           view.hitTest(event, opts).then((response) => {
-            $("#storyimg").attr("src", ""); 
-            $("#piclabel").hide();
-            $("#audlabel").hide();
-            $("#vidlabel").hide();
-            document.getElementById("pictures").innerHTML = "";
-            document.getElementById("videos").innerHTML = "";
-            document.getElementById("sound").innerHTML = "";   
-            if (highlightSelect) {
-              highlightSelect.remove();
-            }        
-
             // check if a feature is returned from the index layer
             if (response.results.length) {
               buildStory(response.results[0].graphic);
