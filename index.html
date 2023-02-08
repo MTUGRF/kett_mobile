@@ -685,8 +685,6 @@ document.body.appendChild(link);*/
        // Dynamically generates a story for the modal
        // Either on click or from URL paramters 
        function buildStory (graphic) {
-        const metaTitle = "TEST TITLE";
-        $('head').append( '<meta property="og:title" content="' +  metaTitle + '">' );
         //const graphic = response.results[0].graphic; 
         console.log(graphic);
           $("#storyimg").attr("src", ""); 
@@ -788,8 +786,8 @@ document.body.appendChild(link);*/
             if (navigator.share) {
 
               navigator.share({
-                title: title,
-                text: desc,
+                //title: title,
+                //text: desc,
                 url: shareURL,
               })
                 .then(() => console.log('Successful share'))
@@ -1324,8 +1322,11 @@ document.body.appendChild(link);*/
             })
             .then((response) => {
               console.log(response.features);
-              const locCode = response.features[0].attributes.loccode;    
-              const rawShareURL = "https://kett.geospatialresearch.mtu.edu?id=" + graphic.attributes.globalid + "&recnumber=" + graphic.attributes.globalid + "&loctype=&title=" + graphic.attributes.title + "&mapyear=" + graphic.attributes.mapyear + "&x=" + graphic.geometry.x + "&y=" + graphic.geometry.y + "&markerid=" + locCode + "&type=story";
+              const locCode = response.features[0].attributes.loccode; 
+             const ddCoords =  webMercatorUtils.webMercatorToGeographic(response.features[0].geometry); 
+              const xCoord = response.features[0].geometry.x;
+              const yCoord = response.features[0].geometry.y;  
+              const rawShareURL = "https://kett.geospatialresearch.mtu.edu?id=" + graphic.attributes.globalid + "&recnumber=" + graphic.attributes.globalid + "&loctype=&title=" + graphic.attributes.title + "&mapyear=" + graphic.attributes.mapyear + "&x=" + response.features[0].geometry.x + "&y=" + response.features[0].geometry.y + "&markerid=" + locCode + "&type=story";
 
                 shareURL = rawShareURL.replace(/\s/g, '%20')
 
