@@ -13,7 +13,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#285756" >
-    <title>KeTT Mobile Story Telling</title>
+    <title>KeTT Mobile Storytelling</title>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core@6.2.5/dist/ionic/ionic.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core@6.2.5/dist/ionic/ionic.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core@6.2.5/css/ionic.bundle.css" />
@@ -784,6 +784,7 @@ document.body.appendChild(link);*/
           $( "#socShare" ).click(function() {
             console.log("clicked the share btn!");
             if (navigator.share) {
+              $('meta[property="og:title"]').replaceWith('<meta property="og:title" content="New Title">');
               navigator.share({
                 title: title,
                 text: desc,
@@ -794,6 +795,7 @@ document.body.appendChild(link);*/
             }
           });        
        }
+
        
        function parseDateEntry (dateEntry) {
             const response = {
