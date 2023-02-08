@@ -4,11 +4,11 @@
     <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-31KCF205SW"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
+ /* window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'G-31KCF205SW');
+  gtag('config', 'G-31KCF205SW');*/
 </script>  
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -369,6 +369,10 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
     <ion-modal id="storyModal">
       <ion-header>
         <ion-toolbar color="favorite">
+
+<ion-button id="socShare">
+  <ion-icon slot="icon-only" name="share-social-outline"></ion-icon>
+</ion-button>  
           <ion-text color="white">
           <ion-title id="storymodaltitle">Story</ion-title>
       </ion-text>
@@ -418,7 +422,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
               methodToCallIfValid();
           }
           video.src = URL.createObjectURL(file);
-      }
+        }
 
         async function presentToast() {
           const toast = document.createElement('ion-toast');
@@ -537,7 +541,6 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
             files.push(picInput.files[0]);
             console.log(picInput.files[0]);
             const picFileVal = $('#picInput').val();
-
             takePic.textContent = "..." + picFileVal.substring(30);
         }
 
@@ -547,7 +550,6 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
             files.push(medInput.files[0]);
             console.log(medInput.files[0]);
             const medFileVal = $('#medInput').val();
-
             takeMed.textContent = "..." + medFileVal.substring(20);
         } 
        let vidSize; 
@@ -680,10 +682,12 @@ document.body.appendChild(link);*/
           }
         });
 
+       // Dynamically generates a story for the modal
+       // Either on click or from URL paramters 
        function buildStory (graphic) {
         //const graphic = response.results[0].graphic; 
         console.log(graphic);
-        $("#storyimg").attr("src", ""); 
+          $("#storyimg").attr("src", ""); 
           $("#piclabel").hide();
           $("#audlabel").hide();
           $("#vidlabel").hide();
@@ -773,11 +777,24 @@ document.body.appendChild(link);*/
                     audio.controls = "true";
                     audio.style.width = "100%";
                     audio.load();
-                  }
+                  }                   
                 });
               }); 
-          });
+          }); 
+          $( "#socShare" ).click(function() {
+            console.log("clicked the share btn!");
+            if (navigator.share) {
+              navigator.share({
+                title: title,
+                text: desc,
+                url: shareURL,
+              })
+                .then(() => console.log('Successful share'))
+                .catch((error) => console.log('Error sharing', error));
+            }
+          });        
        }
+       
        function parseDateEntry (dateEntry) {
             const response = {
                 valid: false,
@@ -1041,7 +1058,7 @@ document.body.appendChild(link);*/
         // Layer for the story points
         const storyLayer = new FeatureLayer({
           url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/KeweenawHSDI/story_pts_watts2/FeatureServer/0",
-          outFields: ["title", "description", "name", "userdate", "objectid"], // Return all fields so it can be queried client-side        
+          outFields: ["title", "description", "name", "userdate", "objectid", "globalid", "mapyear"], // Return all fields so it can be queried client-side        
           renderer: storiesRenderer,
           definitionExpression: "flag IS NULL"
         });
@@ -1148,7 +1165,7 @@ document.body.appendChild(link);*/
            window.setTimeout( function () {
             lat = position.coords.latitude;
             lon = position.coords.longitude;          
-            }, 5000 );
+           }, 5000 );
           
         },
         function () {
@@ -1290,6 +1307,31 @@ document.body.appendChild(link);*/
         }); 
       });
 
+        let shareURL;
+        // generates a share URL to be shared with the Web Share API
+        function shareStory (graphic) {          
+          // query the record_locs feature service for the loccode
+          // we need this for compatibility with the desktop app
+          arcgisRest
+            .queryFeatures({
+              url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_kett_record_locs/FeatureServer/0",
+              where: "recordid = " + "'" + graphic.attributes.globalid + "'",
+              resultRecordCount: 1             
+            })
+            .then((response) => {
+              console.log(response.features);
+              const locCode = response.features[0].attributes.loccode;    
+              const rawShareURL = "https://kett.geospatialresearch.mtu.edu?id=" + graphic.attributes.globalid + "&recnumber=" + graphic.attributes.globalid + "&loctype=&title=" + graphic.attributes.title + "&mapyear=" + graphic.attributes.mapyear + "&x=" + graphic.geometry.x + "&y=" + graphic.geometry.y + "&markerid=" + locCode + "&type=story";
+
+                shareURL = rawShareURL.replace(/\s/g, '%20')
+
+                console.log(shareURL);
+        
+            });
+
+          
+        }
+
         view.on("click", (event) => {
           // only include graphics from the layer in the hitTest
           const opts = {
@@ -1304,6 +1346,8 @@ document.body.appendChild(link);*/
                   highlightSelect.remove();
                 }
               buildStory(response.results[0].graphic);
+              shareStory(response.results[0].graphic);
+              console.log(response.results[0].graphic);
             }    
           });
         });
