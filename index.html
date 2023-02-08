@@ -685,6 +685,8 @@ document.body.appendChild(link);*/
        // Dynamically generates a story for the modal
        // Either on click or from URL paramters 
        function buildStory (graphic) {
+        const metaTitle = "TEST TITLE";
+        $('head').append( '<meta property="og:title" content="' +  metaTitle + '">' );
         //const graphic = response.results[0].graphic; 
         console.log(graphic);
           $("#storyimg").attr("src", ""); 
@@ -784,7 +786,7 @@ document.body.appendChild(link);*/
           $( "#socShare" ).click(function() {
             console.log("clicked the share btn!");
             if (navigator.share) {
-              $('meta[property="og:title"]').replaceWith('<meta property="og:title" content="New Title">');
+
               navigator.share({
                 title: title,
                 text: desc,
