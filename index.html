@@ -1317,7 +1317,7 @@ document.body.appendChild(link);*/
              const ddCoords =  webMercatorUtils.webMercatorToGeographic(response.features[0].geometry); 
               const xCoord = response.features[0].geometry.x;
               const yCoord = response.features[0].geometry.y;  
-              const rawShareURL = "https://kett.geospatialresearch.mtu.edu?id=" + graphic.attributes.globalid + "&recnumber=" + graphic.attributes.globalid + "&loctype=&title=" + graphic.attributes.title + "&mapyear=" + graphic.attributes.mapyear + "&x=" + response.features[0].geometry.x + "&y=" + response.features[0].geometry.y + "&markerid=" + locCode + "&type=story";
+              const rawShareURL = "https://mtugrf.github.io/kett_mobile?id=" + graphic.attributes.globalid + "&recnumber=" + graphic.attributes.globalid + "&loctype=&title=" + graphic.attributes.title + "&mapyear=" + graphic.attributes.mapyear + "&x=" + response.features[0].geometry.x + "&y=" + response.features[0].geometry.y + "&markerid=" + locCode + "&type=story";
 
                 shareURL = rawShareURL.replace(/\s/g, '%20');
                 shareURL = shareURL.replace(/\|/g, "%7C");
