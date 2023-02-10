@@ -880,6 +880,7 @@ document.body.appendChild(link);*/
         }
 
         let mapyear; 
+        // takes a user-entered date value and places it into a map year for a story submission
         function getMapYear(date) {
           if (date >= 1850 && date <= 1894 ) {
             mapyear = 1888;
@@ -1292,17 +1293,7 @@ document.body.appendChild(link);*/
                     // adjust the transparency of the map based on the sliders value  
                     range.addEventListener('ionChange', ({ detail }) => {                     
                         current_layer.opacity = detail.value / 100;                  
-                    });             
-
-                /*if (popup) {
-                  view.popup.open({
-                    features: [popup],
-                    location: result.geometry.centroid
-                  });       
-                  const extent = result.geometry.extent;
-                  // when clicking on a record zoom to its extent
-                  view.goTo({ center: extent.expand(6) }, { duration: 400 });
-                }            */
+                    });               
                 };
               });
           }
@@ -1316,7 +1307,7 @@ document.body.appendChild(link);*/
           // we need this for compatibility with the desktop app
           arcgisRest
             .queryFeatures({
-              url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_kett_record_locs/FeatureServer/0",
+              url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/giscore_grf_kett_record_locs/MapServer/0",
               where: "recordid = " + "'" + graphic.attributes.globalid + "'",
               resultRecordCount: 1             
             })
@@ -1328,13 +1319,21 @@ document.body.appendChild(link);*/
               const yCoord = response.features[0].geometry.y;  
               const rawShareURL = "https://kett.geospatialresearch.mtu.edu?id=" + graphic.attributes.globalid + "&recnumber=" + graphic.attributes.globalid + "&loctype=&title=" + graphic.attributes.title + "&mapyear=" + graphic.attributes.mapyear + "&x=" + response.features[0].geometry.x + "&y=" + response.features[0].geometry.y + "&markerid=" + locCode + "&type=story";
 
-                shareURL = rawShareURL.replace(/\s/g, '%20')
+                shareURL = rawShareURL.replace(/\s/g, '%20');
+                shareURL = shareURL.replace(/\|/g, "%7C");
 
                 console.log(shareURL);
-        
-            });
 
-          
+                const nextURL = shareURL;
+const nextTitle = graphic.attributes.title;
+const nextState = { additionalInformation: 'Updated the URL with JS' };
+
+// This will create a new entry in the browser's history, without reloading
+window.history.pushState(nextState, nextTitle, nextURL);
+
+// This will replace the current entry in the browser's history, without reloading
+window.history.replaceState(nextState, nextTitle, nextURL);        
+            });          
         }
 
         view.on("click", (event) => {
