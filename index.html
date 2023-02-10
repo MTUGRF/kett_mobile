@@ -1313,26 +1313,23 @@ document.body.appendChild(link);*/
             })
             .then((response) => {
               console.log(response.features);
-              const locCode = response.features[0].attributes.loccode; 
-             const ddCoords =  webMercatorUtils.webMercatorToGeographic(response.features[0].geometry); 
-              const xCoord = response.features[0].geometry.x;
-              const yCoord = response.features[0].geometry.y;  
+              const locCode = response.features[0].attributes.loccode;                
               const rawShareURL = "https://mtugrf.github.io/kett_mobile?id=" + graphic.attributes.globalid + "&recnumber=" + graphic.attributes.globalid + "&loctype=&title=" + graphic.attributes.title + "&mapyear=" + graphic.attributes.mapyear + "&x=" + response.features[0].geometry.x + "&y=" + response.features[0].geometry.y + "&markerid=" + locCode + "&type=story";
 
                 shareURL = rawShareURL.replace(/\s/g, '%20');
                 shareURL = shareURL.replace(/\|/g, "%7C");
 
                 console.log(shareURL);
-
+                // changes the browsers url to one corresponding when the current story being viewed
                 const nextURL = shareURL;
-const nextTitle = graphic.attributes.title;
-const nextState = { additionalInformation: 'Updated the URL with JS' };
+                const nextTitle = graphic.attributes.title;
+                const nextState = { additionalInformation: 'Updated the URL with JS' };
 
-// This will create a new entry in the browser's history, without reloading
-window.history.pushState(nextState, nextTitle, nextURL);
+                // This will create a new entry in the browser's history, without reloading
+                window.history.pushState(nextState, nextTitle, nextURL);
 
-// This will replace the current entry in the browser's history, without reloading
-window.history.replaceState(nextState, nextTitle, nextURL);        
+                // This will replace the current entry in the browser's history, without reloading
+                window.history.replaceState(nextState, nextTitle, nextURL);        
             });          
         }
 
@@ -1358,6 +1355,11 @@ window.history.replaceState(nextState, nextTitle, nextURL);
 
          storyModal.addEventListener('didDismiss', (ev) => {
            storyModal.isOpen = false;
+           // This will create a new entry in the browser's history, without reloading
+                window.history.pushState("", "KeTT Mobile Storytelling", "https://mtugrf.github.io/kett_mobile");
+
+                // This will replace the current entry in the browser's history, without reloading
+                window.history.replaceState("", "KeTT Mobile Storytelling", "https://mtugrf.github.io/kett_mobile");
          });
 
          $( "#modalClose" ).click(function() {
