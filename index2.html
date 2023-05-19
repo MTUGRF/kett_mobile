@@ -1,15 +1,16 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-31KCF205SW"></script>
+<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-31KCF205SW"></script>
 <script>
-  /*window.dataLayer = window.dataLayer || [];
+  window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'G-31KCF205SW');*/
-</script>  
+  gtag('config', 'G-31KCF205SW');
+</script>   -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#285756" >
@@ -359,6 +360,11 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
             <ion-icon name="map-outline"></ion-icon>
             <ion-badge id="mapcount">6</ion-badge>
           </ion-tab-button>
+          <ion-tab-button tab="nearby">
+            <ion-label>Nearby</ion-label>
+            <ion-icon name="people-outline"></ion-icon>
+            <ion-badge color="secondary" id="nearbycount">6</ion-badge>
+          </ion-tab-button>
           <ion-tab-button tab="stories">
             <ion-label>Share a Story</ion-label>
             <ion-icon name="book-outline"></ion-icon>
@@ -408,7 +414,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
   </body>
 </html>
 <script>
-  require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/support/webMercatorUtils", "esri/geometry/Point"], function (esriConfig, Map, MapView, FeatureLayer, TileLayer, Track, Graphic, GraphicsLayer, webMercatorUtils, Point) {        
+  require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/support/webMercatorUtils", "esri/geometry/Point"], function (esriConfig, Map, MapView, FeatureLayer, TileLayer, Track, Graphic, GraphicsLayer, webMercatorUtils, Point) {             
 
         function validateFile(file) {
           const video = document.createElement('video');
@@ -657,13 +663,8 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
                   const audioURL = window.URL.createObjectURL(blob);
                   const file = new File([blob], 'audiostory.mp3', {
                     type: blob.type,
-                });
-/*                  var link = document.createElement("a"); // Or maybe get it from the current document
-link.href = audioURL;
-link.download = "aDefaultFileName" + blob.type;
-link.innerHTML = "Click here to download the file";
-link.click();
-document.body.appendChild(link);*/ 
+                  });
+
                   console.log(file);
                   files.push(file);
                   //console.log(audioURL);
@@ -728,8 +729,7 @@ document.body.appendChild(link);*/
               .forEach(function(objectId) {
                 const attachments = attachmentsByFeatureId[objectId];
                 attachments.forEach(function (attachment) {                   
-                  if (attachment.contentType == "image/jpeg" || attachment.contentType == "image/png" || attachment.contentType == "image/gif") {
-                   
+                  if (attachment.contentType == "image/jpeg" || attachment.contentType == "image/png" || attachment.contentType == "image/gif") {                   
                     const imgarray = [];
                     imgarray.push(attachment);
                     const attachUrl = imgarray[0].url;
@@ -1061,7 +1061,7 @@ document.body.appendChild(link);*/
         // Layer for the story points
         const storyLayer = new FeatureLayer({
           url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/KeweenawHSDI/story_pts_watts2/FeatureServer/0",
-          outFields: ["title", "description", "name", "userdate", "objectid", "globalid", "mapyear"], // Return all fields so it can be queried client-side        
+          outFields: [], // Return all fields so it can be queried client-side        
           renderer: storiesRenderer,
           definitionExpression: "flag IS NULL"
         });
@@ -1100,6 +1100,10 @@ document.body.appendChild(link);*/
           const queryString = window.location.search;        
           console.log(queryString);
           if (queryString != "") {
+             // when the page is loaded set the default URL to match Desktop KeTT
+            window.history.pushState("", "KeTT Mobile Storytelling", "https://kett.geospatialresearch.mtu.edu" + queryString);
+            // This will replace the current entry in the browser's history, without reloading
+            window.history.replaceState("", "KeTT Mobile Storytelling", "https://kett.geospatialresearch.mtu.edu" + queryString);
             splashModal.isOpen = false;
             const urlParams = new URLSearchParams(queryString);
             const storyId = urlParams.get('id');
@@ -1135,7 +1139,12 @@ document.body.appendChild(link);*/
             }).catch((error) => {
               console.log(error.error);
           });
-         }           
+         } else {
+           // when the page is loaded set the default URL to match Desktop KeTT
+          window.history.pushState("", "KeTT Mobile Storytelling", "https://kett.geospatialresearch.mtu.edu");
+          // This will replace the current entry in the browser's history, without reloading
+          window.history.replaceState("", "KeTT Mobile Storytelling", "https://kett.geospatialresearch.mtu.edu");
+         }          
       });
 
         $( "#geolocation" ).click(function() {
@@ -1150,7 +1159,32 @@ document.body.appendChild(link);*/
               longitude: currentCoords.longitude
             });
             view.goTo({target: point, scale: 5000, speedFactor: 0.1});
+
             console.log(currentCoords);
+            const queryGeometry = {
+            x: currentCoords.longitude,
+            y: currentCoords.latitude,
+            spatialReference: {
+              wkid: 4326
+            }
+          };
+
+          console.log(lat,lon, queryGeometry);
+
+          arcgisRest
+            .queryFeatures({
+              url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_kett_record_locs/FeatureServer/0",
+              geometry: queryGeometry,
+              geometryType: "esriGeometryPoint",
+              spatialRel: "esriSpatialRelIntersects",
+              distance: 300,
+              units: "esriSRUnit_Foot",
+              //SR: "4326",
+              //authentication
+            })
+            .then((response) => {
+              console.log(response);
+            });
           });
          } else {
           track.stop();
@@ -1318,6 +1352,8 @@ document.body.appendChild(link);*/
 
               shareURL = rawShareURL.replace(/\s/g, '%20');
               shareURL = shareURL.replace(/\|/g, "%7C");
+              shareURL = shareURL.replace(/\{/g, "%7B");
+              shareURL = shareURL.replace(/\}/g, "%7D");
 
               console.log(shareURL);
               // changes the browsers url to one corresponding when the current story being viewed
@@ -1334,12 +1370,14 @@ document.body.appendChild(link);*/
       }
 
       view.on("click", (event) => {
+        storyLayer.outFields = ["title", "description", "name", "userdate", "objectid", "globalid", "mapyear"];
         // only include graphics from the layer in the hitTest
         const opts = {
           include: storyLayer
         }
         // check for a click on the story layer
         view.hitTest(event, opts).then((response) => {
+
           // check if a feature is returned from the index layer
           if (response.results.length) {
             // if a feature is already highlighted, then remove the highlight
