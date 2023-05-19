@@ -350,6 +350,17 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
         </ion-slides>
       </ion-content>
         </ion-tab>
+         <ion-tab tab="nearby">
+          <ion-header translucent>
+            <ion-toolbar>
+              <ion-title>Nearby</ion-title>
+            </ion-toolbar>
+          </ion-header>
+
+          <ion-content fullscreen class="ion-padding" id="nearcontent">            
+          <p> Showing historic people and places within a 100 foot radius on your current location. </p>
+          </ion-content>
+         </ion-tab>
         <ion-tab-bar slot="bottom">
           <ion-tab-button tab="home">
             <ion-label>Explore</ion-label>
@@ -358,12 +369,12 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
           <ion-tab-button tab="maps">
             <ion-label>Maps</ion-label>
             <ion-icon name="map-outline"></ion-icon>
-            <ion-badge id="mapcount">6</ion-badge>
+            <ion-badge id="mapcount">0</ion-badge>
           </ion-tab-button>
           <ion-tab-button tab="nearby">
             <ion-label>Nearby</ion-label>
             <ion-icon name="people-outline"></ion-icon>
-            <ion-badge color="secondary" id="nearbycount">6</ion-badge>
+            <ion-badge color="secondary" id="nearbycount">0</ion-badge>
           </ion-tab-button>
           <ion-tab-button tab="stories">
             <ion-label>Share a Story</ion-label>
@@ -1147,6 +1158,8 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
          }          
       });
 
+        const listNodeNearby = document.getElementById("nearcontent");
+
         $( "#geolocation" ).click(function() {
          // track.start();
          if (track.tracking == false) {
@@ -1177,13 +1190,48 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
               geometry: queryGeometry,
               geometryType: "esriGeometryPoint",
               spatialRel: "esriSpatialRelIntersects",
-              distance: 300,
+              distance: 100,
               units: "esriSRUnit_Foot",
               //SR: "4326",
               //authentication
             })
             .then((response) => {
-              console.log(response);
+               const features = response.features;
+               console.log(features);
+               document.getElementById("nearbycount").innerHTML = features.length;
+               // Sort the features first by title, then by year  
+               features.sort(function (a, b) {
+                  return a.attributes.title.localeCompare(b.attributes.title) || a.attributes.ayear - b.attributes.ayear;
+                });
+                
+                let item;
+                const fragment = document.createDocumentFragment();
+                features.forEach(function(result, index) {
+                    const attributes = result.attributes;
+                    const title = attributes.title;
+                    const year = attributes.eyear;
+                    console.log(title);
+                    item = document.createElement("ion-item");
+                    const label = document.createElement("ion-label");
+                    const icon = document.createElement("ion-icon"); 
+                    item.href = "#"; 
+                    if (attributes.entitytype == "person") {
+                      icon.name = "home-outline";
+                    } else if (attributes.entitytype == "building") {
+                      icon.name = "people-outline"
+                    } else {
+                      icon.name = "map-outline";
+                    }                
+                    
+                    item.detail = "false";                                         
+                    icon.slot = "end";
+                    label.innerHTML = year + " " + title; 
+                    item.appendChild(icon);
+                    item.appendChild(label);
+                    item.addEventListener("click", () => resultClickHandler(result, index));
+                    fragment.appendChild(item);                     
+                    listNodeNearby.appendChild(fragment);
+                }); 
             });
           });
          } else {
@@ -1198,12 +1246,11 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
 
         function setGeolocation() {
           const geolocation = window.navigator.geolocation.watchPosition( function ( position ) {
-           
+
            window.setTimeout( function () {
             lat = position.coords.latitude;
             lon = position.coords.longitude;          
-           }, 5000 );
-          
+           }, 5000 );          
         },
         function () {
             //error
