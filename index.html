@@ -15,9 +15,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#285756" >
     <title>KeTT Mobile Storytelling</title>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core@6.2.5/dist/ionic/ionic.esm.js"></script>
-    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core@6.2.5/dist/ionic/ionic.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core@6.2.5/css/ionic.bundle.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
     <link rel="stylesheet" href="https://js.arcgis.com/4.24/esri/themes/light/main.css">
     <link href="https://www.dafontfree.net/embed/cGF0cmljaWFuLXJlZ3VsYXImZGF0YS8yNi9wLzEzODA1Ny9QYXRyaWNhbi50dGY" rel="stylesheet" type="text/css"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -374,7 +374,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
           <ion-tab-button tab="nearby">
             <ion-label>Nearby</ion-label>
             <ion-icon name="people-outline"></ion-icon>
-            <ion-badge color="secondary" id="nearbycount">0</ion-badge>
+            <ion-badge color="tertiary" id="nearbycount">0</ion-badge>
           </ion-tab-button>
           <ion-tab-button tab="stories">
             <ion-label>Share a Story</ion-label>
@@ -421,11 +421,66 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
         </ion-card>
       </ion-content>
     </ion-modal>
+      <ion-modal trigger="open-modal" initial-breakpoint="0.25" id="nearbyModal">
+    <ion-content>
+      <ion-searchbar placeholder="Search"></ion-searchbar>
+      <ion-list>
+        <ion-item>
+          <ion-avatar slot="start">
+            <ion-img src="https://i.pravatar.cc/300?u=b" />
+          </ion-avatar>
+          <ion-label>
+            <h2>Connor Smith</h2>
+            <p>Sales Rep</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-avatar slot="start">
+            <ion-img src="https://i.pravatar.cc/300?u=a" />
+          </ion-avatar>
+          <ion-label>
+            <h2>Daniel Smith</h2>
+            <p>Product Designer</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-avatar slot="start">
+            <ion-img src="https://i.pravatar.cc/300?u=d" />
+          </ion-avatar>
+          <ion-label>
+            <h2>Greg Smith</h2>
+            <p>Director of Operations</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-avatar slot="start">
+            <ion-img src="https://i.pravatar.cc/300?u=e" />
+          </ion-avatar>
+          <ion-label>
+            <h2>Zoey Smith</h2>
+            <p>CEO</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ion-modal>
 </ion-app>
   </body>
 </html>
 <script>
-  require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/support/webMercatorUtils", "esri/geometry/Point"], function (esriConfig, Map, MapView, FeatureLayer, TileLayer, Track, Graphic, GraphicsLayer, webMercatorUtils, Point) {             
+  require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/support/webMercatorUtils", "esri/geometry/Point"], function (esriConfig, Map, MapView, FeatureLayer, TileLayer, Track, Graphic, GraphicsLayer, webMercatorUtils, Point) {   
+
+
+        var nearbyModal = document.getElementById('nearbyModal');
+  var searchBar = document.querySelector('ion-searchbar');
+
+  nearbyModal.breakpoints = [0, 0.25, 0.5, 0.75];
+
+  searchBar.addEventListener('click', () => {
+    nearbyModal.setCurrentBreakpoint(0.75);
+  });          
+
+  nearbyModal.isOpen = true;
 
         function validateFile(file) {
           const video = document.createElement('video');
@@ -1076,13 +1131,13 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
           renderer: storiesRenderer,
           definitionExpression: "flag IS NULL"
         });
-
+        const layer = new GraphicsLayer();
         const graphicsLayer = new GraphicsLayer();
       //map.add(graphicsLayer);
 
         const map = new Map({
           basemap: "satellite", // Basemap layer service
-          layers: [indexLayer, storyLayer, graphicsLayer]
+          layers: [indexLayer, storyLayer, graphicsLayer, layer]
         });
 
         const view = new MapView({
@@ -1158,6 +1213,33 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
          }          
       });
 
+        // accuracy symbol
+        const symbol = {
+          type: "simple-marker",
+          outline: { color: [255, 255, 255, 1] },
+          size: 12,
+          color: [96, 177, 212, 0.39]
+        };
+
+        let accuracy = 1;
+        let currentCoords;
+
+        // update symbol as view resolution changes
+        view.watch("resolution", (resolution) => {
+          if (!currentCoords) return;
+          const size = (100 / view.resolution);
+          symbol.size = size;
+          layer.removeAll();
+          layer.add({
+            geometry: {
+              type: "point",
+              latitude: currentCoords.latitude,
+              longitude: currentCoords.longitude
+            },
+            symbol
+          });
+        });
+
         const listNodeNearby = document.getElementById("nearcontent");
 
         $( "#geolocation" ).click(function() {
@@ -1167,6 +1249,17 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
           document.getElementById("gpsicon").style.color = "#3880ff";
           track.once("track", ({ position }) => {
            currentCoords = position.coords;
+            const size =  (100 / view.resolution);
+          symbol.size = size;
+          layer.removeAll();
+          layer.add({
+            geometry: {
+              type: "point",
+              latitude: currentCoords.latitude,
+              longitude: currentCoords.longitude
+            },
+            symbol
+          });
            const point = new Point({
               latitude: currentCoords.latitude,
               longitude: currentCoords.longitude
@@ -1191,13 +1284,27 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
               geometryType: "esriGeometryPoint",
               spatialRel: "esriSpatialRelIntersects",
               distance: 100,
-              units: "esriSRUnit_Foot",
-              //SR: "4326",
-              //authentication
+              units: "esriSRUnit_Foot"              
             })
             .then((response) => {
+              
+               const placeMarkerSymbol = {          
+                "type": "picture-marker",
+                "url": "assets/marker_place.png",
+                "width": "18px",
+                "height": "18px"          
+              };
+
+              const personMarkerSymbol = {          
+                "type": "picture-marker",
+                "url": "assets/marker_person.png",
+                "width": "18px",
+                "height": "18px"          
+              };
+
                const features = response.features;
                console.log(features);
+
                document.getElementById("nearbycount").innerHTML = features.length;
                // Sort the features first by title, then by year  
                features.sort(function (a, b) {
@@ -1207,6 +1314,26 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
                 let item;
                 const fragment = document.createDocumentFragment();
                 features.forEach(function(result, index) {
+                     // convert the coordinates into decimal degrees
+                const ddCoords = webMercatorUtils.webMercatorToGeographic(result.geometry);
+          
+                const point = { //Create a point
+                  type: "point",
+                  longitude: ddCoords.x,
+                  latitude:  ddCoords.y,
+                };          
+
+               const pointGraphic = new Graphic({
+                  geometry: point,
+                 // symbol: simpleMarkerSymbol
+               });
+
+               if (result.attributes.entitytype == "person") {
+                pointGraphic.symbol = personMarkerSymbol;
+               } else if (result.attributes.entitytype == "building") {
+                pointGraphic.symbol = placeMarkerSymbol;
+               }
+               graphicsLayer.add(pointGraphic, 0);
                     const attributes = result.attributes;
                     const title = attributes.title;
                     const year = attributes.eyear;
@@ -1216,9 +1343,9 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
                     const icon = document.createElement("ion-icon"); 
                     item.href = "#"; 
                     if (attributes.entitytype == "person") {
-                      icon.name = "home-outline";
+                      icon.name = "people-outline";
                     } else if (attributes.entitytype == "building") {
-                      icon.name = "people-outline"
+                      icon.name = "home-outline"
                     } else {
                       icon.name = "map-outline";
                     }                
