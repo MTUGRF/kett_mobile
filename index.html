@@ -1643,15 +1643,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
               //authentication
             })
             .then((response) => {
-              /*const placeMarkerSymbol = {
-                type: "simple-marker",
-                color: [226, 119, 40],  // Orange
-                outline: {
-                    color: [255, 255, 255], // White
-                    width: 1
-                }
-              };
-*/
+              
               const placeMarkerSymbol = {          
                 "type": "picture-marker",
                 "url": "assets/marker_place.png",
@@ -1664,17 +1656,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
                 "url": "assets/marker_person.png",
                 "width": "18px",
                 "height": "18px"          
-              };
-
-
-              /*const personMarkerSymbol = {
-                type: "simple-marker",
-                color: [226, 4, 49],  // Orange
-                outline: {
-                    color: [255, 255, 255], // White
-                    width: 1
-                }
-              };*/
+              };           
 
               console.log(response.features);
               const features = response.features;
@@ -1701,23 +1683,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
                graphicsLayer.add(pointGraphic);
              });
               //document.getElementById("result").textContent = JSON.stringify(response.features, null, 2);
-            });
-          /*// query the maps extent for any people or places from the feature service. 
-          arcgisRest
-            .queryFeatures({
-              url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_kett_record_locs/FeatureServer/0",
-              geometry: queryGeometry,
-              geometryType: "esriGeometryEnvelope",
-              spatialRel: "esriSpatialRelContains",
-              //authentication
-            })
-            .then((response) => {
-              console.log(response.features);
-              //document.getElementById("result").textContent = JSON.stringify(response.features, null, 2);
-            });*/
-      
-
-            
+            });           
           }
         });
       });
