@@ -225,7 +225,7 @@
         <ion-modal initial-breakpoint="0.25" id="nearbyModal" mode="ios" backdrop-dismiss="false" backdrop-breakpoint="0.5">
    <ion-content id="whatsherecontent">
       <center><p> Showing people and places from 1908-1930 near this location.</p></center>
-      <ion-list>
+      <ion-list mode="ios">
        
       </ion-list>
     </ion-content>
@@ -1476,7 +1476,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
                     icon.slot = "end";
                     label.innerHTML = year + " " + title; 
                     item.appendChild(icon);
-                    item.appendChild(label);
+                    item.appendChild(label);                    
                     item.addEventListener("click", () => resultClickHandler(result, index));
                     fragment.appendChild(item);                     
                     listNode.appendChild(fragment);
@@ -1656,6 +1656,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
                     item = document.createElement("ion-item");
                     const label = document.createElement("ion-label");
                     const icon = document.createElement("ion-icon"); 
+                    const arrow = document.createElement("ion-icon");
                     item.href = "#"; 
                     if (attributes.entitytype == "person") {
                       icon.name = "people-outline";
@@ -1666,9 +1667,12 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
                     }                
                     
                     item.detail = "false";                                         
-                    icon.slot = "end";
+                    icon.slot = "start"; 
+                    arrow.name = "arrow-forward";
+                    arrow.slot = "end";                  
                     label.innerHTML = year + " " + title; 
                     item.appendChild(icon);
+                    item.appendChild(arrow);
                     item.appendChild(label);
                     item.addEventListener("click", () => resultClickHandler(result, index));
                     fragment.appendChild(item);                     
