@@ -223,40 +223,10 @@
         <ion-content [fullscreen]="true">         
 <ion-action-sheet trigger="open-action-sheet" header="Actions" mode="md"></ion-action-sheet>
         <ion-modal initial-breakpoint="0.25" id="nearbyModal" mode="ios" backdrop-dismiss="false" backdrop-breakpoint="0.5">
-   <ion-content>
-      <center><p> Showing people and places from 1914-1924 near this location.</p></center>
+   <ion-content id="whatsherecontent">
+      <center><p> Showing people and places from 1908-1930 near this location.</p></center>
       <ion-list>
-        <ion-item>
-         
-          <ion-label>
-            <h2>John Aho, 37</h2>
-            <p>TRAMMER (Isle Royale Mining Co.)</p>
-            <p>Lived here in 1928</p>
-          </ion-label>
-        </ion-item>
-        <ion-item>
-          
-          <ion-label>
-            <h2>Jacob Peterson, 42</h2>
-            <p>Miner (C & H Copper Co.)</p>
-            <p>Lived here in 1914</p>
-          </ion-label>
-        </ion-item>
-        <ion-item>
-          
-          <ion-label>
-            <h2>Harold Ford, 28</h2>
-            <p>Office assistant (C & H Copper Co.)</p>
-          </ion-label>
-        </ion-item>
-        <ion-item>
-          
-          <ion-label>
-            <h2>Ann Burr, 42</h2>
-            <p>Laborer (Ahmeek Mining Co.)</p>
-            <p>Lived here in 1949</p>
-          </ion-label>
-        </ion-item>
+       
       </ion-list>
     </ion-content>
   </ion-modal>
@@ -1281,6 +1251,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
         });
 
         const listNodeNearby = document.getElementById("nearcontent");
+        const listNodeWhatsHere = document.getElementById("whatsherecontent");
 
         $( "#geolocation" ).click(function() {
          // track.start();
@@ -1607,6 +1578,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
 
       // if the users holds on the map, show the action sheet
       view.on("hold", function(evt) { 
+        const fragment = document.createDocumentFragment();
         nearbyModal.isOpen = false;               
         lat = evt.mapPoint.latitude
         lon = evt.mapPoint.longitude
@@ -1676,6 +1648,31 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
                 pointGraphic.symbol = placeMarkerSymbol;
                }
                graphicsLayer.add(pointGraphic);
+
+                 const attributes = feature.attributes;
+                    const title = attributes.title;
+                    const year = attributes.eyear;
+                    console.log(title);
+                    item = document.createElement("ion-item");
+                    const label = document.createElement("ion-label");
+                    const icon = document.createElement("ion-icon"); 
+                    item.href = "#"; 
+                    if (attributes.entitytype == "person") {
+                      icon.name = "people-outline";
+                    } else if (attributes.entitytype == "building") {
+                      icon.name = "home-outline"
+                    } else {
+                      icon.name = "map-outline";
+                    }                
+                    
+                    item.detail = "false";                                         
+                    icon.slot = "end";
+                    label.innerHTML = year + " " + title; 
+                    item.appendChild(icon);
+                    item.appendChild(label);
+                    item.addEventListener("click", () => resultClickHandler(result, index));
+                    fragment.appendChild(item);                     
+                    listNodeWhatsHere.appendChild(fragment);
              });
 
               nearbyModal.isOpen = true;
