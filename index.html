@@ -1,25 +1,19 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Google tag (gtag.js) -->
-<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-31KCF205SW"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+   <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9WYTES3B0G"></script>
 
-  gtag('config', 'G-31KCF205SW');
-</script>   -->
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#285756" >
     <title>KeTT Mobile Storytelling</title>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
-    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.skypack.dev/@ionic/core@7/css/core.css" />
-  <link rel="stylesheet" type="text/css" href="https://cdn.skypack.dev/@ionic/core@7/css/ionic.bundle.css" />
-    <link rel="stylesheet" href="https://js.arcgis.com/4.24/esri/themes/light/main.css">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core@6.2.5/dist/ionic/ionic.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core@6.2.5/dist/ionic/ionic.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core@6.2.5/css/ionic.bundle.css" />
+    <link rel="stylesheet" href="https://js.arcgis.com/next/esri/themes/light/main.css">
+
     <link href="https://www.dafontfree.net/embed/cGF0cmljaWFuLXJlZ3VsYXImZGF0YS8yNi9wLzEzODA1Ny9QYXRyaWNhbi50dGY" rel="stylesheet" type="text/css"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,7 +24,7 @@
     <script src="https://unpkg.com/@esri/arcgis-rest-feature-service@4.0.0/dist/bundled/feature-service.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/linkifyjs@3.0.5/dist/linkify.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/linkify-html@3.0.5/dist/linkify-html.min.js"></script>
-    <script src="https://js.arcgis.com/4.24/"></script>
+    <script src="https://js.arcgis.com/next/"></script>
     <style>
      
 
@@ -40,7 +34,7 @@
 
       :root {
         --ion-font-family:  'Lato', sans-serif;
-        --ion-color-favorite: #408482;
+        --ion-color-favorite: #CC6131;
         --ion-color-favorite-contrast: #FFFFFF;
         --ion-color-header: #285756;
         --ion-color-white: #FFFFFF;
@@ -220,26 +214,7 @@
               <ion-title>Explore</ion-title>
             </ion-toolbar>
           </ion-header>     
-        <ion-content [fullscreen]="true">         
-<ion-action-sheet trigger="open-action-sheet" header="Actions" mode="md"></ion-action-sheet>
-        <ion-modal initial-breakpoint="0.25" id="nearbyModal" mode="ios" backdrop-dismiss="false" backdrop-breakpoint="0.5">
-   <ion-content id="whatsherecontent">
-      <center><p> Showing people and places from 1908-1930 near this location.</p></center>
-      <ion-list mode="ios">
-       
-      </ion-list>
-    </ion-content>
-  </ion-modal>
-  <ion-modal initial-breakpoint="0.25" id="searchModal" mode="ios" backdrop-dismiss="false" backdrop-breakpoint="0.5">
-   <ion-content id="searchcontent">
-     <ion-searchbar placeholder="Search" (click)="modal.setCurrentBreakpoint(0.75)"></ion-searchbar>
-      <center><p>Your search returned 25 results.</p></center>
-      <ion-list mode="ios">
-       
-      </ion-list>
-    </ion-content>
-  </ion-modal> 
-  </ion-modal> 
+        <ion-content [fullscreen]="true">  
          <ion-modal id="splashModal">
       <ion-header>
         <ion-toolbar color="gray">
@@ -370,29 +345,6 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
         </ion-slides>
       </ion-content>
         </ion-tab>
-         <ion-tab tab="nearby">
-          <ion-header translucent>
-            <ion-toolbar>
-              <ion-title>Nearby</ion-title>
-            </ion-toolbar>
-          </ion-header>
-
-          <ion-content fullscreen class="ion-padding" id="nearcontent">            
-          <p> Showing historic people and places within a 100 foot radius of your current location. </p>
-          </ion-content>
-         </ion-tab> 
-        
-          <ion-tab tab="nearby">
-          <ion-header translucent>
-            <ion-toolbar>
-              <ion-title>Nearby</ion-title>
-            </ion-toolbar>
-          </ion-header>
-
-          <ion-content fullscreen class="ion-padding" id="nearcontent">            
-          <p> Showing historic people and places within a 100 foot radius of your current location. </p>
-          </ion-content>
-         </ion-tab>
         <ion-tab-bar slot="bottom">
           <ion-tab-button tab="home">
             <ion-label>Explore</ion-label>
@@ -401,16 +353,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
           <ion-tab-button tab="maps">
             <ion-label>Maps</ion-label>
             <ion-icon name="map-outline"></ion-icon>
-            <ion-badge id="mapcount">0</ion-badge>
-          </ion-tab-button>
-           <ion-tab-button tab="search" id="search" onclick="searchModal.isOpen = true;">
-            <ion-label>Search</ion-label>
-            <ion-icon name="search-outline"></ion-icon>            
-          </ion-tab-button>
-          <ion-tab-button tab="nearby">
-            <ion-label>Nearby</ion-label>
-            <ion-icon name="people-outline"></ion-icon>
-            <ion-badge color="tertiary" id="nearbycount">0</ion-badge>
+            <ion-badge id="mapcount">6</ion-badge>
           </ion-tab-button>
           <ion-tab-button tab="stories">
             <ion-label>Share a Story</ion-label>
@@ -427,7 +370,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
   <ion-icon slot="icon-only" name="share-social-outline"></ion-icon>
 </ion-button>  --> 
           <ion-text color="white">
-          <ion-title id="storymodaltitsle">1928 Aimo W Aho, Home, Hancock</ion-title>
+          <ion-title id="storymodaltitle">Story</ion-title>
       </ion-text>
           <ion-buttons slot="end">
             <ion-text color="white">
@@ -438,217 +381,30 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
       </ion-header>
       <ion-content class="ion-padding">
        <ion-card>
-         
+          <img src="" id="storyimg" />
           <ion-card-header>
-            <ion-card-subtitle id="subftitle"></ion-card-subtitle>
-            <ion-card-title id="storyftitle">Aimo W Aho</ion-card-title>
+            <ion-card-subtitle id="subtitle"></ion-card-subtitle>
+            <ion-card-title id="storytitle">Madison, WI</ion-card-title>
           </ion-card-header>
-          <ion-card-subtitle id="storyfauthor" style="margin-left: 15px;">Trammer</ion-card-subtitle>
-          <ion-card-content id="storyfdesc">
-          <ion-list>
-  <ion-item-group>
-    <ion-item-divider color="light">
-      <ion-label> NAME </ion-label>
-    </ion-item-divider>
-
-    <ion-item>
-      <ion-label>First name: Aimo</ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>Last name: Aho</ion-label>
-    </ion-item>    
-  </ion-item-group>
-
-  <ion-item-group>
-    <ion-item-divider color="light">
-      <ion-label> DEMOGRAPHICS </ion-label>
-    </ion-item-divider>
-
-    <ion-item>
-      <ion-label>Age: 45</ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>Birth Year: 1921</ion-label>
-    </ion-item>
-    <ion-item lines="none">
-      <ion-label>Birthplace: Michigan</ion-label>
-    </ion-item>
-  </ion-item-group>
-   <ion-item-group>
-    <ion-item-divider color="light">
-      <ion-label> EMPLOYMENT </ion-label>
-    </ion-item-divider>
-
-    <ion-item>
-      <ion-label>Occupation: TRAMMER</ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>Employer: Isle Royale Copper Co.</ion-label>
-    </ion-item>
-    <ion-item lines="none">
-      <ion-label>Birthplace: Michigan</ion-label>
-    </ion-item>
-  </ion-item-group>
-</ion-list>            
-           
-          </ion-card-content>             
+          <ion-card-subtitle id="storyauthor" style="margin-left: 15px;"></ion-card-subtitle>
+          <ion-card-content id="storydesc">
+            Founded in 1829 on an isthmus between Lake Monona and Lake Mendota, Madison was named the capital of the
+            Wisconsin Territory in 1836.              
+          </ion-card-content>   
+          <center><ion-label id="piclabel" class="media-label">Pictures</ion-label></center> 
+          <div id="pictures"></div>      
+          <center><ion-label id="vidlabel" class="media-label">Videos</ion-label></center>
+          <div id="videos"></div>                  
+          <center><ion-label id=audlabel class="media-label">Audio</ion-label></center>        
+          <div id="sound"></div>  
         </ion-card>
       </ion-content>
-    </ion-modal>        
-</ion-content>
+    </ion-modal>
 </ion-app>
   </body>
 </html>
 <script>
-      var nearbyModal = document.getElementById('nearbyModal');
-      var searchBar = document.querySelector('ion-searchbar');
-      nearbyModal.breakpoints = [0, 0.25, 0.5, 0.75];
-
-      var searchModal = document.getElementById('searchModal');
-     
-      searchModal.breakpoints = [0, 0.25, 0.5, 0.75];
-      
-
-  require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/support/webMercatorUtils", "esri/geometry/Point"], function (esriConfig, Map, MapView, FeatureLayer, TileLayer, Track, Graphic, GraphicsLayer, webMercatorUtils, Point) {      
-
-  searchBar.addEventListener('keyup', (input) => {
-     if (event.key === "Enter") {
-    // Cancel the default action, if needed
-    event.preventDefault();
-    const searchVal = $('#searchBar').val();
-    console.log(searchVal);
-     arcgisRest
-            .queryFeatures({
-              url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_kett_record_locs/FeatureServer/0",
-              where: "title like '%Aho%'"           
-            })
-            .then((response) => {
-              
-               const placeMarkerSymbol = {          
-                "type": "picture-marker",
-                "url": "assets/marker_place.png",
-                "width": "18px",
-                "height": "18px"          
-              };
-
-              const personMarkerSymbol = {          
-                "type": "picture-marker",
-                "url": "assets/marker_person.png",
-                "width": "18px",
-                "height": "18px"          
-              };
-
-               const features = response.features;
-               console.log(features);
-
-               document.getElementById("nearbycount").innerHTML = features.length;
-               // Sort the features first by title, then by year  
-               features.sort(function (a, b) {
-                  return a.attributes.title.localeCompare(b.attributes.title) || a.attributes.ayear - b.attributes.ayear;
-                });
-                
-                let item;
-                const fragment = document.createDocumentFragment();
-                features.forEach(function(result, index) {
-                     // convert the coordinates into decimal degrees
-                const ddCoords = webMercatorUtils.webMercatorToGeographic(result.geometry);
-          
-                const point = { //Create a point
-                  type: "point",
-                  longitude: ddCoords.x,
-                  latitude:  ddCoords.y,
-                };          
-
-               const pointGraphic = new Graphic({
-                  geometry: point,
-                 // symbol: simpleMarkerSymbol
-               });
-
-               if (result.attributes.entitytype == "person") {
-                pointGraphic.symbol = personMarkerSymbol;
-               } else if (result.attributes.entitytype == "building") {
-                pointGraphic.symbol = placeMarkerSymbol;
-               }
-               graphicsLayer.add(pointGraphic, 0);
-                    const attributes = result.attributes;
-                    const title = attributes.title;
-                    const year = attributes.eyear;
-                    console.log(title);
-                    item = document.createElement("ion-item");
-                    const label = document.createElement("ion-label");
-                    const icon = document.createElement("ion-icon"); 
-                    item.href = "#"; 
-                    if (attributes.entitytype == "person") {
-                      icon.name = "people-outline";
-                    } else if (attributes.entitytype == "building") {
-                      icon.name = "home-outline"
-                    } else {
-                      icon.name = "map-outline";
-                    }                
-                    
-                    item.detail = "false";                                         
-                    icon.slot = "end";
-                    label.innerHTML = year + " " + title; 
-                    item.appendChild(icon);
-                    item.appendChild(label);
-                    item.addEventListener("click", () => resultClickHandler(result, index));
-                    fragment.appendChild(item);                     
-                    listNodeSearch.appendChild(fragment);
-                }); 
-              });
-            }
-  });
-
-  
-
-
-    // Setup a new action sheet
-    var actionSheet = document.querySelector('ion-action-sheet');
-
-
-    actionSheet.header = 'What do you want to do?';    
-    actionSheet.buttons = [
-      {
-        text: "What was here?", 
-        icon: "location-outline",       
-        data: {
-          action: 'nearby',
-        },
-      },
-      {
-        text: 'Share a story here',
-        icon: 'book-outline',
-        data: {
-          action: 'share',
-        },
-      },
-      {
-        text: 'Share this location',
-        icon: 'share-outline',
-        data: {
-          action: 'share',
-        },
-      },
-      {
-        text: 'Cancel',
-        role: 'cancel',
-        data: {
-          action: 'cancel',
-        },
-      },
-    ];
-
-      
-
-     
-  
- 
-        $(document).ready(function(){
-            function showSearch () {
-          searchModal.isOpen = true;
-        }
-
-        });
+  require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/support/webMercatorUtils", "esri/geometry/Point"], function (esriConfig, Map, MapView, FeatureLayer, TileLayer, Track, Graphic, GraphicsLayer, webMercatorUtils, Point) {             
 
         function validateFile(file) {
           const video = document.createElement('video');
@@ -926,9 +682,9 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
           $("#piclabel").hide();
           $("#audlabel").hide();
           $("#vidlabel").hide();
-        /*  document.getElementById("pictures").innerHTML = "";
+          document.getElementById("pictures").innerHTML = "";
           document.getElementById("videos").innerHTML = "";
-          document.getElementById("sound").innerHTML = "";      */      
+          document.getElementById("sound").innerHTML = "";            
           const objectId = graphic.attributes.objectid;
           const title = graphic.attributes.title;
           const desc = linkifyHtml(graphic.attributes.description);
@@ -963,7 +719,8 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
               .forEach(function(objectId) {
                 const attachments = attachmentsByFeatureId[objectId];
                 attachments.forEach(function (attachment) {                   
-                  if (attachment.contentType == "image/jpeg" || attachment.contentType == "image/png" || attachment.contentType == "image/gif") {                   
+                  if (attachment.contentType == "image/jpeg" || attachment.contentType == "image/png" || attachment.contentType == "image/gif") {
+                   
                     const imgarray = [];
                     imgarray.push(attachment);
                     const attachUrl = imgarray[0].url;
@@ -1288,24 +1045,24 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
         const indexLayer = new FeatureLayer({
           url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/KeTT_Mobile_Map_Indexes/FeatureServer/0",
           outFields: ["title", "year", "service_url"], // Return all fields so it can be queried client-side
-          opacity: 0
+          opacity: 1
         //renderer: renderer
         });
 
         // Layer for the story points
         const storyLayer = new FeatureLayer({
           url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/KeweenawHSDI/story_pts_watts2/FeatureServer/0",
-          outFields: [], // Return all fields so it can be queried client-side        
+          outFields: ["title", "description", "name", "userdate", "objectid", "globalid", "mapyear"], // Return all fields so it can be queried client-side        
           renderer: storiesRenderer,
           definitionExpression: "flag IS NULL"
         });
-        const layer = new GraphicsLayer();
+
         const graphicsLayer = new GraphicsLayer();
       //map.add(graphicsLayer);
 
         const map = new Map({
           basemap: "satellite", // Basemap layer service
-          layers: [indexLayer, storyLayer, graphicsLayer, layer]
+          layers: [indexLayer, storyLayer, graphicsLayer]
         });
 
         const view = new MapView({
@@ -1381,37 +1138,6 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
          }          
       });
 
-        // accuracy symbol
-        const symbol = {
-          type: "simple-marker",
-          outline: { color: [255, 255, 255, 1] },
-          size: 12,
-          color: [96, 177, 212, 0.39]
-        };
-
-        let accuracy = 1;
-        let currentCoords;
-
-        // update symbol as view resolution changes
-        view.watch("resolution", (resolution) => {
-          if (!currentCoords) return;
-          const size = (100 / view.resolution);
-          symbol.size = size;
-          layer.removeAll();
-          layer.add({
-            geometry: {
-              type: "point",
-              latitude: currentCoords.latitude,
-              longitude: currentCoords.longitude
-            },
-            symbol
-          });
-        });
-
-        const listNodeNearby = document.getElementById("nearcontent");
-        const listNodeSearch = document.getElementById("searchcontent");
-        const listNodeWhatsHere = document.getElementById("whatsherecontent");
-
         $( "#geolocation" ).click(function() {
          // track.start();
          if (track.tracking == false) {
@@ -1419,117 +1145,12 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
           document.getElementById("gpsicon").style.color = "#3880ff";
           track.once("track", ({ position }) => {
            currentCoords = position.coords;
-            const size =  (100 / view.resolution);
-          symbol.size = size;
-          layer.removeAll();
-          layer.add({
-            geometry: {
-              type: "point",
-              latitude: currentCoords.latitude,
-              longitude: currentCoords.longitude
-            },
-            symbol
-          });
            const point = new Point({
               latitude: currentCoords.latitude,
               longitude: currentCoords.longitude
             });
             view.goTo({target: point, scale: 5000, speedFactor: 0.1});
-
             console.log(currentCoords);
-            const queryGeometry = {
-            x: currentCoords.longitude,
-            y: currentCoords.latitude,
-            spatialReference: {
-              wkid: 4326
-            }
-          };
-
-          console.log(lat,lon, queryGeometry);
-
-          arcgisRest
-            .queryFeatures({
-              url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_kett_record_locs/FeatureServer/0",
-              geometry: queryGeometry,
-              geometryType: "esriGeometryPoint",
-              spatialRel: "esriSpatialRelIntersects",
-              distance: 100,
-              units: "esriSRUnit_Foot"              
-            })
-            .then((response) => {
-              
-               const placeMarkerSymbol = {          
-                "type": "picture-marker",
-                "url": "assets/marker_place.png",
-                "width": "18px",
-                "height": "18px"          
-              };
-
-              const personMarkerSymbol = {          
-                "type": "picture-marker",
-                "url": "assets/marker_person.png",
-                "width": "18px",
-                "height": "18px"          
-              };
-
-               const features = response.features;
-               console.log(features);
-
-               document.getElementById("nearbycount").innerHTML = features.length;
-               // Sort the features first by title, then by year  
-               features.sort(function (a, b) {
-                  return a.attributes.title.localeCompare(b.attributes.title) || a.attributes.ayear - b.attributes.ayear;
-                });
-                
-                let item;
-                const fragment = document.createDocumentFragment();
-                features.forEach(function(result, index) {
-                     // convert the coordinates into decimal degrees
-                const ddCoords = webMercatorUtils.webMercatorToGeographic(result.geometry);
-          
-                const point = { //Create a point
-                  type: "point",
-                  longitude: ddCoords.x,
-                  latitude:  ddCoords.y,
-                };          
-
-               const pointGraphic = new Graphic({
-                  geometry: point,
-                 // symbol: simpleMarkerSymbol
-               });
-
-               if (result.attributes.entitytype == "person") {
-                pointGraphic.symbol = personMarkerSymbol;
-               } else if (result.attributes.entitytype == "building") {
-                pointGraphic.symbol = placeMarkerSymbol;
-               }
-               graphicsLayer.add(pointGraphic, 0);
-                    const attributes = result.attributes;
-                    const title = attributes.title;
-                    const year = attributes.eyear;
-                    console.log(title);
-                    item = document.createElement("ion-item");
-                    const label = document.createElement("ion-label");
-                    const icon = document.createElement("ion-icon"); 
-                    item.href = "#"; 
-                    if (attributes.entitytype == "person") {
-                      icon.name = "people-outline";
-                    } else if (attributes.entitytype == "building") {
-                      icon.name = "home-outline"
-                    } else {
-                      icon.name = "map-outline";
-                    }                
-                    
-                    item.detail = "false";                                         
-                    icon.slot = "end";
-                    label.innerHTML = year + " " + title; 
-                    item.appendChild(icon);
-                    item.appendChild(label);
-                    item.addEventListener("click", () => resultClickHandler(result, index));
-                    fragment.appendChild(item);                     
-                    listNodeNearby.appendChild(fragment);
-                }); 
-            });
           });
          } else {
           track.stop();
@@ -1543,11 +1164,12 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
 
         function setGeolocation() {
           const geolocation = window.navigator.geolocation.watchPosition( function ( position ) {
-
+           
            window.setTimeout( function () {
             lat = position.coords.latitude;
             lon = position.coords.longitude;          
-           }, 5000 );          
+           }, 5000 );
+          
         },
         function () {
             //error
@@ -1635,7 +1257,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
                     icon.slot = "end";
                     label.innerHTML = year + " " + title; 
                     item.appendChild(icon);
-                    item.appendChild(label);                    
+                    item.appendChild(label);
                     item.addEventListener("click", () => resultClickHandler(result, index));
                     fragment.appendChild(item);                     
                     listNode.appendChild(fragment);
@@ -1714,14 +1336,12 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
       }
 
       view.on("click", (event) => {
-        storyLayer.outFields = ["title", "description", "name", "userdate", "objectid", "globalid", "mapyear"];
         // only include graphics from the layer in the hitTest
         const opts = {
           include: storyLayer
         }
         // check for a click on the story layer
         view.hitTest(event, opts).then((response) => {
-
           // check if a feature is returned from the index layer
           if (response.results.length) {
             // if a feature is already highlighted, then remove the highlight
@@ -1732,116 +1352,6 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
             shareStory(response.results[0].graphic);
             console.log(response.results[0].graphic);
           }    
-        });
-      });
-
-      // if the users holds on the map, show the action sheet
-      view.on("hold", function(evt) { 
-        const fragment = document.createDocumentFragment();
-        nearbyModal.isOpen = false;               
-        lat = evt.mapPoint.latitude
-        lon = evt.mapPoint.longitude
-        actionSheet.isOpen = true;
-        actionSheet.addEventListener('ionActionSheetDidDismiss', (ev) => {
-          graphicsLayer.removeAll();
-          actionSheet.isOpen = false;
-          console.log(ev);
-          if (ev.detail.data.action === "nearby") {
-             const queryGeometry = {
-            x: lon,
-            y: lat,
-            spatialReference: {
-              wkid: 4326
-            }
-          };
-
-          console.log(lat,lon, queryGeometry);
-
-          arcgisRest
-            .queryFeatures({
-              url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_kett_record_locs/FeatureServer/0",
-              geometry: queryGeometry,
-              geometryType: "esriGeometryPoint",
-              spatialRel: "esriSpatialRelIntersects",
-              distance: 50,
-              units: "esriSRUnit_Foot",
-              //SR: "4326",
-              //authentication
-            })
-            .then((response) => {
-              
-              const placeMarkerSymbol = {          
-                "type": "picture-marker",
-                "url": "assets/marker_place.png",
-                "width": "18px",
-                "height": "18px"          
-              };
-
-              const personMarkerSymbol = {          
-                "type": "picture-marker",
-                "url": "assets/marker_person.png",
-                "width": "18px",
-                "height": "18px"          
-              };           
-
-              console.log(response.features);
-              const features = response.features;
-              features.forEach(function(feature) {
-                // convert the coordinates into decimal degrees
-                const ddCoords = webMercatorUtils.webMercatorToGeographic(feature.geometry);
-          
-                const point = { //Create a point
-                  type: "point",
-                  longitude: ddCoords.x,
-                  latitude:  ddCoords.y,
-                };          
-
-               const pointGraphic = new Graphic({
-                  geometry: point,
-                 // symbol: simpleMarkerSymbol
-               });
-
-               if (feature.attributes.entitytype == "person") {
-                pointGraphic.symbol = personMarkerSymbol;
-               } else if (feature.attributes.entitytype == "building") {
-                pointGraphic.symbol = placeMarkerSymbol;
-               }
-               graphicsLayer.add(pointGraphic);
-
-                 const attributes = feature.attributes;
-                    const title = attributes.title;
-                    const year = attributes.eyear;
-                    console.log(title);
-                    item = document.createElement("ion-item");
-                    const label = document.createElement("ion-label");
-                    const icon = document.createElement("ion-icon"); 
-                    const arrow = document.createElement("ion-icon");
-                    item.href = "#"; 
-                    if (attributes.entitytype == "person") {
-                      icon.name = "people-outline";
-                    } else if (attributes.entitytype == "building") {
-                      icon.name = "home-outline"
-                    } else {
-                      icon.name = "map-outline";
-                    }                
-                    
-                    item.detail = "false";                                         
-                    icon.slot = "start"; 
-                    arrow.name = "arrow-forward";
-                    arrow.slot = "end";                  
-                    label.innerHTML = year + " " + title; 
-                    item.appendChild(icon);
-                    item.appendChild(arrow);
-                    item.appendChild(label);
-                    item.addEventListener("click", () => resultClickHandler(result, index));
-                    fragment.appendChild(item);                     
-                    listNodeWhatsHere.appendChild(fragment);
-             });
-
-              nearbyModal.isOpen = true;
-              //document.getElementById("result").textContent = JSON.stringify(response.features, null, 2);
-            });           
-          }
         });
       });
 
