@@ -230,15 +230,7 @@
       </ion-list>
     </ion-content>
   </ion-modal>
-  <ion-modal initial-breakpoint="0.25" id="searchModal" mode="ios" backdrop-dismiss="false" backdrop-breakpoint="0.5">
-   <ion-content id="searchcontent">
-     <ion-searchbar placeholder="Search" (click)="modal.setCurrentBreakpoint(0.75)"></ion-searchbar>
-      <center><p>Your search returned 25 results.</p></center>
-      <ion-list mode="ios">
-       
-      </ion-list>
-    </ion-content>
-  </ion-modal> 
+
   </ion-modal> 
          <ion-modal id="splashModal">
       <ion-header>
@@ -380,18 +372,6 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
           <ion-content fullscreen class="ion-padding" id="nearcontent">            
           <p> Showing historic people and places within a 100 foot radius of your current location. </p>
           </ion-content>
-         </ion-tab> 
-        
-          <ion-tab tab="nearby">
-          <ion-header translucent>
-            <ion-toolbar>
-              <ion-title>Nearby</ion-title>
-            </ion-toolbar>
-          </ion-header>
-
-          <ion-content fullscreen class="ion-padding" id="nearcontent">            
-          <p> Showing historic people and places within a 100 foot radius of your current location. </p>
-          </ion-content>
          </ion-tab>
         <ion-tab-bar slot="bottom">
           <ion-tab-button tab="home">
@@ -402,10 +382,6 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
             <ion-label>Maps</ion-label>
             <ion-icon name="map-outline"></ion-icon>
             <ion-badge id="mapcount">0</ion-badge>
-          </ion-tab-button>
-           <ion-tab-button tab="search" id="search" onclick="searchModal.isOpen = true;">
-            <ion-label>Search</ion-label>
-            <ion-icon name="search-outline"></ion-icon>            
           </ion-tab-button>
           <ion-tab-button tab="nearby">
             <ion-label>Nearby</ion-label>
@@ -465,105 +441,13 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
       var nearbyModal = document.getElementById('nearbyModal');
       var searchBar = document.querySelector('ion-searchbar');
       nearbyModal.breakpoints = [0, 0.25, 0.5, 0.75];
-
-      var searchModal = document.getElementById('searchModal');
-     
-      searchModal.breakpoints = [0, 0.25, 0.5, 0.75];
       
 
   require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/support/webMercatorUtils", "esri/geometry/Point"], function (esriConfig, Map, MapView, FeatureLayer, TileLayer, Track, Graphic, GraphicsLayer, webMercatorUtils, Point) {      
 
-  searchBar.addEventListener('keyup', (input) => {
-     if (event.key === "Enter") {
-    // Cancel the default action, if needed
-    event.preventDefault();
-    const searchVal = $('#searchBar').val();
-    console.log(searchVal);
-     arcgisRest
-            .queryFeatures({
-              url: "https://portal1-geo.sabu.mtu.edu/server/rest/services/Hosted/giscore_grf_kett_record_locs/FeatureServer/0",
-              where: "title like '%Aho%'"           
-            })
-            .then((response) => {
-              
-               const placeMarkerSymbol = {          
-                "type": "picture-marker",
-                "url": "assets/marker_place.png",
-                "width": "18px",
-                "height": "18px"          
-              };
-
-              const personMarkerSymbol = {          
-                "type": "picture-marker",
-                "url": "assets/marker_person.png",
-                "width": "18px",
-                "height": "18px"          
-              };
-
-               const features = response.features;
-               console.log(features);
-
-               document.getElementById("nearbycount").innerHTML = features.length;
-               // Sort the features first by title, then by year  
-               features.sort(function (a, b) {
-                  return a.attributes.title.localeCompare(b.attributes.title) || a.attributes.ayear - b.attributes.ayear;
-                });
-                
-                let item;
-                const fragment = document.createDocumentFragment();
-                features.forEach(function(result, index) {
-                     // convert the coordinates into decimal degrees
-                const ddCoords = webMercatorUtils.webMercatorToGeographic(result.geometry);
-          
-                const point = { //Create a point
-                  type: "point",
-                  longitude: ddCoords.x,
-                  latitude:  ddCoords.y,
-                };          
-
-               const pointGraphic = new Graphic({
-                  geometry: point,
-                 // symbol: simpleMarkerSymbol
-               });
-
-               if (result.attributes.entitytype == "person") {
-                pointGraphic.symbol = personMarkerSymbol;
-               } else if (result.attributes.entitytype == "building") {
-                pointGraphic.symbol = placeMarkerSymbol;
-               }
-               graphicsLayer.add(pointGraphic, 0);
-                    const attributes = result.attributes;
-                    const title = attributes.title;
-                    const year = attributes.eyear;
-                    console.log(title);
-                    item = document.createElement("ion-item");
-                    const label = document.createElement("ion-label");
-                    const icon = document.createElement("ion-icon"); 
-                    item.href = "#"; 
-                    if (attributes.entitytype == "person") {
-                      icon.name = "people-outline";
-                    } else if (attributes.entitytype == "building") {
-                      icon.name = "home-outline"
-                    } else {
-                      icon.name = "map-outline";
-                    }                
-                    
-                    item.detail = "false";                                         
-                    icon.slot = "end";
-                    label.innerHTML = year + " " + title; 
-                    item.appendChild(icon);
-                    item.appendChild(label);
-                    item.addEventListener("click", () => resultClickHandler(result, index));
-                    fragment.appendChild(item);                     
-                    listNodeSearch.appendChild(fragment);
-                }); 
-              });
-            }
-  });
-
-  
-
-
+/*  searchBar.addEventListener('click', () => {
+    nearbyModal.setCurrentBreakpoint(0.75);
+  });  */
     // Setup a new action sheet
     var actionSheet = document.querySelector('ion-action-sheet');
 
@@ -600,16 +484,12 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
       },
     ];
 
-      
 
-     
+
   
  
         $(document).ready(function(){
-            function showSearch () {
-          searchModal.isOpen = true;
-        }
-
+         // nearbyModal.isOpen = true;
         });
 
         function validateFile(file) {
@@ -1371,7 +1251,6 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
         });
 
         const listNodeNearby = document.getElementById("nearcontent");
-        const listNodeSearch = document.getElementById("searchcontent");
         const listNodeWhatsHere = document.getElementById("whatsherecontent");
 
         $( "#geolocation" ).click(function() {
