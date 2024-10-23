@@ -1259,7 +1259,8 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
          if (track.tracking == false) {
           track.start();
           document.getElementById("gpsicon").style.color = "#3880ff";
-          track.once("track", ({ position }) => {
+          track.on("track", ({ position }) => {
+            console.log(position);
            currentCoords = position.coords;
             const size =  (100 / view.resolution);
           symbol.size = size;
