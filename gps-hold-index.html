@@ -1236,6 +1236,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
 
         // update symbol as view resolution changes
         view.watch("resolution", (resolution) => {
+          console.log("location updated!");
           if (!currentCoords) return;
           const size = (100 / view.resolution);
           symbol.size = size;
@@ -1386,6 +1387,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
 
         function setGeolocation() {
           const geolocation = window.navigator.geolocation.watchPosition( function ( position ) {
+            alert('new location');
 
            window.setTimeout( function () {
             lat = position.coords.latitude;
