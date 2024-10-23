@@ -370,7 +370,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
           </ion-header>
 
           <ion-content fullscreen class="ion-padding" id="nearcontent">            
-          <p> Showing historic people and places within a 100 foot radius of your current location. </p>
+          <p> Active the GPS to see historic people and place near your current location. </p>
           </ion-content>
          </ion-tab>
         <ion-tab-bar slot="bottom">
@@ -440,7 +440,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
 <script>
       var nearbyModal = document.getElementById('nearbyModal');
       var searchBar = document.querySelector('ion-searchbar');
-      nearbyModal.breakpoints = [0, 0.25, 0.5, 0.75];
+      nearbyModal.breakpoints = [0.5];
       
 
   require(["esri/config","esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/TileLayer", "esri/widgets/Track", "esri/Graphic", "esri/layers/GraphicsLayer", "esri/geometry/support/webMercatorUtils", "esri/geometry/Point"], function (esriConfig, Map, MapView, FeatureLayer, TileLayer, Track, Graphic, GraphicsLayer, webMercatorUtils, Point) {      
@@ -1147,7 +1147,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
 
         const map = new Map({
           basemap: "satellite", // Basemap layer service
-          layers: [indexLayer, storyLayer, graphicsLayer, layer]
+          layers: [indexLayer, graphicsLayer, layer]
         });
 
         const view = new MapView({
@@ -1343,6 +1343,8 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
                 pointGraphic.symbol = personMarkerSymbol;
                } else if (result.attributes.entitytype == "building") {
                 pointGraphic.symbol = placeMarkerSymbol;
+               } else if (result.attributes.entitytype == "story") {
+                pointGraphic.symbol = storyMarkerSymbol;
                }
                graphicsLayer.add(pointGraphic, 0);
                     const attributes = result.attributes;
@@ -1356,9 +1358,9 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
                     if (attributes.entitytype == "person") {
                       icon.name = "people-outline";
                     } else if (attributes.entitytype == "building") {
-                      icon.name = "home-outline"
-                    } else {
-                      icon.name = "map-outline";
+                      icon.name = "home-outline";
+                    } else if (attributes.entitytype == "story") {
+                      icon.name = "story-outline";
                     }                
                     
                     item.detail = "false";                                         
@@ -1623,6 +1625,13 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
                 "url": "assets/marker_person.png",
                 "width": "18px",
                 "height": "18px"          
+              };
+
+               const storyMarkerSymbol = {          
+                "type": "picture-marker",
+                "url": "assets/marker_story.png",
+                "width": "18px",
+                "height": "18px"          
               };           
 
               console.log(response.features);
@@ -1646,6 +1655,8 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
                 pointGraphic.symbol = personMarkerSymbol;
                } else if (feature.attributes.entitytype == "building") {
                 pointGraphic.symbol = placeMarkerSymbol;
+               } else if (feature.attributes.entitytype == "story") {
+                pointGraphic.symbol = storyMarkerSymbol;
                }
                graphicsLayer.add(pointGraphic);
 
@@ -1662,8 +1673,8 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
                       icon.name = "people-outline";
                     } else if (attributes.entitytype == "building") {
                       icon.name = "home-outline"
-                    } else {
-                      icon.name = "map-outline";
+                    } else  if (attributes.entitytype == "story") {
+                      icon.name = "book-outline";
                     }                
                     
                     item.detail = "false";                                         
