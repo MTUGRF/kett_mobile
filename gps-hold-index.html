@@ -1314,6 +1314,12 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
                 "height": "18px"          
               };
 
+              const storyMarkerSymbol = {          
+                "type": "picture-marker",
+                "url": "assets/marker_story.png",
+                "width": "18px",
+                "height": "18px"          
+              };
                const features = response.features;
                console.log(features);
 
@@ -1387,7 +1393,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
 
         function setGeolocation() {
           const geolocation = window.navigator.geolocation.watchPosition( function ( position ) {
-            alert('new location');
+
 
            window.setTimeout( function () {
             lat = position.coords.latitude;
