@@ -1588,7 +1588,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
       });
 
       // if the users holds on the map, show the action sheet
-      view.on("hold", function(evt) { 
+      view.on("mouse-down", function(evt) { 
         const fragment = document.createDocumentFragment();
         nearbyModal.isOpen = false;               
         lat = evt.mapPoint.latitude
