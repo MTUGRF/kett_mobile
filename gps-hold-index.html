@@ -1433,7 +1433,7 @@ Looking for historical data about people and places? Use the Keweenaw Time Trave
         $( "#mapOpt" ).click(function() {
           tabs.select('home');
           presentToast();          
-          view.on("hold", function(evt) {                
+          view.on("mouse-down", function(evt) {                
             lat = evt.mapPoint.latitude
             lon = evt.mapPoint.longitude
             tabs.select('stories');
